@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1012.909" height="130.85" viewBox="0 0 1012.909 130.85">
+<defs>
+<linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+<stop offset="0" stop-color="#fff" stop-opacity="0.702"/>
+<stop offset="1" stop-color="#fff" stop-opacity="0.4"/>
+</linearGradient>
+<filter id="_35faed81-80a2-4768-846a-81f8710c51a2_variety-of-icons-for-logo-design" x="0" y="0" width="1012.909" height="130.85" filterUnits="userSpaceOnUse">
+<feOffset dy="3" input="SourceAlpha"/>
+<feGaussianBlur stdDeviation="9" result="blur"/>
+<feFlood flood-opacity="0.161"/>
+<feComposite operator="in" in2="blur"/>
+<feComposite in="SourceGraphic"/>
+</filter>
+</defs>
+<g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#_35faed81-80a2-4768-846a-81f8710c51a2_variety-of-icons-for-logo-design)">
+<path id="_35faed81-80a2-4768-846a-81f8710c51a2_variety-of-icons-for-logo-design-2" data-name="35faed81-80a2-4768-846a-81f8710c51a2_variety-of-icons-for-logo-design" d="M155.773,186.666c-.26,23.673,14.017,39.657,39.391,51.24,21.869,9.965,35.043,24.836,35.237,45.17.324,32.272.26,725.643,0,757.915-.13,15.276-8.631,27.921-22.907,38.038-5.451,3.844-12.265,6.525-18.689,9.408a63.874,63.874,0,0,0-28.164,24.431c-4.348,6.879-4.543,15.832-4.543,23.824C155.838,1228.6,156.227,141.648,155.773,186.666Z" transform="translate(1170.21 -130.77) rotate(90)" stroke="#fff" stroke-width="2" fill="url(#linear-gradient)"/>
+</g>
+</svg>

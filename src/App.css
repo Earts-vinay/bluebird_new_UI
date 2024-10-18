@@ -1,0 +1,49 @@
+@font-face {
+  font-family: "montserrat-medium";
+  src: url(../public/assets/fonts/Montserrat-Medium.ttf) format("truetype");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "montserrat-regular";
+  src: url(../public/assets/fonts/Montserrat-Regular.ttf) format("truetype");
+  font-weight: 300;
+}
+body{
+  background: linear-gradient(134.13deg, #EBEFFA 2.49%, #E8EBFD 30.02%, #F0ECF9 51.39%, #EFEEFB 70.14%, #EEF7FF 99.26%);
+  font-family: "montserrat-regular"
+}
+/* Navigation.module.css */
+
+
+.link {
+  margin-right: 2px;
+  color: black;
+  text-decoration: none;
+  font-family: 'adobe-clean, sans-serif';
+}
+
+.linkActive {
+  color: pink;
+}
+
+.TableCell {
+
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px; /* width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #2e6ae3b2; /* color of the thumb */
+  border-radius: 6px; /* roundness of the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #2e6ae3b2; /* color of the thumb on hover */
+}
