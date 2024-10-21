@@ -130,11 +130,11 @@ const ForgetPass = () => {
                 <Box width="50%" sx={{display:"flex", justifyContent:"center",alignItems:"center"}}>
                     <Box width="80%" >
                         <img
-                            src={PublicUrl + "/assets/logos/saplogo.svg"}
+                            src={PublicUrl + "/assets/logos/bluebird_logo.svg"}
                             alt="Logo"
                             style={{ objectFit: "contain" }}
                         />
-                        <Typography variant="h4" mt={4} sx={{ ...commonStyles, fontWeight: "bold" }}>
+                        <Typography variant="h4" sx={{ ...commonStyles, fontWeight: "bold" }}>
                             Welcome to <br /> The Circle of Security
                         </Typography>
                         <Typography mt={2} sx={{ ...commonStyles }}>

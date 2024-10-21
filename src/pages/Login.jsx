@@ -280,7 +280,7 @@ const Login = () => {
         <Box width="50%">
           <Box width="80%">
             <img
-              src={process.env.PUBLIC_URL + "/assets/images/bluebird.png"}
+              src={process.env.PUBLIC_URL + "/assets/logos/bluebird_logo.svg"}
               alt="Logo"
               style={{
                 objectFit: "contain",
