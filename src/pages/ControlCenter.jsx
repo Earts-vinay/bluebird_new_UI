@@ -398,7 +398,7 @@ const ControlCenter = () => {
               paddingTop: "20px",
               px: "20px",
               zIndex: 1,
-              background: "linear-gradient(119deg, #ebeffa 2%, #e8ebfd 30%, #f0ecf9 51%, #efeefb 70%, #eef7ff 100%)",
+              background: "linear-gradient(-60.13deg, #F3FBFF 0%, #FFFFFF 33%, #F0FAFD 52%, #F7FCFF 75%, #CBE8F8 100%)",
             }}>
               <Box
                 display="flex"
@@ -642,7 +642,7 @@ const ControlCenter = () => {
                 right: 0,
                 zIndex: 1,
                 pb: "10px",
-                background: "linear-gradient(119deg, #ebeffa 2%, #e8ebfd 30%, #f0ecf9 51%, #efeefb 70%, #eef7ff 100%)",
+                background: "linear-gradient(-60.13deg, #F3FBFF 0%, #FFFFFF 33%, #F0FAFD 52%, #F7FCFF 75%, #F0FAFD 100%)",
               }}
             >
               <Box

@@ -14,6 +14,7 @@ const HeaderLayout = ({children,padding}) => {
       backdropFilter: "blur(15px)",
       position: "relative",
       boxShadow: " 0 0 5px 0 rgb(0 58 111 / 49%)",
+      marginTop:"25px"
     }}
   >
     {children}

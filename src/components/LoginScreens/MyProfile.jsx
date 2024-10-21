@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { selectLoginApiResponse } from "../../redux/apiResponse/loginApiSlice";
 import { toast } from 'react-toastify';
+import HeaderLayout from '../customStyles/HeaderLayout';
 
 const PublicUrl = process.env.PUBLIC_URL
 
@@ -118,17 +119,8 @@ const MyProfile = () => {
 
       </Box>
       <Container maxWidth="xxl">
-        <Box
-          sx={{
-            backgroundColor: 'linear-gradient(119deg, #ebeffa 2%, #e8ebfd 30%, #f0ecf9 51%, #efeefb 70%, #eef7ff 100%)',
-            minHeight: '75vh',
-            padding: '20px',
-            mt: 1,
-            borderRadius: '10px',
-            backdropFilter: 'blur(15px)',
-            boxShadow: " 0 0 5px 0 rgb(0 58 111 / 49%)",
-          }}
-        >
+      <HeaderLayout >
+       
           <Box padding="15px" >
             <Box display="flex" gap={1}>
               <Typography variant="h5" sx={{ fontWeight: "bold", ...commonStyles }}>My Profile</Typography>
@@ -180,7 +172,8 @@ const MyProfile = () => {
             <CustomButton onClick={handleCancel}> Cancel</CustomButton>
             <CustomButton onClick={handleUpdate} disabled={!isDataChanged}> Save</CustomButton> {/* Disable save button if data hasn't changed */}
           </Grid>
-        </Box>
+       
+        </HeaderLayout>
       </Container>
     </>
   );

@@ -6,6 +6,7 @@ import Incident from "../components/InsightsContent/Incident";
 import TrafficComponent from "../components/InsightsContent/TrafficComponent";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import moment from 'moment';
+import HeaderLayout from "../components/customStyles/HeaderLayout";
 
 const commonStyles = { fontFamily: "montserrat-regular"};
 
@@ -28,18 +29,20 @@ const Insights = () => {
 
   return (
     <>
-      <Container maxWidth="xxl" disableGutters>
+      <Container maxWidth="xxl" >
+      <HeaderLayout >
+        
         <Box
-          backgroundColor="linear-gradient(119deg, #ebeffa 2%, #e8ebfd 30%, #f0ecf9 51%, #efeefb 70%, #eef7ff 100%)"
+         
           sx={{
-            margin: "10px",
+         
             borderRadius: "10px",
             paddingLeft: "20px",
             paddingTop: "26px",
             height: "75.5vh",
             overflow: "hidden",
-            boxShadow: "0 0 5px 0 rgb(0 58 111 / 49%)",
-            backdropFilter: "blur(15px)",
+           
+            
             display: "flex",
             flexDirection: "column"
           }}
@@ -114,6 +117,7 @@ const Insights = () => {
             </TabPanel>
           </Box>
         </Box>
+      </HeaderLayout>
       </Container>
     </>
   );

@@ -8,13 +8,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import AlertSidebar from "../components/MapContents/AlertSidebar"
 import MapListSidebar from "../components/MapContents/MapListSidebar";
 import MapSidebar1 from "../components/MapContents/MapSidebar1";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { fetchMapListDataStart } from "../redux/apiResponse/maplistSlice";
 import { fetchMapPoleDataStart, fetchMapPoleDataSuccess, fetchMapPoleDataFailure } from '../redux/apiResponse/mappoleSlice';
 import moment from "moment";
 import { selectPropertyResponseData, selectedPropertyByUser } from '../redux/apiResponse/propertySlice';
 import { setPolesInBoundary } from "../redux/apiResponse/polesInBoundarySlice";
 import { selectUser } from "../redux/apiResponse/authSlice";
+import HeaderLayout from '../components/customStyles/HeaderLayout';
 
 const MapContainer = ({ locations=[], propertylocations,onPropertyMarkerClick }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -214,7 +215,7 @@ setDefaultCenter({ lat: parseFloat(seleProp.location_lat), lng: parseFloat(seleP
   }, []);
 
   const mapStyles = {
-    height: '80vh',
+    height: '82vh',
     width: '100%',
     borderRadius: '10px',
   };
@@ -234,10 +235,9 @@ setDefaultCenter({ lat: parseFloat(seleProp.location_lat), lng: parseFloat(seleP
 
   return (
     <>
-      <div style={{
-        height: "80vh", maxWidth: "98vw", marginLeft: "20px", marginRight: "20px", borderRadius: "10px", overflow: "hidden", backdropFilter: "blur(15px)",
-        boxShadow: " 0 0 5px 0 rgb(0 58 111 / 49%)", marginTop:"10px"
-      }} > 
+    <Container maxWidth="xxl">
+    <HeaderLayout >
+      <div> 
         {isLoaded && (
           <LoadScript googleMapsApiKey="AIzaSyAmaZMMaAgoUxEmbWdg1Xv0d2dSibZcZs8" >
             <GoogleMap mapContainerStyle={mapStyles}
@@ -267,7 +267,10 @@ setDefaultCenter({ lat: parseFloat(seleProp.location_lat), lng: parseFloat(seleP
             </GoogleMap>
           </LoadScript>
         )}
-      </div>    </>
+      </div>  
+      </HeaderLayout> 
+      </Container>
+       </>
   );
 };
 

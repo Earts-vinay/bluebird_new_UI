@@ -8,10 +8,11 @@
   src: url(../public/assets/fonts/Montserrat-Regular.ttf) format("truetype");
   font-weight: 300;
 }
-body{
-  background: linear-gradient(134.13deg, #EBEFFA 2.49%, #E8EBFD 30.02%, #F0ECF9 51.39%, #EFEEFB 70.14%, #EEF7FF 99.26%);
-  font-family: "montserrat-regular"
+body {
+  background: linear-gradient(-60.13deg, #F3FBFF 0%, #FFFFFF 33%, #F0FAFD 52%, #F7FCFF 75%, #CBE8F8 100%);
+  font-family: "montserrat-regular";
 }
+
 /* Navigation.module.css */
 
 

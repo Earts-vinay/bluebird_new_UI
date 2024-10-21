@@ -195,7 +195,7 @@ const Devices = () => {
                 <TableContainer component={Paper} sx={{ backgroundColor: "transparent", height: "64vh", overflow: "auto", boxShadow: "none" }}>
                   <Table>
                     <TableHead>
-                      <TableRow sx={{ position: 'sticky', top: 0, background: 'linear-gradient(119deg, #ebeffa 2%, #e8ebfd 30%, #f0ecf9 51%, #efeefb 70%, #eef7ff 100%)', }}>
+                      <TableRow sx={{ position: 'sticky', top: 0, background: 'linear-gradient(-60.13deg, #F3FBFF 0%, #FFFFFF 33%, #F0FAFD 52%, #F7FCFF 75%, #CBE8F8 100%)', }}>
                         <TableCell></TableCell>
                         <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Device Name</TableCell>
                         <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Device ID</TableCell>

@@ -40,7 +40,7 @@ const Main = () => {
   return (
     <>
       {shouldDisplayNavbar && <Navbar />}
-      <Routes>
+      <Routes >
         <Route path="/" element={<Navigate to={token ? '/map' : '/login'} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/activeUser" element={<ActiveUser />} />
