@@ -248,7 +248,7 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
               color: "#4a7399",
               fontWeight: "bolder",
               '&.Mui-selected': {
-                backgroundColor: '#2465e9',
+                backgroundColor: '#016699',
                 color: "white",
                 backdropFilter: "blur(15px)",
                 boxShadow: "0 0 5px 0 rgba(25, 96, 159, 0.1)",
@@ -269,7 +269,7 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
               color: "#4a7399",
               textTransform: "capitalize",
               '&.Mui-selected': {
-                backgroundColor: '#2465e9',
+                backgroundColor: '#016699',
                 color: "white",
                 backdropFilter: "blur(15px)",
                 boxShadow: "0 0 5px 0 rgba(25, 96, 159, 0.1)",
@@ -300,7 +300,7 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
             border: "solid 1px #fff", borderRadius: "10px"
           }}
         >
-          <Box sx={{ p: 2, backdropFilter: "blur(5px)", boxShadow: "-1px 6px 31px 0 rgba(25, 96, 159, 0.1)", backgroundColor: '#2465e9', borderRadius: 1 }}>
+          <Box sx={{ p: 2, backdropFilter: "blur(5px)", boxShadow: "-1px 6px 31px 0 rgba(25, 96, 159, 0.1)", backgroundColor: '#016699', borderRadius: 1 }}>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={6}>
                 <Box display="flex" alignItems="center" gap={2}>
@@ -311,13 +311,13 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
                   id="search"
                   type="search"
                   placeholder="Search by Camera,License plate"
-                  size="large"
+                  size="small"
                   value={searchQuery}
                   onChange={handleSearchChange}
                   autoComplete="off"
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end" sx={{ color: '#2465e9' }}>
+                      <InputAdornment position="end" sx={{ color: '#06122b' }}>
                         <SearchIcon />
                       </InputAdornment>
                     ),
@@ -342,9 +342,9 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
               <TableHead >
                 <TableRow sx={{ position: 'sticky', top: 0, background: "#eef6fc" }}>
                   <TableCell></TableCell>
-                  <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "14px", sm: "14px" }, ...commonStyles }}>Camera</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "14px", sm: "14px" }, ...commonStyles }}>Event Type <TiArrowUnsorted fontSize={14} onClick={handleSortIconClick} sx={{ paddingTop: "30px" }} /></TableCell>
-                  <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "14px", sm: "14px" }, ...commonStyles }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", paddingY: "14px", fontSize: { md: "14px", sm: "14px" }, ...commonStyles }}>Camera</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", paddingY: "14px", fontSize: { md: "14px", sm: "14px" }, ...commonStyles }}>Event Type <TiArrowUnsorted fontSize={14} onClick={handleSortIconClick} sx={{ paddingTop: "30px" }} /></TableCell>
+                  <TableCell sx={{ fontWeight: "bold", paddingY: "14px", fontSize: { md: "14px", sm: "14px" }, ...commonStyles }}>Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody >

@@ -17,7 +17,7 @@ const IncidentChart = ({ series, title }) => {
     series: [{
       data: series
     }],
-    colors: ["#E169F6"],
+    colors: ["#46c8f5"],
     chart: {
       type: 'line',
       height: "90%",

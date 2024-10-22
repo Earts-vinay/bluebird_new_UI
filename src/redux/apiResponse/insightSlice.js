@@ -41,29 +41,33 @@ export const fetchCountingByPole = createAsyncThunk("Insight/fetchCountingByPole
 
 
   // Thunk to Get a Counting by Zone
-export const fetchCountingByZone= createAsyncThunk("Insight/fetchCountingByZone", async (requestData, { getState }) => {
-    try {
-      const token = selectToken(getState()); 
-  
+
+  export const fetchCountingByZone = createAsyncThunk(
+    'insight/fetchCountingByZone',
+    async ({ propertyId, startDate, endDate, token }) => {
       const response = await axios.get(`${BaseUrl}/api/counting/zone`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        data: requestData, 
+        params: {
+          property_id: propertyId,
+          time_type: 'date',
+          start_time: startDate,
+          end_time: endDate,
+        },
       });
-      return response.data;
-    } catch (error) {
-      throw error;
+      console.log("zoonecount",response.data);
+      
+      return response.data.data;
     }
-  });
-
-
+  );
 
 const InsightSlice = createSlice({
     name: 'Insight',
     initialState:{
       insightList: [],
+      zonecount:[],
       status: 'idle',
       error: null,
     },
@@ -98,7 +102,7 @@ const InsightSlice = createSlice({
           })
           .addCase(fetchCountingByZone.fulfilled, (state, action) => {
             state.status = 'succeeded';
-            state.insightList = action.payload;
+            state.zonecount = action.payload;
           })
           .addCase(fetchCountingByZone.rejected, (state, action) => {
             state.status = 'failed';

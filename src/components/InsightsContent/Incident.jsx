@@ -44,7 +44,7 @@ const Incident = () => {
         dispatch(fetchVehicleData({propertyId, startDate, endDate }));
         dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
       }
-    }, [propertyId, token, dispatch, startTime,zoneId, endTime,startonlytime, endonlytime,startDate, endDate ]);
+    }, [propertyId, token ]);
  
   useEffect(() => {
     const alerts = []
@@ -169,7 +169,7 @@ const Incident = () => {
 
   const cardData = [
     {
-      background: 'linear-gradient(to left, #A486F2, #736FEE)',
+      background: 'linear-gradient(121deg, #01669a 100%, #1b3664 2%)',
       icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
       title: 'Pedestrain Alerts',
       mainValue: totalPeopleEnterToday,
@@ -177,7 +177,7 @@ const Incident = () => {
       percentage: percentagePeopleEnter,
     },
     {
-      background: "linear-gradient(to right,#02B2EC, #93D9FF)",
+      background: "linear-gradient(120deg, #52a1cc 3%, #93d9ff)",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
       title: "Vehicle Alerts",
       mainValue: todayVehiclealerts,
@@ -209,7 +209,7 @@ const Incident = () => {
         {/* Bar Chart, Donut Chart, and Stepline Chart */}
         <Grid container spacing={2} justifyContent="center" mt={1}>
           <Grid item xs={12} md={5}>
-            <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} size="90%" />
+            <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} size="90%" donutcolors={['#01669a','#46c8f5','#52a1cc']} markercolors={['#01669a','#46c8f5','#52a1cc']} />
           </Grid>
           <Grid item xs={12} md={7}>
             <IncidentChart series={alertsInfo} title="Incidents Detected" />

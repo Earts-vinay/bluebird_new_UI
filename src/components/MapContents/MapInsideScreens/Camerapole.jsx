@@ -592,8 +592,8 @@ const CameraPole = () => {
                 <Box width={{ xs: '100%', md: '42%', backgroundColor: "white" }} px={{ xs: 2, sm: 0, md: 0 }} py={0} sx={{ height: "98vh" }}>
                     {selectedTab !== 2 ? (
                         <Box>
-                            <Box sx={{ backgroundColor: "#2465e9", padding: "10px", borderRadius: "10px 10px 0px 0px", display: "flex", justifyContent: "flex-end", zIndex: 1, }}>
-                                <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: "25px", px: 2, backdropFilter: " blur(5px)", boxShadow: "-1px 6px 31px 0 rgba(25, 96, 159, 0.1)", backgroundColor: '#2465e9' }}>
+                            <Box sx={{ backgroundColor: "#016699", padding: "10px", borderRadius: "10px 10px 0px 0px", display: "flex", justifyContent: "flex-end", zIndex: 1, }}>
+                                <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: "25px", px: 2, backdropFilter: " blur(5px)", boxShadow: "-1px 6px 31px 0 rgba(25, 96, 159, 0.1)", backgroundColor: '#016699' }}>
                                     <TextField
                                         id="search"
                                         type="search"
@@ -651,8 +651,8 @@ const CameraPole = () => {
                     ) : (
                         <>
                             <Box>
-                                <Box sx={{ backgroundColor: "#2465e9", padding: "10px", borderRadius: "10px 10px 0px 0px", display: "flex", justifyContent: "flex-end", zIndex: 1, }}>
-                                    <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: "25px", px: 2, backdropFilter: " blur(5px)", boxShadow: "-1px 6px 31px 0 rgba(25, 96, 159, 0.1)", backgroundColor: '#2465e9' }}>
+                                <Box sx={{ backgroundColor: "#016699", padding: "10px", borderRadius: "10px 10px 0px 0px", display: "flex", justifyContent: "flex-end", zIndex: 1, }}>
+                                    <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: "25px", px: 2, backdropFilter: " blur(5px)", boxShadow: "-1px 6px 31px 0 rgba(25, 96, 159, 0.1)", backgroundColor: '#016699' }}>
                                         <TextField
                                             id="search"
                                             type="search"

@@ -41,7 +41,10 @@ export const fetchCountListHour = createAsyncThunk(
         end_time: endonlytime,
       },
     });
+    console.log("iedhfidfhdfheifhoae",response.data.data[0].list);
     return response.data.data[0].list;
+   
+    
   }
 );
 

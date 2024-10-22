@@ -12,7 +12,7 @@ const HeatmapChart = ({ series }) => {
     dataLabels: {
       enabled: false
     },
-    colors: ["#008FFB"],
+    colors: ["#93d5ed","#45a5f5","#008FFB"],
     title: {
       text: 'Alerts HeatMap Chart',
       style: {

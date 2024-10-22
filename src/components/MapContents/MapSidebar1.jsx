@@ -142,7 +142,7 @@ const MapSidebar1 = () => {
             {isSidebarOpen && (
               <Box >
                 <Box sx={{
-                  backgroundColor: "#2465e9", display: "flex", justifyContent: "space-around", alignContent: "center", position: "relative",
+                  backgroundColor: "#016699", display: "flex", justifyContent: "space-around", alignContent: "center", position: "relative",
                   left: "30px", width: "270px"
                 }}>
                   <Typography

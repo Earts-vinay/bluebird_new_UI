@@ -163,21 +163,21 @@ const Devices = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{ marginBottom: '20px', borderColor: 'blue !important' }}
                 InputLabelProps={{
-                  style: { fontFamily: 'montserrat-regular', fontSize: "14px", fontStyle:"italic", color:"#9db7f4"},
+                  style: { fontFamily: 'montserrat-regular', fontSize: "14px", fontStyle:"italic", color:"#06122b"},
                 }}
                 sx={{
                   "&:hover .MuiOutlinedInput-root": {
-                    "& > fieldset": { border: '1px solid #2465e9' },
+                    "& > fieldset": { border: '1px solid #0000004d 30%' },
                   },
                   "& .MuiOutlinedInput-root": {
-                    "& > fieldset": { border: "solid 1px #2465e9" },
+                    "& > fieldset": { border: "solid 1px #0000004d 30%" },
                   },
                 }}
                 size="small"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon sx={{ color: "#2465e9" }} />
+                      <SearchIcon sx={{ color: "#06122b" }} />
                     </InputAdornment>
                   ),
                 }}

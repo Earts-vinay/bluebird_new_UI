@@ -61,13 +61,13 @@ const SystemStats = () => {
     // Alerts line chart
     const AlertsSeries = [
       {
-        name: "Pedestrain Alerts",
+        name: " Alerts",
         data: alertsInfo
       },
-      {
-        name: "Vehicle Alerts",
-        data: [0, 1, 5, 3, 2, 7]
-      }
+      // {
+      //   name: "Vehicle Alerts",
+      //   data: [0, 1, 5, 3, 2, 7]
+      // }
     ];
 
   return (
@@ -82,7 +82,7 @@ const SystemStats = () => {
             <Grid container spacing={2.5}>
 
               <Grid item xs={12} md={7}>
-              <LineChart series={AlertsSeries} title="Alerts Raised"  />
+              <LineChart series={AlertsSeries} title="Alerts Raised"  linechartcolors={'#ef7b73'} markercolors={'#ef7b73'}/>
               </Grid>
               <Grid item xs={12} md={5}>
                 {StatData.data?.map?.((rowData, index) => (
@@ -91,7 +91,7 @@ const SystemStats = () => {
                       series={[rowData?.offline_num ?? 0, rowData?.online_num ?? 0, rowData?.no_paired_num ?? 0]}
                       labels={['No. Offline', 'No. Online', 'No. not paired']}
                       title="Camera Paired"
-                      colors={['#7771EF', '#EE7570', '#716F96']}
+                      colors={['#01669a', '#abd9f4', '#ef7b73']}
                     />
                   </div>
                 ))}

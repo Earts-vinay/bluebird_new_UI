@@ -144,7 +144,7 @@ const TrafficCards = () => {
 
   const cardData = [
     {
-      background: "#736FEE",
+      background: "#1b3664",
       icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
       title: "Total Entries",
       mainValue: totalPeopleEnterToday,
@@ -152,7 +152,7 @@ const TrafficCards = () => {
       percentage: percentagePeopleEnter,
     },
     {
-      background: "#A486F2",
+      background: "#01669a",
       icon: PublicUrl + "/assets/icons/PersonPeak entries.svg",
       title: "Peak Entries",
       mainValue: highestPeopleEntryHour.people_enter,
@@ -161,7 +161,7 @@ const TrafficCards = () => {
       percentage: sevenpercentagePeopleEnter,
     },
     {
-      background: "#9865A1",
+      background: "#52a1cc",
       icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
       title: "Peak Occupancy",
       mainValue: highestPeopleOccupancyHour.people_occupancy,
@@ -170,7 +170,7 @@ const TrafficCards = () => {
       percentage: sevenpercentagePeopleOccupancy,
     },
     {
-      background: "#02B2EC",
+      background: "#46c8f5",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
       title: "Total Entries",
       mainValue: vehicleEnterToday,
@@ -178,7 +178,7 @@ const TrafficCards = () => {
       percentage: percentageVehicleEnter,
     },
     {
-      background: "#92D9FF",
+      background: "#52a1cc",
       icon: PublicUrl + "/assets/icons/VehiclePeakEntries.svg",
       title: "Peak Entries",
       mainValue: highestVehicleEntryHour.vechicle_enter,
@@ -187,7 +187,7 @@ const TrafficCards = () => {
       percentage: sevenpercentageVehicleEnter,
     },
     {
-      background: "#6DAAD3",
+      background: "#abd9f4",
       icon: PublicUrl + "/assets/icons/VehiclePeakOccupancy.svg",
       title: "Peak Occupancy",
       mainValue: highestVehicleOccupancyHour.vechicle_occupancy,
@@ -219,7 +219,7 @@ const TrafficCards = () => {
             <Card
               sx={{
                 borderRadius: '10px',
-                background: "#EE746F",
+                background: "#ef7b73",
                 boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)",
                 backdropFilter: "blur(20px)",
                 opacity: "0.9",

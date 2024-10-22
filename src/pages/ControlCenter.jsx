@@ -414,7 +414,7 @@ const ControlCenter = () => {
                     value={selectedView}
                     onChange={handleViewChange}
                     IconComponent={KeyboardArrowDownIcon}
-                    MenuProps={{ PaperProps: { style: { maxHeight: 185, border: "#2465e9" } } }}
+                    MenuProps={{ PaperProps: { style: { maxHeight: 185, border: "#06122b" } } }}
                   >
                     <MenuItem key={"default"} value={"All Cameras"} >
                       All Cameras
@@ -434,9 +434,9 @@ const ControlCenter = () => {
                     variant="outlined"
                     size="small"
                     onClick={handleAddNow}
-                    sx={{ textTransform: "capitalize" }}
+                    sx={{ textTransform: "capitalize", border:"1px solid #06122b"  }}
                   >
-                    <AddIcon />
+                    <AddIcon sx={{color:"#1c3664"}}/>
                   </Button>
                 ) : null}
                 {selectedView === "" ||
@@ -446,17 +446,17 @@ const ControlCenter = () => {
                       variant="outlined"
                       size="small"
                       onClick={handleUpdate}
-                      sx={{ textTransform: "capitalize" }}
+                      sx={{ textTransform: "capitalize",border:"1px solid #06122b" }}
                     >
-                      <BorderColorOutlinedIcon />
+                      <BorderColorOutlinedIcon  sx={{color:"#1c3664"}}/>
                     </Button>
                     <Button
                       variant="outlined"
                       size="small"
                       onClick={handleDuplicate}
-                      sx={{ textTransform: "capitalize" }}
+                      sx={{ textTransform: "capitalize" , border:"1px solid #06122b"}}
                     >
-                      <LibraryAddOutlinedIcon />
+                      <LibraryAddOutlinedIcon sx={{color:"#1c3664"}}/>
                     </Button>
                   </>
                 )}
@@ -473,16 +473,16 @@ const ControlCenter = () => {
                 }}
                 sx={{
                   "&:hover .MuiOutlinedInput-root": {
-                    "& > fieldset": { border: '1px solid #2465e9' },
+                    "& > fieldset": { border: '1px solid #0000004d 30%' },
                   },
                   "& .MuiOutlinedInput-root": {
-                    "& > fieldset": { border: "solid 1px #2465e9" },
+                    "& > fieldset": { border: "solid 1px #0000004d 30%" },
                   },
                 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon sx={{ color: "#2465e9" }} />
+                      <SearchIcon sx={{ color: "#06122b" }} />
                     </InputAdornment>
                   ),
                 }}
@@ -715,12 +715,13 @@ const ControlCenter = () => {
                                   sx={{
                                     textTransform: "capitalize",
                                     width: "125px",
+                                    "&:hover": {
+                                      borderColor: "#bcccd6", // Hover border color
+                                    },
+                                    borderColor: "#bcccd6", // Default border color
+                                    color: selectedCameras.includes(item.id) ? "#06122b" : "#06122b", 
                                   }}
-                                  color={
-                                    selectedCameras.includes(item.id)
-                                      ? "secondary"
-                                      : "primary"
-                                  }
+                                  
                                 >
                                   {selectedCameras.includes(item.id)
                                     ? "Remove Camera"
@@ -793,9 +794,13 @@ const ControlCenter = () => {
                                   sx={{
                                     textTransform: "capitalize",
                                     width: "125px",
-
+                                    color:"#06122b",
+                                    borderColor: "#bcccd6",
+                                    "&:hover": {
+                                      borderColor: "#bcccd6", // Hover border color
+                                    },
                                   }}
-                                  color="secondary"
+                                 
                                 >
                                   Remove Camera
                                 </Button>
@@ -804,7 +809,9 @@ const ControlCenter = () => {
                                   variant="outlined"
                                   size="small"
                                   onClick={() => handleCameraToggle(item.id)}
-                                  sx={{ textTransform: "capitalize" }}
+                                  sx={{ textTransform: "capitalize", color:"#06122b",borderColor: "#bcccd6",  "&:hover": {
+                                    borderColor: "#bcccd6", // Hover border color
+                                  }, }}
                                 >
                                   Add Camera
                                 </Button>

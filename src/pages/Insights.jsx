@@ -54,6 +54,7 @@ const Insights = () => {
               borderRadius: "5px",
               boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)",
               marginBottom: "10px",
+              height:"40px"
             }}
           >
             <Tabs
@@ -61,7 +62,7 @@ const Insights = () => {
               onChange={handleTabChange}
               sx={{
                 ".MuiTabs-flexContainer": {
-                  height: "50px",
+                  height: "40px",
                   ...commonStyles
                 },
               }}
@@ -78,11 +79,13 @@ const Insights = () => {
                   label={label}
                   sx={{
                     textTransform: "capitalize",
-                    backgroundColor: selectedTab === index ? "#BCD0F8" : "inherit",
-                    color: selectedTab === index ? "black" : "inherit",
+                    backgroundColor: selectedTab === index ? "#52a1cc8b" : "inherit",
+                    
+                    color: "#000 !important",
                     minHeight: "30px",
                     margin: "5px",
                     borderRadius: "5px",
+                    fontWeight:"light"
                   }}
                 />
               ))}

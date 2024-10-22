@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import ApexCharts from 'react-apexcharts';
 
-const LineChart = ({ series, title, labels,colors }) => {
+const LineChart = ({ series, title, labels,linechartcolors,markercolors }) => {
     const today = moment();
     const startTime = today.clone().subtract(7, 'days').format('YYYY-MM-DD');
     const endTime = today.format('YYYY-MM-DD');
@@ -40,7 +40,7 @@ const LineChart = ({ series, title, labels,colors }) => {
           width: 3,
           lineCap: 'round'
         },
-        colors: ['#BBA1F7',"#1BBAFD"],
+        colors: [linechartcolors],
         title: {
           text:  title,
           style: {
@@ -50,7 +50,7 @@ const LineChart = ({ series, title, labels,colors }) => {
         },
         markers: {
           size: 5,
-          colors: ['#BBA1F7',"#1BBAFD"],
+          colors: [markercolors],
           strokeColors: '#fff',
           strokeWidth: 2,
           hover: {

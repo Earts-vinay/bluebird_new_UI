@@ -29,15 +29,15 @@ const CustomDialog = ({
       sx={{  display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor:" #2465e9",
+        backgroundColor:" #fbf3f0",
         paddingY:"15px",
         paddingX:"20px"
         }}>
-      <Typography color="white" sx={commonStyles}>
+      <Typography color="#013a6f" sx={commonStyles}>
         {title}
       </Typography>
       <CloseIcon
-        sx={{color:"white"}}
+        sx={{color:"#013a6f"}}
         onClick={() => {
           onClose();
         }}

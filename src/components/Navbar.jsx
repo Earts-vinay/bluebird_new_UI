@@ -32,7 +32,7 @@ const NavLink = ({ to, label }) => {
     color:  '#001426',
     textDecoration: 'none',
     fontFamily: 'montserrat-regular',
-    fontWeight: isActive ? "bold" : "medium",
+    fontWeight: isActive ? 'bold' : '300', // 'light' is not a valid font-weight value; '300' represents light.
     margin: '0 10px',
     transition: 'border-color 0.3s ease-in-out',
     ...(isActive && {
@@ -40,6 +40,7 @@ const NavLink = ({ to, label }) => {
       marginBottom: '5px',
     }),
   };
+  
 
 
   return (
@@ -177,7 +178,7 @@ const Navbar = () => {
   return (
     <>
 
-<Box sx={{ backgroundColor: "linear-gradient(-60.13deg, #F3FBFF 0%, #FFFFFF 33%, #F0FAFD 52%, #F7FCFF 75%, #CBE8F8 100%)", filter: 'drop-shadow(10px 10px 10px #b1b1b1d4)', borderBottom: "2px solid white" }}>
+<Box sx={{  backgroundImage: "linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4))", filter: 'drop-shadow(10px 10px 10px #b1b1b1d4)', borderBottom: "2px solid white" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingX: "20px" }}>
         {/* Logo */}
           <Box style={{ display: "flex", flexDirection: "column" }}>

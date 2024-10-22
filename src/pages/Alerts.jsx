@@ -128,7 +128,7 @@ const Alerts = () => {
                 <img src={PublicUrl + "/assets/images/calender.svg"} alt="" width="30px" onClick={handleClick} />
               </Box>
               <Box>
-                <Typography sx={{ color: "#2465e9" }}>
+                <Typography sx={{ color: "#01669a" }}>
                   {formattedDate}
                 </Typography>
               </Box>
@@ -164,20 +164,20 @@ const Alerts = () => {
                 onChange={onChange}
                 size="small"
                 InputLabelProps={{
-                  style: { fontFamily: 'montserrat-regular', fontSize: "14px" ,fontStyle:"italic", color:"#9db7f4"},
+                  style: { fontFamily: 'montserrat-regular', fontSize: "14px" ,fontStyle:"italic", color:"#06122b"},
                 }}
                 sx={{
                   "&:hover .MuiOutlinedInput-root": {
-                    "& > fieldset": { border: '1px solid #2465e9' },
+                    "& > fieldset": { border: '1px solid #0000004d' },
                   },
                   "& .MuiOutlinedInput-root": {
-                    "& > fieldset": { border: "solid 1px #2465e9" },
+                    "& > fieldset": { border: "solid 1px #0000004d" },
                   },
                 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon sx={{ color: "#2465e9" }} />
+                      <SearchIcon sx={{ color: "#06122b" }} />
                     </InputAdornment>
                   ),
                 }}

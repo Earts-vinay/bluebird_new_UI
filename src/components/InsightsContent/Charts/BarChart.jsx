@@ -5,7 +5,7 @@ import ApexCharts from 'react-apexcharts';
 
 const BarChart = ({ series, title, labels }) => {
   const chartOptions = {
-    colors: ['#9D74FC', '#1BBAFD'],
+    colors: ['#46c8f5',"#01669a"],
     labels:[labels],
     chart: {
       type: 'bar',

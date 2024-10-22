@@ -2,7 +2,7 @@ import { Box, Grid } from '@mui/material';
 import React from 'react';
 import ApexCharts from 'react-apexcharts';
 
-const DonutChart = ({series, title, labels,size }) => {
+const DonutChart = ({series, title, labels,size,donutcolors,markercolors }) => {
     const donutChartOptions = {
         chart: {
           type: 'donut',
@@ -13,7 +13,7 @@ const DonutChart = ({series, title, labels,size }) => {
           },
     
         },
-        colors: ['#9442C8', '#E169F6', '#4472D9', '#ffd166', '#ef476f', '#06d6a0'],
+        colors: donutcolors,
         labels: labels,
         title: {
           text: title,
@@ -38,7 +38,7 @@ const DonutChart = ({series, title, labels,size }) => {
         tooltip: {
           y: {
             formatter: function (val) {
-              return Math.round(val) + '%'; // Format tooltip values as rounded percentages
+              return Math.round(val) ; // Format tooltip values as rounded percentages
             }
           }
         },
@@ -53,7 +53,7 @@ const DonutChart = ({series, title, labels,size }) => {
             colors: '#666',
           },
           markers: {
-            fillColors: ['#BBA1F7', '#1BBAFD', '#FF5733', '#FFC300', '#7D3C98'],
+            fillColors: markercolors,
           },
           itemMargin: {
             vertical: 5,

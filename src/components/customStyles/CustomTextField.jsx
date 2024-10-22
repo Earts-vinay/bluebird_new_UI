@@ -19,10 +19,10 @@ const CustomTextField = ({ label,error,helperText, value,name, onChange,required
       inputProps={{ readOnly: readOnly }}
       sx={{
         "&:hover .MuiOutlinedInput-root": {
-            "& > fieldset": { border: '1px solid #2465e9'},
+            "& > fieldset": { border: '1px solid #bcccd6'},
           },
         "& .MuiOutlinedInput-root": {
-            "& > fieldset": { border: "solid 1px #2465e9"},
+            "& > fieldset": { border: "solid 1px #bcccd6"},
           },}}
       InputLabelProps={{
         style: { fontFamily: 'montserrat-regular',fontSize:"14px" },

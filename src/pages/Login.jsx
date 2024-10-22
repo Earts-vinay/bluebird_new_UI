@@ -290,18 +290,15 @@ const Login = () => {
                 height: "auto",
               }}
             />
-            <Typography variant="h4" sx={{ ...commonStyles, fontWeight: "bold" }}>Welcome to <br /> The Circle of Security</Typography>
+            <Typography variant="h4" sx={{ ...commonStyles, fontWeight: "bold",marginTop:"10px" }}>Real-time AI Analytics  <br /> for the Physical World</Typography>
             <Typography mt={2} sx={{ ...commonStyles }}>
-              Our Edge AI technology, with DIY capabilities go beyond
-              traditional surveillance, offering not only real-time security
-              alerts but also simultaneously providing actionable business
-              intelligence.
+            We specialize in  AI-driven security camera services, designed to enhance safety through advanced surveillance technology. Our AI leverages artificial intelligence to analyze threats in real-time, ensuring a proactive approach to security management.
             </Typography>
           </Box>
         </Box>
         <Box
           sx={{
-            backgroundImage: 'linear-gradient(162deg, #ebeffa, #e8ebfd 31%, #f0ecf9 49%, #efeefb 68%, #eef7ff 100%)',
+            backgroundImage: '#ffffff',
             boxShadow: "0 0 15px 0 rgba(36, 101, 233, 0.3)",
             border: "solid 2px #fff",
             padding: "50px",
@@ -358,7 +355,10 @@ const Login = () => {
                 fullWidth
                 variant='contained'
                 color='primary'
-                sx={{ textTransform: "capitalize", paddingY: "10px", backgroundColor: "#2465e9", }}
+                sx={{ textTransform: "capitalize", paddingY: "10px", backgroundColor: "#1c3664",
+                  "&:hover": {
+                   backgroundColor: "#1c3664",
+                  }, }}
                 disabled={isButtonDisabled} // Disable button based on state
               >
                 {

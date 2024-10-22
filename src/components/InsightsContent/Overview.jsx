@@ -15,6 +15,7 @@ import LineChart from './Charts/LineChart';
 import PieChart from './Charts/PieChart';
 import RadialBarChart from './Charts/RadialBarChart';
 import { fetchDataList, fetchCountListHour, fetchLast7Count } from '../../redux/apiResponse/countingSlice';
+import { fetchCountingByProperty, fetchCountingByZone } from '../../redux/apiResponse/insightSlice';
 import { fetchDeviceStatistics } from '../../redux/apiResponse/deviceSlice';
 import { fetchVehicleData } from '../../redux/apiResponse/alertSlice';
 
@@ -34,6 +35,7 @@ const Overview = () => {
   const seleProp = useSelector(selectedPropertyByUser);
   const propertyId = seleProp?.id;
   const { dataList, countListHour, last7Count } = useSelector((state) => state.counting);
+  const { zonecount } = useSelector((state) => state.Insight);
   const StatData = useSelector((state) => state.Device.StatData);
   const vehicleData = useSelector((state) => state.Alert.vecAlert);
 
@@ -60,6 +62,7 @@ const Overview = () => {
       // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
       dispatch(fetchDeviceStatistics(propertyId));
       dispatch(fetchVehicleData({propertyId, startDate, endDate }));
+      dispatch(fetchCountingByZone({ propertyId, startDate: startTime, endDate: endTime, token }));
     }
   }, [propertyId, token, dispatch, startTime, endTime,startDate, endDate ]);
 
@@ -98,17 +101,21 @@ const Overview = () => {
     setAlertsInfo(alerts);
   }, [vehicleData]);
 
+  console.log("alertsInfo",zonecount);
+  
   // Alerts line chart
   const AlertsSeries = [
     {
-      name: "Pedestrain Alerts",
+      name: " Alerts",
       data: alertsInfo
     },
-    {
-      name: "Vehicle Alerts",
-      data: [0, 1, 5, 3, 2, 7]
-    }
+    // {
+    //   name: "Vehicle Alerts",
+    //   data: [0, 1, 5, 3, 2, 7]
+    // }
   ];
+ 
+ 
 
   //Camera Status
   let totalseries;
@@ -165,31 +172,35 @@ const Overview = () => {
     percentageVehicleAlerts = 0; // Or any other appropriate value or message
   }
 
+
+  const zoneNames = zonecount.map((zone) => zone.name);
   const personSeries = [
     {
       name: 'Occupancy Today',
-      data: [10, 20, 30, 40, 50],
+      data: zonecount?.map((zone) => zone.list[7].people_occupancy),
     },
     {
       name: 'Occupancy Last Week',
-      data: [5, 15, 25, 35, 45],
+      data: zonecount?.map((zone) => zone.list[0].people_occupancy),
     },
   ];
 
   const vehicleSeries = [
     {
       name: 'Occupancy Today',
-      data: [10, 20, 30, 40, 50],
+      data: zonecount?.map((zone) => zone.list[7].vechicle_occupancy),
     },
     {
       name: 'Occupancy Last Week',
-      data: [5, 15, 25, 35, 45],
+      data: zonecount?.map((zone) => zone.list[0].vechicle_occupancy),
     },
   ];
 
+
+
   const cardData = [
     {
-      background: 'linear-gradient(to left, #A486F2, #736FEE)',
+      background: 'linear-gradient(302deg, #01669a 100%, #1b3664 2%)',
       icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
       title: ' Enter Count',
       mainValue: totalPeopleEnterToday,
@@ -197,7 +208,7 @@ const Overview = () => {
       percentage: percentagePeopleEnter,
     },
     {
-      background: 'linear-gradient(to right,#612D69, #AC7AB6)',
+      background: 'linear-gradient(120deg, #01669a 3%, #52a1cc)',
       icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
       title: " Occupancy",
       mainValue: peopleOccupancyToday,
@@ -205,7 +216,7 @@ const Overview = () => {
       percentage: percentagePeopleOccupancy,
     },
     {
-      background: "linear-gradient(to right,#02B2EC, #93D9FF)",
+      background: " linear-gradient(120deg, #52a1cc 3%, #abd9f4)",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
       title: "Enter Count",
       mainValue: vehicleEnterToday,
@@ -213,7 +224,7 @@ const Overview = () => {
       percentage: percentageVehicleEnter,
     },
     {
-      background: "linear-gradient(to left,#6ADBE0, #6EA7D2)",
+      background: "linear-gradient(120deg, #46c8f5 40%, #abd9f4)",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
       title: " Occupancy",
       mainValue: vehicleOccupancyToday,
@@ -221,7 +232,7 @@ const Overview = () => {
       percentage: percentageVehicleOccupancy,
     },
     {
-      background: "linear-gradient(to right,#EE7570, #F2A884)",
+      background: "linear-gradient(121deg, #ee7570, #f2a884)",
       icon: PublicUrl + "/assets/icons/alert.svg",
       title: " Total Alerts",
       mainValue: todayVehiclealerts,
@@ -252,7 +263,7 @@ const Overview = () => {
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} my={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={4}>
-                <LineChart series={AlertsSeries} title="Alerts Raised" colors={["#000"]} />
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={'#ef7b73'} markercolors={'#ef7b73'} />
               </Grid>
               <Grid item xs={12} md={4}>
                 {StatData?.data?.map?.((rowData, index) => (
@@ -261,7 +272,7 @@ const Overview = () => {
                       series={[rowData?.offline_num ?? 0, rowData?.online_num ?? 0, rowData?.no_paired_num ?? 0]}
                       labels={['No. Offline', 'No. Online', 'No. not paired']}
                       title="Camera Paired"
-                      colors={['#7771EF', '#EE7570', '#716F96']}
+                      colors={['#01669a', '#abd9f4', '#ef7b73']}
                     />
                   </div>
                 ))}
@@ -278,14 +289,14 @@ const Overview = () => {
                 <BarChart
                   series={personSeries}
                   title="People Entrance by Zones"
-                  labels={["zone1", "zone2", "zone3", "zone4", "zone5"]}
+                  labels={zoneNames}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <BarChart
                   series={vehicleSeries}
                   title="Vehicle Entrance by Zones"
-                  labels={["zone1", "zone2", "zone3", "zone4", "zone5"]}
+                  labels={zoneNames}
                 />
               </Grid>
             </Grid>

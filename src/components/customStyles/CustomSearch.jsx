@@ -22,10 +22,10 @@ const SearchField = ({ value, onChange,label }) => {
       onChange={onChange}
       sx={{
         "&:hover .MuiOutlinedInput-root": {
-            "& > fieldset": { border: '1px solid #2465e9'},
+            "& > fieldset": { border: '1px solid #bcccd6'},
           },
         "& .MuiOutlinedInput-root": {
-            "& > fieldset": { border: "solid 1px #2465e9"},
+            "& > fieldset": { border: "solid 1px #bcccd6"},
           },
         
         }}
@@ -35,7 +35,7 @@ const SearchField = ({ value, onChange,label }) => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <SearchIcon sx={{ color: "#2465e9" }} />
+            <SearchIcon sx={{ color: "#06122b" }} />
           </InputAdornment>
         ),
       }}
