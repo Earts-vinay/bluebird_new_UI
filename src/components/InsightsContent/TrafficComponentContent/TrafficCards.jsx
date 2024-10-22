@@ -141,6 +141,11 @@ const TrafficCards = () => {
   const sevenpercentageVehicleEnter = handlePercentageError(((highestVehicleEntryHour.vechicle_enter - sevenhighestVehicleEntryHour.vechicle_enter) / sevenhighestVehicleEntryHour.vechicle_enter) * 100).toFixed(2);
   const sevenpercentageVehicleOccupancy = handlePercentageError(((highestVehicleOccupancyHour.vechicle_occupancy - sevenhighestVehicleOccupancyHour.vechicle_occupancy) / sevenhighestVehicleOccupancyHour.vechicle_occupancy) * 100).toFixed(2);
 
+  // Ratio calculation
+  const todayratio = vehicleEnterToday > 0 ? (totalPeopleEnterToday / vehicleEnterToday).toFixed(2) : 'N/A';
+  const sevendayratio = vehicleEnter > 0 ? (totalPeopleEnter / vehicleEnter).toFixed(2) : 'N/A';
+  const ratiopercentage = handlePercentageError(((todayratio - sevendayratio) / sevendayratio) * 100).toFixed(2);
+
 
   const cardData = [
     {
@@ -236,28 +241,29 @@ const TrafficCards = () => {
                     <Typography variant="subtitle2" color="white" sx={{ fontSize: '14px', mb: "20px",...commonStyles }}>
                       Pedestrain by <br /> Vechile Ratio
                     </Typography>
-                    <Typography variant="h1" color="white" style={{ fontSize: '50px',...commonStyles }}>
-                      2.1
-                    </Typography>
+                    <Typography variant="h1" color="white" style={{ fontSize: '50px', ...commonStyles }}>
+                      {todayratio}
+                     </Typography>
+
                   </div>
                   <div>
                     <img src={PublicUrl +"/assets/icons/Ratio.svg"} width="30px" style={{fill:"white"}} alt="" />
                   </div>
                 </div>
               </CardContent>
-              <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "10px", paddingBottom: "5px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "10px", paddingBottom: "15px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ paddingTop: "65px" }}>
                     <Typography variant="h3" color="white" style={{ fontSize: '40px', ...commonStyles}}>
-                      1.1
+                    {sevendayratio}
                     </Typography>
                     <Typography variant="subtitle2" color="white" sx={commonStyles}>
                       7 days ago
                     </Typography>
                   </div>
                   <div>
-                    <Typography variant="subtitle2" color="white" style={{ textAlign: "right", paddingTop: "65px", fontSize: "40px",...commonStyles }}>
-                      25%
+                    <Typography variant="subtitle2" color="white" style={{ textAlign: "right", paddingTop: "65px", fontSize: "20px",...commonStyles }}>
+                      {ratiopercentage}%
                     </Typography>
                     <Typography variant="subtitle2" color="white" sx={commonStyles}>
                       Difference
