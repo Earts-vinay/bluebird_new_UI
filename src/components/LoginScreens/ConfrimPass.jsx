@@ -89,6 +89,7 @@ const ConfirmPass = () => {
             <img
               src={process.env.PUBLIC_URL + "/assets/logos/bluebird_logo.svg"}
               alt="Logo"
+              loading="lazy"
               style={{
                 objectFit: "contain",
                 maxWidth: "350px",

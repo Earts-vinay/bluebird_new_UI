@@ -282,6 +282,7 @@ const Login = () => {
             <img
               src={process.env.PUBLIC_URL + "/assets/logos/bluebird_logo.svg"}
               alt="Logo"
+              loading="lazy"
               style={{
                 objectFit: "contain",
                 maxWidth: "350px",
@@ -290,6 +291,7 @@ const Login = () => {
                 height: "auto",
               }}
             />
+
             <Typography variant="h4" sx={{ ...commonStyles, fontWeight: "bold",marginTop:"10px" }}>Real-time AI Analytics  <br /> for the Physical World</Typography>
             <Typography mt={2} sx={{ ...commonStyles }}>
             We specialize in  AI-driven security camera services, designed to enhance safety through advanced surveillance technology. Our AI leverages artificial intelligence to analyze threats in real-time, ensuring a proactive approach to security management.

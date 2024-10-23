@@ -132,6 +132,7 @@ const ForgetPass = () => {
                         <img
                             src={PublicUrl + "/assets/logos/bluebird_logo.svg"}
                             alt="Logo"
+                            loading="lazy"
                             style={{ objectFit: "contain" }}
                         />
                         <Typography variant="h4" sx={{ ...commonStyles, fontWeight: "bold",marginTop:"10px" }}>Real-time AI Analytics  <br /> for the Physical World</Typography>
