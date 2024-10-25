@@ -190,7 +190,7 @@ const Navbar = () => {
                 width: '100%',
                 minWidth: '100px',
                 maxWidth: '170px',
-                height: { lg: "40px", md: "36px", sm: "24px" },
+                height: { lg: "45px", md: "40px", sm: "40px" },
                 objectFit: 'contain',
               }}
               onError={(e) => {
@@ -203,7 +203,14 @@ const Navbar = () => {
             <Box display="flex" justifyContent="end" pb={0.6}>
               <FormControl
                 variant="standard"
-                sx={{ width: { md: "120px", sm: "100px" }, paddingLeft: "25px" }}
+                sx={{
+                  width: { md: "120px", sm: "100px" },
+                 
+                  "& .MuiSelect-select": {
+                    padding: "0px !important",
+                    minWidth: "16px",
+                  },
+                }}
               >
                 <TextField
                   select
@@ -211,13 +218,13 @@ const Navbar = () => {
                   value={selectedProperty}
                   onChange={handleSelectChange}
                   SelectProps={{ IconComponent: KeyboardArrowDownIcon }}
-                  sx={{ width: { md: "120px", sm: "100px" }, paddingLeft: "2px" }}
+                  sx={{ width: { md: "120px", sm: "100px" }, paddingLeft:"10px !important"}}
                 >
                   {property?.list?.map((prop) => (
                     <MenuItem key={prop.id} value={prop.id}>
                       <Typography
                         component="span"
-                        sx={{ fontSize: { lg: "13px", md: "13px", sm: "12px", xs: "12px" } }}
+                        sx={{ fontSize: { lg: "12px", md: "13px", sm: "12px", xs: "12px" } }}
                       >
                         {prop.name}
                       </Typography>

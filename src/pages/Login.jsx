@@ -81,7 +81,7 @@ const Login = () => {
     const formData = new URLSearchParams();
     formData.append("email", email);
     formData.append("password", hashedPassword);
-    // formData.append('use_type', 'dashboard');
+    formData.append('use_type', 'dashboard');
 
     try {
       const response = await fetch(`${BaseUrl}/api/login`, {
