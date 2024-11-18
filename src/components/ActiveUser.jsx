@@ -86,7 +86,7 @@ const ActiveUser = () => {
                 <Box width="50%" >
                     <Box width="80%" >
                         <img
-                            src={process.env.PUBLIC_URL + "/assets/logos/saplogo.svg"}
+                            src={process.env.PUBLIC_URL + "/assets/logos/bluebird_logo.svg"}
                             alt="Logo"
                             style={{ objectFit: "contain" }}
                         />
