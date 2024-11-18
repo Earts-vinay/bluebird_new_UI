@@ -184,7 +184,7 @@ const Navbar = () => {
           <Box style={{ display: "flex", flexDirection: "column" }}>
             <Box
               component="img"
-              src={logoImage || `${PublicUrl}/assets/images/logosap.svg`}
+              src={logoImage || `${PublicUrl}/assets/logos/bluebird_logo.svg`}
               alt={logoImage ? "Logo" : "No Image"}
               sx={{
                 width: '100%',
@@ -194,7 +194,7 @@ const Navbar = () => {
                 objectFit: 'contain',
               }}
               onError={(e) => {
-                e.target.src = `${PublicUrl}/assets/images/logosap.svg`;
+                e.target.src = `${PublicUrl}/assets/logos/bluebird_logo.svg`;
                 e.target.alt = 'No Image';
               }}
             />
