@@ -190,10 +190,12 @@ const CameraPole = () => {
         }));
 
         const id = selectedItem.id;
+        const cameraId = selectedItem?.camera?.id;
 
         const params = new URLSearchParams();
         params.append('id', id);
-        params.append('is_resolved', newIsResolved);
+        params.append('is_resolved', newIsResolved); 
+        params.append("cameraId", cameraId);
 
         axios.defaults.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
