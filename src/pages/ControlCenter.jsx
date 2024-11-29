@@ -500,8 +500,8 @@ const ControlCenter = () => {
               <Box
                 sx={{
                   mt: "50px",
-                  mb: "10px",
-                  height: "calc(100% - 80px)",
+                  mb: "100px",
+                  height: "calc(100% - 130px)",
                   overflowY: "auto",
                   padding: "20px"
                 }}
@@ -525,7 +525,7 @@ const ControlCenter = () => {
                     gap="15px"
                     minHeight="50vh"
                     overflow="auto"
-                    paddingY="10px"
+                    marginY="10px"
                   >
                     {paginatedData.length > 0 ? (
                       paginatedData.map((camera, index) => (
@@ -714,7 +714,7 @@ const ControlCenter = () => {
                                   onClick={() => handleCameraAddToggle(item.id)}
                                   sx={{
                                     textTransform: "capitalize",
-                                    width: "125px",
+                                    width: "100px",
                                     "&:hover": {
                                       borderColor: "#bcccd6", // Hover border color
                                     },
@@ -724,8 +724,8 @@ const ControlCenter = () => {
                                   
                                 >
                                   {selectedCameras.includes(item.id)
-                                    ? "Remove Camera"
-                                    : "Add Camera"}
+                                    ? "Remove "
+                                    : "Add "}
                                 </Button>
                               </TableCell>
                             </TableRow>
@@ -793,7 +793,7 @@ const ControlCenter = () => {
                                   onClick={() => handleCameraToggle(item.id)}
                                   sx={{
                                     textTransform: "capitalize",
-                                    width: "125px",
+                                    width: "100px",
                                     color:"#06122b",
                                     borderColor: "#bcccd6",
                                     "&:hover": {
@@ -802,18 +802,18 @@ const ControlCenter = () => {
                                   }}
                                  
                                 >
-                                  Remove Camera
+                                  Remove 
                                 </Button>
                               ) : (
                                 <Button
                                   variant="outlined"
                                   size="small"
                                   onClick={() => handleCameraToggle(item.id)}
-                                  sx={{ textTransform: "capitalize", color:"#06122b",borderColor: "#bcccd6",  "&:hover": {
+                                  sx={{ textTransform: "capitalize", width: "100px", color:"#06122b",borderColor: "#bcccd6",  "&:hover": {
                                     borderColor: "#bcccd6", // Hover border color
                                   }, }}
                                 >
-                                  Add Camera
+                                  Add 
                                 </Button>
                               )}
                             </TableCell>
@@ -869,9 +869,9 @@ const ControlCenter = () => {
                 }}
               >
                 <CustomButton onClick={handleCloseDeleteDialog}>
-                  Back
+                  Cancel
                 </CustomButton>
-                <CustomButton onClick={handleDelete}>Delete</CustomButton>
+                <CustomButton onClick={handleDelete}>Confirm</CustomButton>
               </DialogActions>
               </CustomDialog>
 

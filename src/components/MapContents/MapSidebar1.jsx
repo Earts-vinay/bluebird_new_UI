@@ -5,6 +5,7 @@ import SnowshoeingIcon from "@mui/icons-material/Snowshoeing";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import { clearTokenAndUser, selectToken } from "../../redux/apiResponse/loginApiSlice";
 import moment from "moment";
+import { FaAngleRight,FaAngleLeft } from "react-icons/fa6";
 import { useSelector } from 'react-redux';
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import axios from 'axios';
@@ -291,17 +292,7 @@ const MapSidebar1 = () => {
             },
           }}
         >
-          < KeyboardArrowLeftIcon
-            sx={{
-              "&:hover": {
-                backgroundColor: "white",
-                fontSize: "20px",
-                ...commonStyles
-              },
-              fontSize: "20px",
-              ...commonStyles
-            }}
-          />
+        {isSidebarOpen ? <FaAngleRight /> : <FaAngleLeft /> }
         </IconButton>
       </div>
     </>

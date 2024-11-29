@@ -254,6 +254,11 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
                 boxShadow: "0 0 5px 0 rgba(25, 96, 159, 0.1)",
                 border: "solid 1px #fff",
               },
+              '&:hover, &.Mui-selected:hover': {
+                backgroundColor: '#016699', // Same as selected state
+                color: "white", // Ensure text matches the selected state
+                border: "solid 1px #fff",
+              },
             }}
           >
             List View
@@ -273,6 +278,11 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
                 color: "white",
                 backdropFilter: "blur(15px)",
                 boxShadow: "0 0 5px 0 rgba(25, 96, 159, 0.1)",
+                border: "solid 1px #fff",
+              },
+              '&:hover, &.Mui-selected:hover': {
+                backgroundColor: '#016699', // Same as selected state
+                color: "white", // Ensure text matches the selected state
                 border: "solid 1px #fff",
               },
             }}

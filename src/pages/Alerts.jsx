@@ -96,7 +96,7 @@ const Alerts = () => {
 
   let formattedDate;
   if (selectedDate) {
-    formattedDate = moment(selectedDate).format('MMM DD YYYY');
+    formattedDate = moment(selectedDate).format('MM-DD-YYYY');
   } else {
     formattedDate = moment().format('MMM DD YYYY');
   }
@@ -123,7 +123,7 @@ const Alerts = () => {
 
           <>
             {/* Header */}
-            <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", py: 2, px: 2, gap: "25px", position: 'sticky', top: 0, zIndex: 1 }}>
+            <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", py: 2, px: 2, gap: "20px", position: 'sticky', top: 0, zIndex: 1 }}>
               <Box sx={{ cursor: "pointer" }}>
                 <img src={PublicUrl + "/assets/images/calender.svg"} alt="" width="30px" onClick={handleClick} />
               </Box>
@@ -164,7 +164,7 @@ const Alerts = () => {
                 onChange={onChange}
                 size="small"
                 InputLabelProps={{
-                  style: { fontFamily: 'montserrat-regular', fontSize: "14px" ,fontStyle:"italic", color:"#06122b"},
+                  style: { fontFamily: 'montserrat-regular', fontSize: "13.5px" ,fontStyle:"italic", color:"#06122b"},
                 }}
                 sx={{
                   "&:hover .MuiOutlinedInput-root": {

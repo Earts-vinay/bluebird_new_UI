@@ -223,6 +223,8 @@ setDefaultCenter({ lat: parseFloat(seleProp.location_lat), lng: parseFloat(seleP
   const mapOptions = {
     mapTypeControl: false,
     zoomControl: true,
+    streetViewControl: false, // Disable Street View control
+    fullscreenControl: false, // Disable Fullscreen control
     minZoom: 11,
     styles: [
       { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
