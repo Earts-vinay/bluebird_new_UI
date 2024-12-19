@@ -69,6 +69,8 @@ const SystemStats = () => {
       //   data: [0, 1, 5, 3, 2, 7]
       // }
     ];
+    console.log("api data",apiData);
+    
 
   return (
     <>
@@ -116,39 +118,43 @@ const SystemStats = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {apiData.data && apiData.data?.length > 0 ? (
-                        apiData.data.map((row, index) => (
-                          <TableRow key={row.id} sx={{ cursor: 'pointer' }}>
-                            <TableCell width="20%" >
-                              <img
-                                src={row.screen_capture}
-                                alt={`Image ${index + 1}`}
-                                style={{
-                                  width: { lg: "150px", md: "150px", sm: "100px" },
-                                  height: '80px',
-                                  borderRadius: "5px",
-                                  paddingLeft: { md: "50px", lg: "50px", sm: "10px" }
-                                }}
-                                onError={(e) => {
-                                  e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                                  e.target.alt = "No Image";
-                                }}
+  {apiData.data && apiData.data?.length > 0 ? (
+    apiData.data.map((row, index) => (
+      <TableRow key={row.id} sx={{ cursor: 'pointer' }}>
+        <TableCell sx={{display:"flex",gap:"10px"}}>
+          {row.cameras.map((camera, cameraIndex) => (
+            <img
+              key={camera.id}
+              src={camera.screen_capture}
+              alt={`Camera ${cameraIndex + 1}`}
+              style={{
+                width: { lg: "150px", md: "150px", sm: "100px" },
+                height: '80px',
+                borderRadius: "5px",
+                marginRight: "10px", // Adjust space between images if needed
+              }}
+              onError={(e) => {
+                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                e.target.alt = "No Image";
+              }}
+            />
+          ))}
+        </TableCell>
+        <TableCell><Typography>{row.name}</Typography></TableCell>
+        <TableCell>{row.pole && row.pole.name}</TableCell>
+        <TableCell>{row.healthy_info && row.healthy_info.last_online}</TableCell>
+        <TableCell>{row.healthy_info && row.healthy_info.offline_time}</TableCell>
+        <TableCell>{row.healthy_info && row.healthy_info.is_online ? 'Online' : 'Offline'}</TableCell>
+      </TableRow>
+    ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={6} sx={{ textAlign: "center" }}>No data available</TableCell>
+    </TableRow>
+  )}
+</TableBody>
 
-                              />
-                            </TableCell>
-                            <TableCell><Typography>{row.name}</Typography></TableCell>
-                            <TableCell>{row.pole_id}</TableCell>
-                            <TableCell>{row.healthy_info && row.healthy_info.last_online}</TableCell>
-                            <TableCell>{row.healthy_info && row.healthy_info.offline_time}</TableCell>
-                            <TableCell>{row.healthy_info && row.healthy_info.is_online ? 'Online' : 'Offline'}</TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={6} sx={{textAlign:"center"}}>No data available</TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
+
                   </Table>
                 </TableContainer>
               </Box>

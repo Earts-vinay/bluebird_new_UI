@@ -116,6 +116,9 @@ const Alerts = () => {
     setAnchorEl(null);
   };
 
+  console.log("alertData",alertData);
+  
+
   return (
     <div>
       <Container maxWidth="xxl" >

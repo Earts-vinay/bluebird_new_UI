@@ -56,13 +56,16 @@ const Devices = () => {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         });
+        console.log("response.data.data.list",response.data.data.list);
+        
         const final_list = response.data.data.list.map((item, index) => {
+          
           return {
             id: item.id,
             name: item.name,
             pole_id: item.pole_id,
             pole_name: item.pole.name,
-            image: item.screen_capture,
+            image: item.cameras?.map((camera) => camera.screen_capture),
             device_id: item.parent_device_id,
             camera_model: item.model_type,
             status: item.healthy_info.is_online ? 'Online' : 'Offline'
@@ -126,6 +129,7 @@ const Devices = () => {
     setSelectedDate(date);
   };
 
+console.log("dispalyList",dispalyList);
 
 
   return (
@@ -205,43 +209,78 @@ const Devices = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {dispalyList.length > 0 ? (
-                        dispalyList.map((row, index) => (
-                          <TableRow key={row.id}>
-                            <TableCell width="20%" sx={{ paddingY: "12px" }}>
-                              <img
-                                src={row.image}
-                                alt={`Image ${index + 1}`}
-                                style={{
-                                  width: { lg: "150px", md: "150px", sm: "100px" },
-                                  height: '80px',
-                                  borderRadius: "5px",
-                                  paddingLeft: { md: "50px", lg: "50px", sm: "10px" }
-                                }}
-                                onError={(e) => {
-                                  e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                                  e.target.alt = "No Image";
-                                }}
+  {dispalyList.length > 0 ? (
+    dispalyList?.map((row, index) => (
+      <TableRow key={row.id}>
+        <TableCell sx={{ paddingY: "12px",display:'flex',gap:"10px", width:"150px" }}>
+          {/* Check if row.image is an array (multiple images) or a single image */}
+          {Array.isArray(row.image) ? (
+            // Display multiple images
+            row.image.map((imgSrc, imgIndex) => (
+              <img
+                key={imgIndex}
+                src={imgSrc}
+                alt={`Image ${index + 1}-${imgIndex + 1}`}
+                style={{
+                  width: "120px", // Set a static width
+                  height: "80px",
+                  borderRadius: "5px",
+                  
+                  marginBottom: "5px", // To add spacing between images
+                }}
+                onError={(e) => {
+                  e.target.onerror = null; // Prevent infinite loop
+                  e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                  e.target.alt = "No Image";
+                }}
+              />
+            ))
+          ) : (
+            // Display a single image
+            <img
+              src={row.image}
+              alt={`Image ${index + 1}`}
+              style={{
+                width: "120px", // Set a static width
+                height: "80px",
+                borderRadius: "5px",
+               
+              }}
+              onError={(e) => {
+                e.target.onerror = null; // Prevent infinite loop
+                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                e.target.alt = "No Image";
+              }}
+            />
+          )}
+        </TableCell>
+        <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>
+          {row.name}
+        </TableCell>
+        <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>
+          {row.id}
+        </TableCell>
+        <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>
+          {row.pole_name}
+        </TableCell>
+        <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>
+          {row.camera_model}
+        </TableCell>
+        <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles, color: row.status === "Online" ? 'green' : 'red' }}>
+          {row.status}
+        </TableCell>
+      </TableRow>
+    ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={6} align="center" sx={{ paddingY: "12px" }}>
+        No records found
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
 
-                              />
-                            </TableCell>
-                            <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>{row.name}</TableCell>
-                            <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>{row.device_id}</TableCell>
-                            <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>{row.pole_name}</TableCell>
-                            <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>{row.camera_model}</TableCell>
-                            <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles, color: row.status === "Online" ? 'green' : 'red' }}>
-                              {row.status}
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={6} align="center" sx={{ paddingY: "12px" }}>
-                            No records found
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
+
                   </Table>
                 </TableContainer>
               </>

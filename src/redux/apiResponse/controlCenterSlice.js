@@ -15,13 +15,17 @@ export const createControlCenter = createAsyncThunk(
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
-      dispatch(fetchControlCenterList());
+      // Fetch the control center list using property_id from formData
+      if (formData.property_id) {
+        dispatch(fetchControlCenterList(formData.property_id));
+      }
       return response.data;
     } catch (error) {
       throw error;
     }
   }
 );
+
 
 // Thunk to update a control center by ID
 export const updateControlCenterById = createAsyncThunk(

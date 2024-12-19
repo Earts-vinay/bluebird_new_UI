@@ -263,7 +263,7 @@ const Navbar = () => {
                 <Box display="flex" alignItems="center" onClick={(e) => setAnchorElUser(e.currentTarget)} cursor="pointer"> <span >Welcome,</span> {firstName}{" "}{secondName} <KeyboardArrowDownIcon cursor="pointer" /></Box>
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                {moment().format("ddd MM-DD-YY | HH:mm")}
+                {moment().format("ddd DD-MM-YY | HH:mm")}
               </Typography>
             </Box>
           </Box>

@@ -142,8 +142,8 @@ const TrafficCards = () => {
   const sevenpercentageVehicleOccupancy = handlePercentageError(((highestVehicleOccupancyHour.vechicle_occupancy - sevenhighestVehicleOccupancyHour.vechicle_occupancy) / sevenhighestVehicleOccupancyHour.vechicle_occupancy) * 100).toFixed(2);
 
   // Ratio calculation
-  const todayratio = vehicleEnterToday > 0 ? (totalPeopleEnterToday / vehicleEnterToday).toFixed(2) : 'N/A';
-  const sevendayratio = vehicleEnter > 0 ? (totalPeopleEnter / vehicleEnter).toFixed(2) : 'N/A';
+  const todayratio = vehicleEnterToday > 0 ? (totalPeopleEnterToday / vehicleEnterToday).toFixed(2) : '0';
+  const sevendayratio = vehicleEnter > 0 ? (totalPeopleEnter / vehicleEnter).toFixed(2) : '0';
   const ratiopercentage = handlePercentageError(((todayratio - sevendayratio) / sevendayratio) * 100).toFixed(2);
 
 

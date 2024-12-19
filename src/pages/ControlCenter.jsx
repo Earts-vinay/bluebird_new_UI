@@ -50,6 +50,8 @@ const ControlCenter = () => {
   const [deleteViewObj, setDeleteViewObj] = useState({});
   const dispatch = useDispatch();
   const seleProp = useSelector(selectedPropertyByUser);
+  console.log("seleProp",seleProp);
+  
   const controlCenter = useSelector(
     (state) => state.ControlCenter.ControlCenter
   );
@@ -248,6 +250,7 @@ const ControlCenter = () => {
       console.error("Error calling API:", error);
     }
   };
+  
   const handleUpdate = async () => {
     setOpenEditDialog(true);
     const selectedViewbyuser = controlCenter.data.list.find(
@@ -383,6 +386,9 @@ const ControlCenter = () => {
     page * rowsPerPage,
     (page + 1) * rowsPerPage
   );
+
+  console.log("paginatedData",paginatedData);
+  
 
   return (
     <div>
@@ -527,108 +533,124 @@ const ControlCenter = () => {
                     overflow="auto"
                     marginY="10px"
                   >
-                    {paginatedData.length > 0 ? (
-                      paginatedData.map((camera, index) => (
-                        <Box
-                          key={index}
-                          sx={{
-                            display: "flex",
-                            justifyContent: "start",
-                            alignItems: "start",
-                            gap: "10px",
-                            overflow: "hidden",
-                            borderRadius: "10px",
+                 {paginatedData?.length > 0 ? (
+  paginatedData?.flatMap((parentData) =>
+    parentData.cameras?.map((camera, index) => (
+      <Box
+        key={camera.id || index}
+        sx={{
+          display: "flex",
+          justifyContent: "start",
+          alignItems: "start",
+          gap: "10px",
+          overflow: "hidden",
+          borderRadius: "10px",
+          height: { xs: "24%", sm: "24%", md: "25%", lg: "48%", xl: "45%", xxl: "50%" },
+          width: { xs: "95%", sm: "47%", md: "47%", lg: "31%", xl: "32%", xxl: "32%" },
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            gap: "8px",
+            background: "transparent",
+            width: "100%",
+            height: "100%",
+            border: "none",
+            boxShadow: "none",
+            borderRadius: "10px",
+          }}
+        >
+          {showLiveVideo && camera.id === selectedCameraId ? (
+            <Box width="100%" height="255px">
+              <LiveVideo cameraId={camera.id} />
+            </Box>
+          ) : (
+            <Box sx={{ position: "relative" }}>
+              {/* image container */}
+              <Box
+  component="img"
+  src={camera.screen_capture}
+  alt=""
+  sx={{
+    width: "100%",
+    height: "255px",
+    objectFit: "cover",
+    borderRadius: "10px",
+    transition: "height 0.3s ease, width 0.3s ease",
+  }}
+  onError={(e) => {
+    e.currentTarget.src = `${PublicUrl}/assets/images/noimage.png`;
+    e.currentTarget.alt = "No Image";
+  }}
+/>
 
-                            height: { xs: "24%", sm: "24%", md: "25%", lg: "48%", xl: "45%", xxl: "50%" },
-                            width: { xs: "95%", sm: "47%", md: "47%", lg: "31%", xl: "32%", xxl: "32%" },
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "relative",
-                              gap: "8px",
-                              background: "transparent",
-                              width: "100%",
-                              height: "100%",
-                              border: "none",
-                              boxShadow: "none",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {showLiveVideo && camera.id === selectedCameraId ? (
-                              <Box width="100%" height="255px">
-                                <LiveVideo cameraId={camera.id} />
-                              </Box>
-                            ) : (
-                              <Box sx={{ position: "relative" }}>
-                                {/* image container */}
-                                <Box
-                                  component="img"
-                                  src={camera.screen_capture}
-                                  alt=""
-                                  sx={{
-                                    width: "100%",
-                                    height: "255px",
-                                    objectFit: "cover",
-                                    borderRadius: "10px",
-                                    transition: 'height 0.3s ease, width 0.3s ease',
-                                  }}
-                                />
-                                {!hiddenPlayButtons.includes(camera.id) && (
-                                  <Box
-                                    sx={{
-                                      position: "absolute",
-                                      top: "50%",
-                                      left: "50%",
-                                      transform: "translate(-50%, -50%)",
-                                    }}
-                                  >
-                                    <FaPlay
-                                      fontSize="200%"
-                                      color="white"
-                                      cursor="pointer"
-                                      onClick={() => handlePlayClick(camera.id)}
-                                    />
-                                  </Box>
-                                )}
-                              </Box>
+              {!hiddenPlayButtons.includes(camera.id) && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <FaPlay
+                    fontSize="200%"
+                    color="white"
+                    cursor="pointer"
+                    onClick={() => handlePlayClick(camera.id)}
+                  />
+                </Box>
+              )}
+            </Box>
+          )}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              background: "linear-gradient( #000000ad, rgba(64, 84, 64, 0))",
+              borderRadius: "10px",
+              position: "absolute",
+              top: 0,
+              width: "100%",
+            }}
+          >
+            <Box>
+              <Typography
+                variant="body2"
+                style={{
+                  opacity: 0.7,
+                  padding: "15px",
+                  color: "white",
+                }}
+              >
+                {camera.name}
+              </Typography>
+            </Box>
+            <Box>
+              {selectedView !== "All Cameras" && (
+                <Typography
+                  onClick={() => handleDeleteNow(camera)}
+                  sx={{
+                    color: "white",
+                    cursor: "pointer",
+                    paddingY: "15px",
+                    paddingX: "10px",
+                  }}
+                >
+                  <CloseIcon />
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        </div>
+      </Box>
+    ))
+  )
+) : (
+  <Typography>No data available</Typography>
+)}
 
-                            )}
-                            <Box sx={{ display: "flex", justifyContent: "space-between", background: "linear-gradient( #000000ad, rgba(64, 84, 64, 0))", borderRadius: "10px", position: "absolute", top: 0, width: "100%" }}>
-                              <Box>
-                                <Typography
-                                  variant="body2"
-                                  style={{
-                                    opacity: 0.7,
-                                    padding: "15px",
-                                    color: "white",
-                                  }}
-                                >
-                                  {camera.name}
-                                </Typography>
-                              </Box>
-                              <Box>
-                                {selectedView !== "All Cameras" && (
-                                  <Typography
-                                    onClick={() => handleDeleteNow(camera)}
-                                    sx={{
-                                      color: "white",
-                                      cursor: "pointer",
-                                      paddingY: "15px",
-                                      paddingX: "10px",
-                                    }}
-                                  >
-                                    <CloseIcon />
-                                  </Typography>
-                                )}
-                              </Box>
-                            </Box>
-                          </div>
-                        </Box>
-                      ))
-                    ) : (
-                      <div>No cameras ..</div>
-                    )}
                   </Box>
                 )}
               </Box>
@@ -683,59 +705,63 @@ const ControlCenter = () => {
                   <Table>
                     <TableHead></TableHead>
                     <TableBody>
-                      {devicesList?.data && devicesList?.data?.list ? (
-                        devicesList?.data?.list
-                          .filter((item) =>
-                            item.name.toLowerCase().includes(searchText.toLowerCase())
-                          )
-                          .sort((a, b) => a.name.localeCompare(b.name)) // Sort by name in ascending order
-                          .map((item) => (
-                            <TableRow key={item.id}>
-                              <TableCell>
-                                <img
-                                  src={item.screen_capture}
-                                  style={{
-                                    width: { lg: "120px", md: "120px",  sm: "100px",},
-                                    height: "75px",
-                                    borderRadius: "5px",
-                                  }}
-                                  onError={(e) => {
-                                    e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                                    e.target.alt = "No Image";
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell>{item.name}</TableCell>
-                              <TableCell> {item.healthy_info.is_online === true ? "Online"  : "Offline"} </TableCell>
-                              <TableCell>
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  onClick={() => handleCameraAddToggle(item.id)}
-                                  sx={{
-                                    textTransform: "capitalize",
-                                    width: "100px",
-                                    "&:hover": {
-                                      borderColor: "#bcccd6", // Hover border color
-                                    },
-                                    borderColor: "#bcccd6", // Default border color
-                                    color: selectedCameras.includes(item.id) ? "#06122b" : "#06122b", 
-                                  }}
-                                  
-                                >
-                                  {selectedCameras.includes(item.id)
-                                    ? "Remove "
-                                    : "Add "}
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={4}>No data available</TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
+  {devicesList?.data && devicesList?.data?.list ? (
+    devicesList?.data?.list
+      .filter((item) =>
+        item.name.toLowerCase().includes(searchText.toLowerCase())
+      )
+      .sort((a, b) => a.name.localeCompare(b.name)) // Sort by name in ascending order
+      .map((device) =>
+        device.cameras?.map((camera) => ( // Iterate through the `camera` array
+          <TableRow key={camera.id}>
+            <TableCell>
+              <img
+                src={camera.screen_capture}
+                style={{
+                  width: "120px",
+                  height: "75px",
+                  borderRadius: "5px",
+                }}
+                onError={(e) => {
+                  e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                  e.target.alt = "No Image";
+                }}
+              />
+            </TableCell>
+            <TableCell>{camera.name}</TableCell>
+            <TableCell>
+              {device.healthy_info.is_online ? "Online" : "Offline"}
+            </TableCell>
+            <TableCell>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => handleCameraAddToggle(camera.id)}
+                sx={{
+                  textTransform: "capitalize",
+                  width: "100px",
+                  "&:hover": {
+                    borderColor: "#bcccd6", // Hover border color
+                  },
+                  borderColor: "#bcccd6", // Default border color
+                  color: selectedCameras.includes(camera.id)
+                    ? "#06122b"
+                    : "#06122b",
+                }}
+              >
+                {selectedCameras.includes(camera.id) ? "Remove" : "Add"}
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))
+      )
+  ) : (
+    <TableRow>
+      <TableCell colSpan={4}>No data available</TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
                   </Table>
                 </TableContainer>
               </DialogContent>
@@ -765,66 +791,76 @@ const ControlCenter = () => {
                 <CustomTextField value={updateViewName}  onChange={(e) => setUpdateViewName(e.target.value)}  error={Boolean(isError)} helperText={<div style={{ height: '13px', marginBottom: "8px" }}>{isError}</div>} label="Enter view name here"/>
                 <TableContainer sx={{ height: "250px" }}>
                   <Table>
-                    <TableBody>
-                      {devicesList.data && devicesList.data.list ? (
-                        devicesList.data.list.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell>
-                              <img
-                                src={item.screen_capture}
-                                style={{
-                                  width: { lg: "120px",  md: "120px",sm: "100px",},
-                                  height: "75px",
-                                  borderRadius: "5px",
-                                }}
-                                onError={(e) => {
-                                  e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                                  e.target.alt = "No Image";
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>  {item.healthy_info.is_online === true ? "Online" : "Offline"}</TableCell>
-                            <TableCell>
-                              {selectedCameras.includes(item.id) ? (
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  onClick={() => handleCameraToggle(item.id)}
-                                  sx={{
-                                    textTransform: "capitalize",
-                                    width: "100px",
-                                    color:"#06122b",
-                                    borderColor: "#bcccd6",
-                                    "&:hover": {
-                                      borderColor: "#bcccd6", // Hover border color
-                                    },
-                                  }}
-                                 
-                                >
-                                  Remove 
-                                </Button>
-                              ) : (
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  onClick={() => handleCameraToggle(item.id)}
-                                  sx={{ textTransform: "capitalize", width: "100px", color:"#06122b",borderColor: "#bcccd6",  "&:hover": {
-                                    borderColor: "#bcccd6", // Hover border color
-                                  }, }}
-                                >
-                                  Add 
-                                </Button>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={2}>No data available</TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
+                  <TableBody>
+  {devicesList?.data && devicesList?.data?.list ? (
+    devicesList.data.list.map((device) =>
+      device.cameras?.map((camera) => ( // Iterate over `camera` array
+        <TableRow key={camera.id}>
+          <TableCell>
+            <img
+              src={camera.screen_capture}
+              style={{
+                width: "120px",
+                height: "75px",
+                borderRadius: "5px",
+              }}
+              onError={(e) => {
+                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                e.target.alt = "No Image";
+              }}
+            />
+          </TableCell>
+          <TableCell>{camera.name}</TableCell>
+          <TableCell>
+            {device.healthy_info.is_online === true ? "Online" : "Offline"}
+          </TableCell>
+          <TableCell>
+            {selectedCameras.includes(camera.id) ? (
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => handleCameraToggle(camera.id)}
+                sx={{
+                  textTransform: "capitalize",
+                  width: "100px",
+                  color: "#06122b",
+                  borderColor: "#bcccd6",
+                  "&:hover": {
+                    borderColor: "#bcccd6", // Hover border color
+                  },
+                }}
+              >
+                Remove
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => handleCameraToggle(camera.id)}
+                sx={{
+                  textTransform: "capitalize",
+                  width: "100px",
+                  color: "#06122b",
+                  borderColor: "#bcccd6",
+                  "&:hover": {
+                    borderColor: "#bcccd6", // Hover border color
+                  },
+                }}
+              >
+                Add
+              </Button>
+            )}
+          </TableCell>
+        </TableRow>
+      ))
+    )
+  ) : (
+    <TableRow>
+      <TableCell colSpan={4}>No data available</TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
                   </Table>
                 </TableContainer>
               </DialogContent>
