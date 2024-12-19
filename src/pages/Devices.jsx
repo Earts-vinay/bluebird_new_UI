@@ -212,7 +212,7 @@ console.log("dispalyList",dispalyList);
   {dispalyList.length > 0 ? (
     dispalyList?.map((row, index) => (
       <TableRow key={row.id}>
-        <TableCell sx={{ paddingY: "12px",display:'flex',gap:"10px", width:"150px" }}>
+        <TableCell sx={{ paddingY: "12px",display:'flex',gap:"10px", }}>
           {/* Check if row.image is an array (multiple images) or a single image */}
           {Array.isArray(row.image) ? (
             // Display multiple images
