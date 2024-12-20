@@ -18,6 +18,8 @@ import axios from 'axios';
 import LiveVideo from '../../ControlCenterContent/LiveVideo';
 import { toast } from "react-toastify";
 import { useLocation } from 'react-router-dom';
+import { FaPersonWalking } from "react-icons/fa6";
+
 
 
 const BaseUrl = process.env.REACT_APP_API_URL;
@@ -134,7 +136,7 @@ const Camera = () => {
         };
 
         fetchData();
-    }, [alertId, seleProp?.id, date, token]); 
+    }, [alertId, seleProp?.id, date, token]);
 
     useEffect(() => {
         if (alertData.data && alertData.data.list) {
@@ -142,7 +144,7 @@ const Camera = () => {
             if (foundAlert) {
                 setSelectedId(foundAlert);
             } else {
-                setSelectedId(null); 
+                setSelectedId(null);
             }
         }
     }, [alertData, alertId]);
@@ -346,7 +348,7 @@ const Camera = () => {
                 <Box width={{ xs: '100%', md: '40%', backgroundColor: "white" }} px={{ xs: 2, sm: 0, md: 0 }} py={0}>
                     <Box sx={{ backgroundColor: "#016699", padding: "10px", borderRadius: "10px 10px 0px 0px", display: "flex", justifyContent: "flex-end", position: "sticky", top: 0, zIndex: 1, }}>
                         <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: "25px", px: 2, backdropFilter: " blur(5px)", boxShadow: "-1px 6px 31px 0 rgba(25, 96, 159, 0.1)", backgroundColor: '#016699' }}>
-                           
+
                             <TextField
                                 id="search"
                                 type="search"
@@ -381,10 +383,17 @@ const Camera = () => {
                                     {selectedId && Object.keys(selectedId)?.length > 0 ? (
                                         <TableRow>
                                             <TableCell>
-                                                <img src={selectedId?.img_url} alt={`Image `} style={{ width: { lg: "150px", md: "100px", sm: "60px" }, height: '80px', borderRadius: "5px", paddingLeft: "5px" }} />
+                                                <img src={selectedId?.img_url} alt={`Image `} onError={(e) => {
+                                                    e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                                                    e.target.alt = "No Image";
+                                                }} style={{ width: { lg: "150px", md: "100px", sm: "60px" }, height: '80px', borderRadius: "5px", paddingLeft: "5px" }} />
                                             </TableCell>
                                             <TableCell>{selectedId?.camera?.name}</TableCell>
-                                            <TableCell> <img src={PublicUrl + '/assets/images/carx.svg'} /></TableCell>
+                                            <TableCell>    {selectedId.type_id === 0 ? (
+                                                <FaPersonWalking fontSize="25px" color="#1c3664" />
+                                            ) : (
+                                                <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
+                                            )}</TableCell>
                                             <TableCell>{selectedId?.record?.brand}<Typography sx={{ color: 'red' }}>still on  Property</Typography></TableCell>
                                             <TableCell>{selectedId?.create_time}</TableCell>
                                         </TableRow>

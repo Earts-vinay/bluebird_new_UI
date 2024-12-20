@@ -12,7 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useDispatch, useSelector } from 'react-redux';
 import { geteventtypelist, getVectracelist } from "../../../redux/apiResponse/vecalertSlice";
-
+import { FaPersonWalking } from "react-icons/fa6";
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
@@ -692,10 +692,17 @@ const CameraMapAlert = () => {
                                             {selectedId && Object.keys(selectedId)?.length > 0 ? (
                                                 <TableRow>
                                                     <TableCell>
-                                                        <img src={selectedId?.img_url} alt={`Image `} style={{ width: { lg: "150px", md: "100px", sm: "60px" }, height: '80px', borderRadius: "5px", paddingLeft: "5px" }} />
+                                                        <img src={selectedId?.img_url} alt={`Image `} onError={(e) => {
+                                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                                e.target.alt = "No Image";
+                              }} style={{ width: { lg: "150px", md: "100px", sm: "60px" }, height: '80px', borderRadius: "5px", paddingLeft: "5px" }} />
                                                     </TableCell>
                                                     <TableCell>{selectedId?.camera?.name}</TableCell>
-                                                    <TableCell> <img src={PublicUrl + '/assets/images/carx.svg'} /></TableCell>
+                                                    <TableCell>   {selectedId.type_id === 0 ? (
+                                                                                    <FaPersonWalking fontSize="25px" color="#1c3664" />
+                                                                                  ) : (
+                                                                                    <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
+                                                                                  )}</TableCell>
                                                     <TableCell>{selectedId?.record?.plate}<Typography sx={{ color: 'red',fontSize:"10px",...commonStyles }}> {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}</Typography></TableCell>
                                                     <TableCell>{selectedId?.create_time}</TableCell>
                                                 </TableRow>
@@ -753,7 +760,11 @@ const CameraMapAlert = () => {
                                                             <img src={item.img_url} alt={`Image ${item.id}`} style={{ width: { lg: "150px", md: "100px", sm: "60px" }, height: '80px', borderRadius: "5px", paddingLeft: "5px" }} />
                                                         </TableCell>
                                                         <TableCell>{item.camera?.name}</TableCell>
-                                                        <TableCell> <img src={PublicUrl + '/assets/images/carx.svg'} style={{with:"30px"}}/></TableCell>
+                                                        <TableCell> {item.type_id === 0 ? (
+                                                                                    <FaPersonWalking fontSize="25px" color="#1c3664" />
+                                                                                  ) : (
+                                                                                    <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
+                                                                                  )}</TableCell>
                                                         <TableCell>{item.record?.plate}<Typography sx={{ color: 'red',fontSize:"10px",...commonStyles }}> {item.is_in_property === 1 ? "Still on property" : item.is_in_property === 0 ? "Not on property" : ""}</Typography></TableCell>
                                                         <TableCell>{item.create_time}</TableCell>
                                                     </TableRow>

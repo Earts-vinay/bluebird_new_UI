@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components';
-import { Box, TextField,RadioGroup,Grid, Table,Divider, FormControlLabel,TableBody, TableCell,Radio, TableContainer, TableHead, TableRow, Paper, Typography, Popover, Pagination, MenuItem, Select, Container, InputAdornment } from '@mui/material';
+import { Box, TextField, RadioGroup, Grid, Table, Divider, FormControlLabel, TableBody, TableCell, Radio, TableContainer, TableHead, TableRow, Paper, Typography, Popover, Pagination, MenuItem, Select, Container, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import moment from 'moment';
 import axios from "axios";
@@ -17,6 +17,7 @@ import { setSelectedDateSlice, setIsAlertInfo } from '../redux/apiResponse/alert
 import { useDispatch } from 'react-redux';
 import { StaticDatePicker } from '@mui/x-date-pickers';
 import HeaderLayout from '../components/customStyles/HeaderLayout';
+import { FaPersonWalking } from "react-icons/fa6";
 
 const BaseUrl = process.env.REACT_APP_API_URL;
 const PublicUrl = process.env.PUBLIC_URL
@@ -116,8 +117,8 @@ const Alerts = () => {
     setAnchorEl(null);
   };
 
-  console.log("alertData",alertData);
-  
+  console.log("alertData", alertData);
+
 
   return (
     <div>
@@ -167,7 +168,7 @@ const Alerts = () => {
                 onChange={onChange}
                 size="small"
                 InputLabelProps={{
-                  style: { fontFamily: 'montserrat-regular', fontSize: "13.5px" ,fontStyle:"italic", color:"#06122b"},
+                  style: { fontFamily: 'montserrat-regular', fontSize: "13.5px", fontStyle: "italic", color: "#06122b" },
                 }}
                 sx={{
                   "&:hover .MuiOutlinedInput-root": {
@@ -247,7 +248,11 @@ const Alerts = () => {
                           </TableCell>
                           <TableCell sx={{ paddingY: "10px", ...commonStyles }}>
                             <Box display="flex" gap={2}>
-                              <img src={PublicUrl + '/assets/images/carx.svg'} />
+                              {row.type_id === 0 ? (
+                                <FaPersonWalking fontSize="25px" color="#1c3664" />
+                              ) : (
+                                <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
+                              )}
                               <Box display="flex" flexDirection="column" p={0} sx={{ fontSize: { md: "14px", sm: "14px" }, ...commonStyles, color: "#657889" }} fontWeight="bold">
                                 {row.plate}
                                 <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
