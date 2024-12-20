@@ -36,7 +36,7 @@ const LiveVideo = ({ cameraId }) => {
     const fetchData = async () => {
         try {
             const response = await axios.post(
-                `${BaseUrl}/api/device/play`,
+                `${BaseUrl}/api/camera/play`,
                 { camera_id: cameraId },
                 {
                   headers: {
