@@ -69,7 +69,9 @@ const ControlCenter = () => {
   const [showLiveVideo, setShowLiveVideo] = useState(false);
   const [selectedCameraId, setSelectedCameraId] = useState(null);
   const [hiddenPlayButtons, setHiddenPlayButtons] = useState([]);
-
+  const propertyId = seleProp?.id
+  console.log("propertyIdfhdusifhuo",propertyId);
+  
   const handlePlayClick = (cameraId) => {
     setSelectedCameraId(cameraId);
     setShowLiveVideo(true); // Show live video when play button is clicked
@@ -288,7 +290,6 @@ const ControlCenter = () => {
   };
 
   const handleDelete = async () => {
-    console.log(deleteViewObj, "deleteViewObj");
     if (deleteViewObj.total_cameras > 1) {
       const { payload } = await dispatch(
         deleteControlCenterByIdAndCamera({
@@ -296,6 +297,7 @@ const ControlCenter = () => {
             user_view_id: deleteViewObj.view_id,
             camera_id: deleteViewObj.id,
           },
+          propertyId,
         })
       );
       if (payload.msg === "ok") {
@@ -304,7 +306,7 @@ const ControlCenter = () => {
       }
     } else {
       const { payload } = await dispatch(
-        deleteControlCenterById(deleteViewObj.view_id)
+        deleteControlCenterById({ id: deleteViewObj.view_id, propertyId })
       );
       if (payload.msg === "ok") {
         setDeleteViewObj({});
@@ -313,6 +315,7 @@ const ControlCenter = () => {
       }
     }
   };
+  
 
   const handleUpdateByDevice = async () => {
     const selectedViewbyuser = controlCenter.data.list.find(

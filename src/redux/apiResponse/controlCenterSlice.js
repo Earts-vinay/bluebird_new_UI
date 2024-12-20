@@ -57,7 +57,7 @@ export const updateControlCenterById = createAsyncThunk(
 // Thunk to delete a control center by ID
 export const deleteControlCenterById = createAsyncThunk(
   "ControlCenter/deleteControlCenterById",
-  async (id, { getState, dispatch }) => {
+  async ({ id, propertyId }, { getState, dispatch }) => {
     try {
       const token = selectToken(getState());
 
@@ -68,7 +68,9 @@ export const deleteControlCenterById = createAsyncThunk(
         },
         data: { id: id },
       });
-      dispatch(fetchControlCenterList());
+
+      // Pass propertyId to fetchControlCenterList
+      dispatch(fetchControlCenterList(propertyId));
 
       return response.data; // Return the deleted ID
     } catch (error) {
@@ -76,6 +78,7 @@ export const deleteControlCenterById = createAsyncThunk(
     }
   }
 );
+
 
 // Thunk to get the list of control centers
 export const fetchControlCenterList = createAsyncThunk(
@@ -121,7 +124,7 @@ export const fetchControlCenterById = createAsyncThunk(
 
 export const deleteControlCenterByIdAndCamera = createAsyncThunk(
   "ControlCenter/deleteControlCenterByIdAndCamera",
-  async ({ formData }, { getState, dispatch }) => {
+  async ({ formData,propertyId }, { getState, dispatch }) => {
     try {
       const token = selectToken(getState());
       const data = new URLSearchParams(formData);
@@ -135,7 +138,7 @@ export const deleteControlCenterByIdAndCamera = createAsyncThunk(
           },
         }
       );
-      dispatch(fetchControlCenterList());
+      dispatch(fetchControlCenterList(propertyId));
 
       return response.data; // Return the deleted ID
     } catch (error) {
