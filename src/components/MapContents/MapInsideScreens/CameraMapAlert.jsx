@@ -336,90 +336,168 @@ const CameraMapAlert = () => {
                                 marginBottom={{ xs: 2, md: 0, sm: 2 }}
                             >
 
-                                <Card
-                                    sx={{
-                                        display: 'flex',
-                                        marginY: { xs: 2, md: '6px' },
-                                        alignItems: "center",
-                                        border: 0,
-                                        cursor: "pointer",
-                                        mx: "5px",
-                                        boxShadow: "none"
-                                    }}
-                                >
-                                    <CardMedia
-                                        component="img"
-                                        sx={{
-                                            width: { sm: "40%", md: "50%", lg: "40%" },
-                                            height: "20vh",
-                                            px: "5px",
-                                            borderRadius: "10px",
-                                        }}
-                                        image={selectedId?.img_url || ''}
-                                        alt="Camera Image"
-                                        onError={(e) => {
-                                            e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                                            e.target.alt = "No Image";
-                                        }}
-                                    />
-
-
-                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                        <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
-                                            <Typography color="black" sx={{ fontSize: "14px" }}>
-                                                Blacklisted Vehicle Detected
-                                            </Typography>
-
-                                            <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}> {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}</Typography>
-
-                                            <Typography sx={{ fontSize: "12px" }}>
-                                                License Plate: {selectedId?.plate || ''}
-                                            </Typography>
-                                            <Typography sx={{ fontSize: "12px" }}>
-                                                Type of Vehicle: {selectedId?.record?.car_type || ''}
-                                            </Typography>
-                                            <Typography sx={{ fontSize: "12px" }}>
-                                                Color: {selectedId?.record?.color || ''}
-                                            </Typography>
-                                            <Typography sx={{ fontSize: "12px" }}>
-                                                Make: {selectedId?.record?.brand || ''}
-                                            </Typography>
-                                            <Typography sx={{ fontSize: "12px" }}>
-                                                Event Captured: {selectedId?.create_time || ''}
-                                            </Typography>
-                                            {selectedId && selectedId.is_resolved === 0 && (
-                                                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                                    <Select
-                                                        sx={{ padding: 0 }}
-                                                        value={selectedId && selectedId.is_resolved === 1 ? "Resolved" : "Unresolved"}
-                                                        onChange={(event) => handleChange(event)}
-                                                        displayEmpty
-                                                        size='small'
-                                                        inputProps={{ 'aria-label': 'Without label' }}
-                                                    >
-                                                        <MenuItem value="Unresolved">Unresolved</MenuItem>
-                                                        <MenuItem value="Resolved">Resolved</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                            )}
-                                            {selectedId && selectedId.is_resolved === 1 && (
-                                                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                                    <Select
-                                                        sx={{ padding: 0 }}
-                                                        value="Resolved"
-                                                        disabled
-                                                        displayEmpty
-                                                        size='small'
-                                                        inputProps={{ 'aria-label': 'Without label' }}
-                                                    >
-                                                        <MenuItem value="Resolved">Resolved</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                            )}
-                                        </CardContent>
-                                    </Box>
-                                </Card>
-
+                                {selectedId?.type_id === 0 ? (
+    <Card
+        sx={{
+            display: 'flex',
+            marginY: { xs: 2, md: '6px' },
+            alignItems: "center",
+            border: 0,
+            cursor: "pointer",
+            mx: "5px",
+            boxShadow: "none"
+        }}
+    >
+        <CardMedia
+            component="img"
+            sx={{
+                width: { sm: "40%", md: "50%", lg: "40%" },
+                height: "20vh",
+                px: "5px",
+                borderRadius: "10px",
+            }}
+            image={selectedId?.img_url || ''}
+            alt="Camera Image"
+            onError={(e) => {
+                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                e.target.alt = "No Image";
+            }}
+        />
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
+                <Typography color="black" sx={{ fontSize: "14px" }}>
+                    Person Detected
+                </Typography>
+                <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", paddingTop: "5px" }}>
+                    {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Age: {selectedId?.plate || ''}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Gender: {selectedId?.record?.car_type || ''}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Clothing: {selectedId?.record?.color || ''}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Event Captured: {selectedId?.create_time || ''}
+                </Typography>
+                {/* Resolved/Unresolved Select */}
+                {selectedId.is_resolved === 0 ? (
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <Select
+                            sx={{ padding: 0 }}
+                            value="Unresolved"
+                            onChange={handleChange}
+                            displayEmpty
+                            size='small'
+                            inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                            <MenuItem value="Unresolved">Unresolved</MenuItem>
+                            <MenuItem value="Resolved">Resolved</MenuItem>
+                        </Select>
+                    </FormControl>
+                ) : (
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <Select
+                            sx={{ padding: 0 }}
+                            value="Resolved"
+                            disabled
+                            displayEmpty
+                            size='small'
+                            inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                            <MenuItem value="Resolved">Resolved</MenuItem>
+                        </Select>
+                    </FormControl>
+                )}
+            </CardContent>
+        </Box>
+    </Card>
+) : (
+    <Card
+        sx={{
+            display: 'flex',
+            marginY: { xs: 2, md: '6px' },
+            alignItems: "center",
+            border: 0,
+            cursor: "pointer",
+            mx: "5px",
+            boxShadow: "none"
+        }}
+    >
+        <CardMedia
+            component="img"
+            sx={{
+                width: { sm: "40%", md: "50%", lg: "40%" },
+                height: "20vh",
+                px: "5px",
+                borderRadius: "10px",
+            }}
+            image={selectedId?.img_url || ''}
+            alt="Camera Image"
+            onError={(e) => {
+                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                e.target.alt = "No Image";
+            }}
+        />
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
+                <Typography color="black" sx={{ fontSize: "14px" }}>
+                    Blacklisted Vehicle Detected
+                </Typography>
+                <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", paddingTop: "5px" }}>
+                    {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    License Plate: {selectedId?.plate || ''}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Type of Vehicle: {selectedId?.record?.car_type || ''}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Color: {selectedId?.record?.color || ''}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Make: {selectedId?.record?.brand || ''}
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                    Event Captured: {selectedId?.create_time || ''}
+                </Typography>
+                {/* Resolved/Unresolved Select */}
+                {selectedId.is_resolved === 0 ? (
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <Select
+                            sx={{ padding: 0 }}
+                            value="Unresolved"
+                            onChange={handleChange}
+                            displayEmpty
+                            size='small'
+                            inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                            <MenuItem value="Unresolved">Unresolved</MenuItem>
+                            <MenuItem value="Resolved">Resolved</MenuItem>
+                        </Select>
+                    </FormControl>
+                ) : (
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <Select
+                            sx={{ padding: 0 }}
+                            value="Resolved"
+                            disabled
+                            displayEmpty
+                            size='small'
+                            inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                            <MenuItem value="Resolved">Resolved</MenuItem>
+                        </Select>
+                    </FormControl>
+                )}
+            </CardContent>
+        </Box>
+    </Card>
+)}
 
 
                             </Box>
@@ -457,174 +535,175 @@ const CameraMapAlert = () => {
                                 width={{ xs: '60%', md: '59%', sm: '50%', lg: '59%' }}
                                 marginBottom={{ xs: 2, md: 0, sm: 2 }}
                             >
-                                {genrowData ? (
-                                    <Card
-                                        sx={{
-                                            display: 'flex',
-                                            marginY: { xs: 2, md: '6px' },
-                                            alignItems: "center",
-                                            border: 0,
-                                            cursor: "pointer",
-                                            mx: "5px",
-                                            boxShadow: "none"
-                                        }}
-                                    >
-                                        <CardMedia
-                                            component="img"
-                                            sx={{
-                                                width: { sm: "40%", md: "50%", lg: "40%" },
-                                                height: "20vh",
-                                                px: "5px",
-                                                borderRadius: "10px",
-                                            }}
-                                            image={genrowData?.img_url || ''}
-                                            alt="Camera Image"
-                                            onError={(e) => {
-                                                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                                                e.target.alt = "No Image";
-                                            }}
-                                        />
+                           {genrowData?.type_id === 0 ? (
+  <>
+   
 
+    {/* Second Card - Person Detected */}
+    <Card
+      sx={{
+        display: 'flex',
+        marginY: { xs: 2, md: '6px' },
+        alignItems: "center",
+        border: 0,
+        cursor: "pointer",
+        mx: "5px",
+        boxShadow: "none"
+      }}
+    >
+      <CardMedia
+        component="img"
+        sx={{
+          width: { sm: "40%", md: "50%", lg: "40%" },
+          height: "20vh",
+          px: "5px",
+          borderRadius: "10px",
+        }}
+        image={genrowData?.img_url || ''}
+        alt="Camera Image"
+        onError={(e) => {
+          e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+          e.target.alt = "No Image";
+        }}
+      />
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
+          <Typography color="black" sx={{ fontSize: "14px" }}>
+            Person Detected
+          </Typography>
+          <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}>
+            {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}
+          </Typography>
+          <Typography sx={{ fontSize: "12px" }}>
+            Age: {genrowData?.record?.plate || ''}
+          </Typography>
+          <Typography sx={{ fontSize: "12px" }}>
+            Gender: {genrowData?.record?.car_type || ''}
+          </Typography>
+          <Typography sx={{ fontSize: "12px" }}>
+            Clothing: {genrowData?.record?.color || ''}
+          </Typography>
+          <Typography sx={{ fontSize: "12px" }}>
+            Event Captured: {genrowData?.create_time || ''}
+          </Typography>
+          {genrowData.is_resolved === 0 && (
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <Select
+                sx={{ padding: 0 }}
+                value="Unresolved"
+                onChange={(event) => handleChange(event)}
+                displayEmpty
+                size='small'
+                inputProps={{ 'aria-label': 'Without label' }}
+              >
+                <MenuItem value="Unresolved">Unresolved</MenuItem>
+                <MenuItem value="Resolved">Resolved</MenuItem>
+              </Select>
+            </FormControl>
+          )}
+          {genrowData.is_resolved === 1 && (
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <Select
+                sx={{ padding: 0 }}
+                value="Resolved"
+                disabled
+                displayEmpty
+                size='small'
+                inputProps={{ 'aria-label': 'Without label' }}
+              >
+                <MenuItem value="Resolved">Resolved</MenuItem>
+              </Select>
+            </FormControl>
+          )}
+        </CardContent>
+      </Box>
+    </Card>
+  </>
+) : (
+ 
+  <Card
+  sx={{
+    display: 'flex',
+    marginY: { xs: 2, md: '6px' },
+    alignItems: "center",
+    border: 0,
+    cursor: "pointer",
+    mx: "5px",
+    boxShadow: "none"
+  }}
+>
+  <CardMedia
+    component="img"
+    sx={{
+      width: { sm: "40%", md: "50%", lg: "40%" },
+      height: "20vh",
+      px: "5px",
+      borderRadius: "10px",
+    }}
+    image={genrowData?.img_url || ''}
+    alt="Camera Image"
+    onError={(e) => {
+      e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+      e.target.alt = "No Image";
+    }}
+  />
+  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
+      <Typography color="black" sx={{ fontSize: "14px" }}>
+        Blacklisted Vehicle Detected
+      </Typography>
+      <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}>
+        {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}
+      </Typography>
+      <Typography sx={{ fontSize: "12px" }}>
+        License Plate: {genrowData?.record?.plate || ''}
+      </Typography>
+      <Typography sx={{ fontSize: "12px" }}>
+        Type of Vehicle: {genrowData?.record?.car_type || ''}
+      </Typography>
+      <Typography sx={{ fontSize: "12px" }}>
+        Color: {genrowData?.record?.color || ''}
+      </Typography>
+      <Typography sx={{ fontSize: "12px" }}>
+        Make: {genrowData?.record?.brand || ''}
+      </Typography>
+      <Typography sx={{ fontSize: "12px" }}>
+        Event Captured: {genrowData?.create_time || ''}
+      </Typography>
+      {genrowData?.is_resolved === 0 && (
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <Select
+            sx={{ padding: 0 }}
+            value="Unresolved"
+            onChange={(event) => handleChange(event)}
+            displayEmpty
+            size='small'
+            inputProps={{ 'aria-label': 'Without label' }}
+          >
+            <MenuItem value="Unresolved">Unresolved</MenuItem>
+            <MenuItem value="Resolved">Resolved</MenuItem>
+          </Select>
+        </FormControl>
+      )}
+      {genrowData?.is_resolved === 1 && (
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <Select
+            sx={{ padding: 0 }}
+            value="Resolved"
+            disabled
+            displayEmpty
+            size='small'
+            inputProps={{ 'aria-label': 'Without label' }}
+          >
+            <MenuItem value="Resolved">Resolved</MenuItem>
+          </Select>
+        </FormControl>
+      )}
+    </CardContent>
+  </Box>
+</Card>
+)}
 
-                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                            <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
-                                                <Typography color="black" sx={{ fontSize: "14px" }}>
-                                                    Blacklisted Vehicle Detected
-                                                </Typography>
-                                                <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}> {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}</Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    License Plate: {genrowData?.record?.plate || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Type of Vehicle: {genrowData?.record?.car_type || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Color: {genrowData?.record?.color || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Make: {genrowData?.record?.brand || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Event Captured: {genrowData?.create_time || ''}
-                                                </Typography>
-                                                {genrowData && genrowData.is_resolved === 0 && (
-                                                    <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                                        <Select
-                                                            sx={{ padding: 0 }}
-                                                            value={genrowData && genrowData.is_resolved === 1 ? "Resolved" : "Unresolved"}
-                                                            onChange={(event) => handleChange(event)}
-                                                            displayEmpty
-                                                            size='small'
-                                                            inputProps={{ 'aria-label': 'Without label' }}
-                                                        >
-                                                            <MenuItem value="Unresolved">Unresolved</MenuItem>
-                                                            <MenuItem value="Resolved">Resolved</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                )}
-                                                {genrowData && genrowData.is_resolved === 1 && (
-                                                    <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                                        <Select
-                                                            sx={{ padding: 0 }}
-                                                            value="Resolved"
-                                                            disabled
-                                                            displayEmpty
-                                                            size='small'
-                                                            inputProps={{ 'aria-label': 'Without label' }}
-                                                        >
-                                                            <MenuItem value="Resolved">Resolved</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                )}
-                                            </CardContent>
-                                        </Box>
-                                    </Card>
-
-                                ) : (
-                                    <>
-                                          <Card
-                                        sx={{
-                                            display: 'flex',
-                                            marginY: { xs: 2, md: '6px' },
-                                            alignItems: "center",
-                                            border: 0,
-                                            cursor: "pointer",
-                                            mx: "5px",
-                                            boxShadow: "none"
-                                        }}
-                                    >
-                                        <CardMedia
-                                            component="img"
-                                            sx={{
-                                                width: { sm: "40%", md: "50%", lg: "40%" },
-                                                height: "20vh",
-                                                px: "5px",
-                                                borderRadius: "10px",
-                                            }}
-                                            image={`${PublicUrl}/assets/images/noimage.png`}
-                                            alt="Camera Image"
-                                            onError={(e) => {
-                                                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                                                e.target.alt = "No Image";
-                                            }}
-                                        />
-
-
-                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                            <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
-                                                <Typography color="black" sx={{ fontSize: "14px" }}>
-                                                    Blacklisted Vehicle Detected
-                                                </Typography>
-                                                <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}> {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}</Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    License Plate: {genrowData?.record?.plate || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Type of Vehicle: {genrowData?.record?.car_type || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Color: {genrowData?.record?.color || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Make: {genrowData?.record?.brand || ''}
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "12px" }}>
-                                                    Event Captured: {genrowData?.create_time || ''}
-                                                </Typography>
-                                                {genrowData && genrowData.is_resolved === 0 && (
-                                                    <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                                        <Select
-                                                            sx={{ padding: 0 }}
-                                                            value={genrowData && genrowData.is_resolved === 1 ? "Resolved" : "Unresolved"}
-                                                            onChange={(event) => handleChange(event)}
-                                                            displayEmpty
-                                                            size='small'
-                                                            inputProps={{ 'aria-label': 'Without label' }}
-                                                        >
-                                                            <MenuItem value="Unresolved">Unresolved</MenuItem>
-                                                            <MenuItem value="Resolved">Resolved</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                )}
-                                                
-                                                    <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                                        <Select
-                                                            sx={{ padding: 0 }}
-                                                            value="Resolved"
-                                                            disabled
-                                                            displayEmpty
-                                                            size='small'
-                                                            inputProps={{ 'aria-label': 'Without label' }}
-                                                        >
-                                                            <MenuItem value="Resolved">No data</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                              
-                                            </CardContent>
-                                        </Box>
-                                    </Card>
-                                    </>
-                                )}
 
                             </Box>
 
