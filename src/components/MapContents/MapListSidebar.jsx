@@ -347,7 +347,7 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
             </Grid>
           </Box>
 
-          <Box height="90%" overflow="auto" sx={{ backgroundColor: "#eef6fc" }} >
+          <Box height="88%" overflow="auto" sx={{ backgroundColor: "#eef6fc" }} >
             <Table  >
               <TableHead >
                 <TableRow sx={{ position: 'sticky', top: 0, background: "#eef6fc" }}>
@@ -368,7 +368,7 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
                               src={camera.screen_capture}
                               alt={`Image ${index + 1}`}
                               style={{
-                                width: { lg: "150px", md: "120px", sm: "180px" },
+                                width:"150px",
                                 height: '80px',
                                 borderRadius: "5px",
                               }}

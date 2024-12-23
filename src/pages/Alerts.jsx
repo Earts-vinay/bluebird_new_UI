@@ -194,7 +194,7 @@ const Alerts = () => {
                 <Loader loading={loading} />
               </Box>
             ) : (
-              <TableContainer component={Paper} sx={{ backgroundColor: "transparent", height: "100%", overflowY: "auto", fontFamily: "montserrat-regular", boxShadow: "none", flexGrow: 1 }}>
+              <TableContainer component={Paper} sx={{ backgroundColor: "transparent", height: "80%", overflowY: "auto", fontFamily: "montserrat-regular", boxShadow: "none", flexGrow: 1 }}>
                 <Table>
                   {/* Table Head */}
                   <TableHead>
@@ -213,12 +213,12 @@ const Alerts = () => {
                     {alertData?.data?.list?.length > 0 ? (
                       alertData?.data?.list?.map((row, index) => (
                         <TableRow key={row.id} sx={{ cursor: 'pointer' }} onClick={() => handleTableRowClick(row)}>
-                          <TableCell width="20%" sx={{ paddingY: "10px", ...commonStyles }}>
+                          <TableCell width="180px" sx={{ paddingY: "10px", ...commonStyles }}>
                             <img
                               src={row.img_url}
                               alt={`Image ${index + 1}`}
                               style={{
-                                width: { lg: "150px", md: "150px", sm: "100px" },
+                                width: "150px",
                                 height: '80px',
                                 borderRadius: "5px",
                                 paddingLeft: { md: "30px", lg: "30px", sm: "10px" }

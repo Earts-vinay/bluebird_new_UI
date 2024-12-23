@@ -50,7 +50,7 @@ const Insights = () => {
           <Box
             sx={{
               backgroundColor: "#fff",
-              width:{lg:"38%",md:"78%",sm:"78%",xs:"100%"},
+              width:"550px",
               borderRadius: "5px",
               boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)",
               marginBottom: "10px",

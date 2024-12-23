@@ -30,7 +30,7 @@ export const createControlCenter = createAsyncThunk(
 // Thunk to update a control center by ID
 export const updateControlCenterById = createAsyncThunk(
   "ControlCenter/updateControlCenterById",
-  async ({ id, formData }, { getState, dispatch }) => {
+  async ({ id, formData,propertyId }, { getState, dispatch }) => {
     try {
       const token = selectToken(getState());
       const formDataParams = new URLSearchParams(formData);
@@ -44,9 +44,9 @@ export const updateControlCenterById = createAsyncThunk(
           },
         }
       );
-      if (formData.property_id) {
-        dispatch(fetchControlCenterList(formData.property_id));
-      }
+     
+        dispatch(fetchControlCenterList(propertyId));
+      
       return response.data;
     } catch (error) {
       throw error;

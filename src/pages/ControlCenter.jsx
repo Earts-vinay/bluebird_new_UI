@@ -337,6 +337,7 @@ const ControlCenter = () => {
           updateControlCenterById({
             id: selectedViewObj.id,
             formData: yourFormData,
+            propertyId
           })
         );
         if (payload.msg === "ok") {

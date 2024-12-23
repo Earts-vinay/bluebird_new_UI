@@ -280,10 +280,10 @@ const CameraPole = () => {
             <Box display="flex" gap={{ xs: '100px', md: '5px' }} flexDirection={{ xs: 'column', md: 'row' }} sx={{ minHeight: "80vh" }}>
                 <Box display="flex" flexDirection="column" width={{ xs: '100%', md: '57%' }} px={{ xs: 2, md: 0 }} height="98vh">
                     <Box sx={{ borderRadius: "10px", flexGrow: 1 }} pt={2}>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" >
+                        <Box display="flex" justifyContent="space-between" alignItems="center" cursor="pointer">
                             <Box mx="10px" display="flex" alignItems="center">
 
-                                <ArrowBackIosNewIcon onClick={handleArrowClick} />
+                                <ArrowBackIosNewIcon onClick={handleArrowClick} cursor="pointer"/>
                                 <Typography px={1} sx={commonStyles}>{alertData.list?.[0]?.pole?.name}</Typography>
                             </Box>
 

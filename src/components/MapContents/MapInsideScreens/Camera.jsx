@@ -163,9 +163,9 @@ const Camera = () => {
                 <Box flexGrow={1} width={{ xs: '100%', md: '59%' }} height="80vh" px={{ xs: 2, md: 0 }} py={2} >
                     <Box sx={{ borderRadius: "10px" }}>
                         <Box display="flex" justifyContent="space-between" alignItems="center" >
-                            <Box mx="10px" display="flex" alignItems="center">
+                            <Box mx="10px" display="flex" alignItems="center" cursor="pointer">
 
-                                <ArrowBackIosNewIcon onClick={handleArrowClick} />
+                                <ArrowBackIosNewIcon onClick={handleArrowClick} cursor="pointer" />
                                 <Typography px={1} sx={commonStyles}> {selectedId?.pole?.name}</Typography>
                             </Box>
 
