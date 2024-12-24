@@ -394,17 +394,31 @@ const MapListSidebar = ({ polesInBoundaryData, setClickedRowData, role }) => {
                           </TableCell>
                           <TableCell sx={{ paddingY: "10px", color: "#111314", ...commonStyles, fontSize: { md: "12px", sm: "12px" } }}>
                             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                              <Box sx={{ display: "flex", marginRight: 2, alignItems: "center" }}>
-                                {camera.detections && camera.detections.find(d => d.analytics_type_id === 1 && d.status !== 0) && (
-                                  <img src={Person_detection} alt="Person Detection" style={{ width: "23px", height: "23px" }} />
-                                )}
-                              </Box>
-                              <Box sx={{ display: "flex", marginRight: 2, alignItems: "center" }}>
-                                {camera.detections && camera.detections.find(d => d.analytics_type_id === 2 && d.status !== 0) && (
-                                  <img src={vehicle_detection} alt="Vehicle Detection" style={{ width: "23px", height: "23px" }} />
-                                )}
-                              </Box>
-                            </Box>
+                            <Box sx={{ display: "flex", marginRight: 2, alignItems: "center" }}>
+  {camera.detections &&
+    camera.detections.some(
+      (d) => (d.analytics_type_id === 6 || d.analytics_type_id === 7) && d.status === 1
+    ) && (
+      <img
+        src={Person_detection}
+        alt="Person Detection"
+        style={{ width: "23px", height: "23px" }}
+      />
+    )}
+</Box>
+<Box sx={{ display: "flex", marginRight: 2, alignItems: "center" }}>
+  {camera.detections &&
+    camera.detections.some(
+      (d) => d.analytics_type_id === 3 && d.status === 1
+    ) && (
+      <img
+        src={vehicle_detection}
+        alt="Vehicle Detection"
+        style={{ width: "23px", height: "23px" }}
+      />
+    )}
+</Box>
+</Box>
                           </TableCell>
                           <TableCell sx={{ paddingY: "10px", color: "#111314", ...commonStyles, fontWeight: "bold", fontSize: { md: "12px", sm: "12px" }, color: camera?.healthy_info?.is_online === true ? "green" : "red" }}>
                             {camera?.healthy_info?.is_online === true ? "Online" : "Offline"}
