@@ -94,7 +94,6 @@ const Incident = () => {
 
   // alerts
   const todayVehiclealerts = filteredVehicleData?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
-  console.log("todayVehiclealerts", todayVehiclealerts);
 
   const filteredDataStartDate = dataList.filter(item => {
     const itemDate = moment(item.date_time, 'YYYY-MM-DD');
@@ -118,6 +117,13 @@ const Incident = () => {
   // Difference
   const percentagePeopleEnter = (((totalPeopleEnterToday - totalPeopleEnter) / totalPeopleEnter) * 100).toFixed(2);
   const percentageVehicleOccupancy = (((todayVehiclealerts - totalVehiclealerts) / totalVehiclealerts) * 100).toFixed(2);
+  let percentageVehicleAlerts;
+  if (totalVehiclealerts !== 0 && !isNaN(last7Vehiclealerts)) {
+    percentageVehicleAlerts = (((todayVehiclealerts - last7Vehiclealerts) / last7Vehiclealerts) * 100).toFixed(2);
+  } else {
+    // Handle the case where totalVehiclealerts is zero or undefined
+    percentageVehicleAlerts = 0; // Or any other appropriate value or message
+  }
 
   const [heatmapSeries, setHeatmapSeries] = useState([]);
 
@@ -182,7 +188,7 @@ const Incident = () => {
       title: "Vehicle Alerts",
       mainValue: todayVehiclealerts,
       subValue: last7Vehiclealerts,
-      percentage: percentageVehicleOccupancy,
+      percentage: percentageVehicleAlerts,
     },
   ];
 
