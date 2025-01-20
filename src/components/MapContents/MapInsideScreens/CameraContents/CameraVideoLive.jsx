@@ -1,146 +1,150 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, Button } from '@mui/material';
-import flv from 'flv.js'; // Import flv.js
-import { useDispatch, useSelector } from 'react-redux';
-import { getdeviceplay } from '../../../../redux/apiResponse/vecalertSlice';
-import { logDOM } from '@testing-library/react';
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { selectToken } from '../../../../redux/apiResponse/loginApiSlice';
-
-
-const BaseUrl = process.env.REACT_APP_API_URL;
-const PublicUrl = process.env.PUBLIC_URL
-
-const LiveVideo = ({ cameraId }) => {
-  const dispatch = useDispatch();
-  const token = useSelector(selectToken);
-  const deviceplaylivestram = useSelector((state) => state.VecAlert.deviceplaylivestramList);
-  const videoRef = useRef(null); 
-  const [flvPlayer, setFlvPlayer] = useState(null); 
-  const [videoReady, setVideoReady] = useState(false); 
-  const [userInteracted, setUserInteracted] = useState(false); 
-  const [showNoStreamMessage, setShowNoStreamMessage] = useState(false);
-  const [alertData, setAlertData] = useState([]);
+import { useSelector } from "react-redux";
+import { selectToken } from "../../../../redux/apiResponse/loginApiSlice";
+import { Box, CircularProgress } from "@mui/material";
+const CameraVideoLive = ({ cameraId }) => {
+  const [webrtcUrl, setWebrtcUrl] = useState("");
   const [loading, setLoading] = useState(true);
-  // useEffect(() => {
-  //   dispatch(getdeviceplay({ camera_id: cameraId }));
-  // }, [dispatch, cameraId]);
-
-    useEffect(() => {
-    if (videoReady && flvPlayer) {
-      flvPlayer.play();
-    }
-  }, [videoReady, flvPlayer]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const response = await axios.post(
-                `${BaseUrl}/api/camera/play`,
-                { camera_id: cameraId },
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/x-www-form-urlencoded", 
-                  },
-                }
-            );
-            setAlertData(response.data);
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.error('Error fetching camera data:', error);
-          
-        }
-    };
-
-    fetchData();
-}, [BaseUrl, token]);
-
-
-  useEffect(() => {
-    if (videoReady && flvPlayer) {
-      flvPlayer.play();
-    }
-  }, []);
-  
-
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (videoElement && flv.isSupported() && alertData.data?.flvUrl) {
-      const player = flv.createPlayer({
-        type: 'flv',
-        url: alertData.data?.flvUrl,
-      });
-      player?.attachMediaElement(videoElement);
-      player?.load();
-      setFlvPlayer(player);
-
-      videoElement.addEventListener('canplaythrough', () => {
-        setVideoReady(true); 
-      });
-
-      return () => {
-        player?.destroy(); 
-      };
-    } else {
-      setShowNoStreamMessage(true);
-    }
-  }, [alertData?.data?.flvUrl]);
-
-  const handlePlay = () => {
-    const videoElement = videoRef?.current;
-    if (userInteracted && flvPlayer && videoElement) {
-      videoElement?.play().catch((error) => {
-          console.error('Failed to play video:', error);
-      });
-    }
-  };
+  const videoRef = useRef(null);
+  const peerRef = useRef(null); // Added peer reference for WebRTC connection
+  const BaseUrl = process.env.REACT_APP_API_URL;
+  const PublicUrl = process.env.PUBLIC_URL;
+  const token = useSelector(selectToken);
 
   const handleError = (e) => {
     e.target.src = `${PublicUrl}/assets/images/novideo.png`;
     e.target.alt = "No Image";
-};
+  };
+
+  useEffect(() => {
+    const fetchWebrtcUrl = async () => {
+      try {
+        const response = await axios.post(
+          `${BaseUrl}/api/camera/play`,
+          { camera_id: cameraId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        );
+
+        if (response.data.code === 200) {
+          setWebrtcUrl(response.data.data.webrtcUrl);
+        } else {
+          console.error("Error: Unexpected API response", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching camera data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWebrtcUrl();
+  }, [BaseUrl, token, cameraId]);
+
+  useEffect(() => {
+    let player=null;
+    if (window.ZLMRTCClient && webrtcUrl!=="") {
+     
+      player = new window.ZLMRTCClient.Endpoint(
+        {
+            element: videoRef.current,
+            debug: true,// 是否打印日志
+            zlmsdpUrl:webrtcUrl,//流地址
+            simulcast:false,
+            useCamera:true,
+            audioEnable:true,
+            recvOnly:true,
+            videoEnable:true,
+            resolution:{w:1280,h:720},
+            usedatachannel:false,
+        }
+    );
+    
+    player.on(window.ZLMRTCClient.Events.WEBRTC_ICE_CANDIDATE_ERROR,function(e)
+    {
+      // ICE 协商出错
+      console.log('ICE 协商出错');
+    });
+
+    player.on(window.ZLMRTCClient.Events.WEBRTC_ON_REMOTE_STREAMS,function(e)
+    {
+      //获取到了远端流，可以播放
+      console.log('播放成功',e.streams);
+    });
+
+    player.on(window.ZLMRTCClient.Events.WEBRTC_OFFER_ANWSER_EXCHANGE_FAILED,function(e)
+    {
+      // offer anwser 交换失败
+      console.log('offer anwser 交换失败',e);
+    });
+
+    
+
+    player.on(window.ZLMRTCClient.Events.CAPTURE_STREAM_FAILED,function(s)
+    {
+      // 获取本地流失败
+      console.log('获取本地流失败',"failed");
+    });
+
+    player.on(window.ZLMRTCClient.Events.WEBRTC_ON_CONNECTION_STATE_CHANGE,function(state)
+    {
+      // RTC 状态变化 ,详情参考 https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/connectionState
+      console.log("player",player);
+      console.log('当前状态==>',state);
+    });
+
+    player.on(window.ZLMRTCClient.Events.WEBRTC_ON_DATA_CHANNEL_OPEN,function(event)
+    {
+      console.log('rtc datachannel 打开 :',event);
+    });
+
+    
+    player.on(window.ZLMRTCClient.Events.WEBRTC_ON_DATA_CHANNEL_ERR,function(event)
+    {
+      console.log('rtc datachannel 错误 :',event);
+    });
+    player.on(window.ZLMRTCClient.Events.WEBRTC_ON_DATA_CHANNEL_CLOSE,function(event)
+    {
+      console.log('rtc datachannel 关闭 :',event);
+    });
+    console.log("testing");
+    
+   
+    }
+  }, [webrtcUrl]);
 
   return (
-    <Box sx={{ padding: "0px !important", height:"50vh"  }}>
-      {showNoStreamMessage ? (
-        <video
-          ref={videoRef}
-          width="100%"
-          height="100%"
-          
-          controls
-          style={{ borderRadius: "10px",objectFit:"cover" }}
-          onClick={handlePlay}
-          onError={handleError}
-        ></video>
-      ) : (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            src={PublicUrl + "/assets/images/novideo.png"} 
-            alt="No Image"
-            style={{ width: "92%", height: "80%", objectFit: "cover" }}
-          />
-        </div>
-      )}
-      {/* <Button
-        variant="outlined"
-        color="error"
-        sx={{
-          position: "absolute",
-          bottom: "10px",
-          right: "10px",
-          zIndex: 1,
-        }}
-       
-        disabled={!userInteracted} 
-      >
-        Live
-      </Button> */}
-    </Box>
+    <div style={{ textAlign: "center" }}>
+    {loading ? (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh",backgroundColor:"#333333",width:"100%" }}>
+         <CircularProgress  style={{color:"#000",}}/>
+      </div>
+    ) : (
+      <Box
+      component="video"
+      ref={videoRef}
+      width="100%"
+      sx={{
+        height: "100%",
+        borderRadius: '10px',
+        objectFit: 'cover',
+      }}
+      controls
+      autoPlay
+      onError={handleError}
+    />
+        
+    )}
+  </div>
+  
   );
+
+  
 };
 
-export default LiveVideo;
-
+export default CameraVideoLive;
