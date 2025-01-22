@@ -18,6 +18,7 @@ import { fetchDataList, fetchCountListHour, fetchLast7Count } from '../../redux/
 import { fetchCountingByProperty, fetchCountingByZone } from '../../redux/apiResponse/insightSlice';
 import { fetchDeviceStatistics } from '../../redux/apiResponse/deviceSlice';
 import { fetchVehicleData } from '../../redux/apiResponse/alertSlice';
+import HorizontalBarChart from './Charts/HorizontalBarChart';
 
 const BaseUrl = process.env.REACT_APP_API_URL;
 const PublicUrl = process.env.PUBLIC_URL
@@ -196,8 +197,38 @@ const Overview = () => {
     },
   ];
 
+//gender data
+  const totalGenderData = dataList.reduce(
+    (acc, item) => {
+      acc.male += item.gender_dst.male;
+      acc.female += item.gender_dst.female;
+      return acc;
+    },
+    { male: 0, female: 0 }
+  );
+  const genderSeries = [totalGenderData.male, totalGenderData.female];
 
+  const aggregatedAgeData = dataList.reduce(
+    (acc, day) => {
+      acc.less_20 += day.age_dst.less_20;
+      acc["20_40"] += day.age_dst["20_40"];
+      acc["40_60"] += day.age_dst["40_60"];
+      acc.more_60 += day.age_dst.more_60;
+      return acc;
+    },
+    { less_20: 0, "20_40": 0, "40_60": 0, more_60: 0 }
+  );
 
+  // Prepare the data for the chart
+  const categories = ["Less than 20", "20-40", "40-60", "More than 60"];
+  const seriesData = [
+    aggregatedAgeData.less_20,
+    aggregatedAgeData["20_40"],
+    aggregatedAgeData["40_60"],
+    aggregatedAgeData.more_60,
+  ];
+
+  //card data
   const cardData = [
     {
       background: 'linear-gradient(302deg, #01669a 100%, #1b3664 2%)',
@@ -262,10 +293,10 @@ const Overview = () => {
           {/* Charts */}
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} my={2.5} gap={2}>
             <Grid container spacing={2.5}>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={8}>
                 <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={'#ef7b73'} markercolors={'#ef7b73'} />
               </Grid>
-              <Grid item xs={12} md={4}>
+              {/* <Grid item xs={12} md={4}>
                 {StatData?.data?.map?.((rowData, index) => (
                   <div key={index}>
                     <PieChart
@@ -276,7 +307,7 @@ const Overview = () => {
                     />
                   </div>
                 ))}
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} md={4}>
                 <RadialBarChart
                   series={[onlinePercentage, offlinePercentage]}
@@ -284,6 +315,21 @@ const Overview = () => {
                   title="Camera Status"
                   colors={['#1BBAFD', '#FF5733']}
                 />
+              </Grid>
+              <Grid item xs={12} md={7}>
+                <HorizontalBarChart
+                title={"Age Distribution"}
+                seriesData ={seriesData}
+                categories={categories}
+                />
+              </Grid>
+              <Grid item xs={12} md={5}>
+              <PieChart
+                      series={genderSeries}
+                      labels={['Male', 'Female',]}
+                      title="Gender Distribution"
+                      colors={['#01669a', '#ef7b73']}
+                    />
               </Grid>
               <Grid item xs={12} md={6}>
                 <BarChart
