@@ -174,27 +174,33 @@ const Login = () => {
         method: "POST",
         url: `${process.env.REACT_APP_API_URL}/api/auth`,
       });
-
+  
       const { data } = response.data;
-
+  
       if (data) {
         dispatch(setAuthentication(data));
         await fetchCompanyLogo(token);
         toast.success("Login successful");
-        navigate("/map");
+  
+        // Retrieve stored URL (if exists)
+        const redirectUrl = sessionStorage.getItem("redirectAfterLogin") || "/map";
+        sessionStorage.removeItem("redirectAfterLogin"); // Clean up after use
+        
+        navigate(redirectUrl);
       } else {
         throw new Error("User data not found");
       }
     } catch (error) {
       console.error("Error authenticating:", error);
       dispatch(setAuthenticationError("Failed to authenticate"));
-      toast.error('User does not have valid access level', { autoClose: 500 });
+      toast.error("User does not have valid access level", { autoClose: 500 });
       setIsLoading(false);
       setIsButtonDisabled(false);
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const fetchCompanyLogo = async (token) => {
     try {

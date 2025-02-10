@@ -1,20 +1,23 @@
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { getTokenExpiry } from "./redux/apiResponse/loginApiSlice";
+import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { isTokenValid } from './utils';
-import { selectToken } from "./redux/apiResponse/loginApiSlice";
+import { getTokenExpiry, selectToken } from "./redux/apiResponse/loginApiSlice";
 import { setShowNavbar } from "./redux/apiResponse/navBarSlice";
-export const PrivateRoute = ({children}) => {
+import { isTokenValid } from './utils';
+
+export const PrivateRoute = ({ children }) => {
     const dispatch = useDispatch();
+    const location = useLocation();
     const expireTime = useSelector(getTokenExpiry);
     const token = useSelector(selectToken);
 
-    if(isTokenValid(expireTime, token)){
+    if (isTokenValid(expireTime, token)) {
         return children;
-    }else{
+    } else {
         dispatch(setShowNavbar(false));
-        return <Navigate to={'/login'} />
+
+        // Store the attempted URL before redirecting to login
+        sessionStorage.setItem("redirectAfterLogin", location.pathname + location.search);
+
+        return <Navigate to="/login" replace />;
     }
-    
-}
+};
