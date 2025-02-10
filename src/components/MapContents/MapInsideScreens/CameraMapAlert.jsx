@@ -76,7 +76,7 @@ const CameraMapAlert = () => {
     };
 
     const handleArrowClick = () => {
-        navigate(-1);
+        navigate("/alerts");
     };
 
     const handleTabChange = (event, newValue,) => {
