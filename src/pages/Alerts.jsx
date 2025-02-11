@@ -10,7 +10,7 @@ import { selectToken } from '../redux/apiResponse/loginApiSlice';
 import Loader from '../components/Loader';
 import dayjs from 'dayjs';
 import { selectedPropertyByUser } from '../redux/apiResponse/propertySlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { setSelectedDateSlice, setIsAlertInfo } from '../redux/apiResponse/alertInsideSlice';
@@ -27,6 +27,7 @@ const commonStyles = {
 };
 const Alerts = () => {
   const [alertData, setAlertData] = useState([]);
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const token = useSelector(selectToken);
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,12 +38,15 @@ const Alerts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const date = useSelector(state => state.alertInside.selectedDate)
-  const [selectedDate, setSelectedDate] = useState(date);
+  const createTime = location.state?.createTime; 
+    const dateOnly = createTime ? createTime.split(" ")[0] : ""; 
+  const [selectedDate, setSelectedDate] = useState(dateOnly || date);
   const [isAlert, setIsAlert] = useState([]);
   const [anchorSortEl, setAnchorSortEl] = useState(null);
+console.log("date",dateOnly);
 
   const handleTableRowClick = (row) => {
-    navigate(`/cameramapalert/${row.id}`, { state: { plate: row?.plate } });
+    navigate(`/cameramapalert/${row.id}?property_id=${seleProp?.id}&start_time=${selectedDate}&end_time=${selectedDate}&plate=${row?.plate }`);
   };
 
   useEffect(() => {

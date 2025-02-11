@@ -36,6 +36,14 @@ const commonStyles = {
 };
 const CameraMapAlert = () => {
     const { alertId } = useParams();
+    const location = useLocation();
+    const dispatch = useDispatch()
+    const searchParams = new URLSearchParams(location.search);
+
+    const propertyId = searchParams.get("property_id");
+    const startTime = searchParams.get("start_time");
+    const endTime = searchParams.get("end_time");
+    const plate = searchParams.get("plate");
     const [value, setValue] = React.useState(0);
     const [selectedTab, setSelectedTab] = useState(0);
     const navigate = useNavigate();
@@ -53,12 +61,11 @@ const CameraMapAlert = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterdata, setFilteredData] = useState([]);
     const morningStartTime = moment(today).format('YYYY-MM-DD');
-    const propertyId = seleProp.id;
+    
     const eveningEndTime = moment(today).format('YYYY-MM-DD');
     const [selectedId, setSelectedId] = useState(null)
-    const location = useLocation();
-    const dispatch = useDispatch()
-    const plate = location.state ? location.state.plate : null;
+
+  
 
 
 
@@ -76,7 +83,7 @@ const CameraMapAlert = () => {
     };
 
     const handleArrowClick = () => {
-        navigate("/alerts");
+        navigate("/alerts", { state: { createTime: selectedId?.create_time } });
     };
 
     const handleTabChange = (event, newValue,) => {
@@ -100,7 +107,7 @@ const CameraMapAlert = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    `${BaseUrl}/api/vec_alert/trace?property_id=${propertyId}&plate_no=${plate}&start_time=${date}&end_time=${date}`,
+                    `${BaseUrl}/api/vec_alert/trace?property_id=${propertyId}&plate_no=${plate}&start_time=${startTime}&end_time=${startTime}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -180,9 +187,9 @@ const CameraMapAlert = () => {
             try {
                 const response = await axios.get(`${BaseUrl}/api/vec_alert/trace`, {
                     params: {
-                        property_id: seleProp?.id,
-                        start_time: date,
-                        end_time: date,
+                        property_id: propertyId,
+                        start_time: startTime,
+                        end_time: startTime,
                         plate_no: plate,
                     },
                     headers: {
