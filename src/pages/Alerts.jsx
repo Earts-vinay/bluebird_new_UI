@@ -258,11 +258,12 @@ console.log("date",dateOnly);
                                 <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
                               )}
                               <Box display="flex" flexDirection="column" p={0} sx={{ fontSize: { md: "14px", sm: "14px" }, ...commonStyles, color: "#657889" }} fontWeight="bold">
-                                {row.plate}
-                                <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
-                                  {row.is_in_property === 1 ? "Still on property" : row.is_in_property === 0 ? "Not on property" : ""}
-                                </Typography>
-                              </Box>
+  {!(row.type_id === 1 && row.event_type_id === 2) && row.plate}
+  <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
+    {row.is_in_property === 1 ? "Still on property" : row.is_in_property === 0 ? "Not on property" : ""}
+  </Typography>
+</Box>
+
                             </Box>
                           </TableCell>
                           <TableCell sx={{ paddingY: "10px", ...commonStyles }}>

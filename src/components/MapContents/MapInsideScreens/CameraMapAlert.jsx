@@ -61,11 +61,11 @@ const CameraMapAlert = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterdata, setFilteredData] = useState([]);
     const morningStartTime = moment(today).format('YYYY-MM-DD');
-    
+
     const eveningEndTime = moment(today).format('YYYY-MM-DD');
     const [selectedId, setSelectedId] = useState(null)
 
-  
+
 
 
 
@@ -273,42 +273,42 @@ const CameraMapAlert = () => {
                                     <Typography px={1} sx={commonStyles}> {selectedId?.pole?.name}</Typography>
                                 </Box>
                                 <Tabs
-    value={selectedTab}
-    onChange={handleTabChange}
-    sx={{
-        borderBottom: "none",
-        ".MuiTabs-flexContainer": {
-            backgroundColor: "white",
-            height: "80%",
-            borderRadius: "5px",
-            boxShadow: "0 0 5px 0 rgba(36, 101, 233, 0.5)",
-            marginX: "10px",
-            fontWeight: "bold",
-            ...commonStyles
-        },
-    }}
-    TabIndicatorProps={{ style: { display: "none" } }}
-    size="small"
->
-    {[
-        " Event Video",
-        " Live Streaming",
-        ...(selectedId?.type_id !== 0 ? [" Gen AI View"] : []),
-    ].map((label, index) => (
-        <Tab
-            key={index}
-            label={label}
-            sx={{
-                textTransform: "capitalize",
-                backgroundColor: selectedTab === index && "#BCD0F8",
-                color: selectedTab === index && "black !important",
-                minHeight: "30px !important",
-                margin: "5px",
-                borderRadius: "5px",
-            }}
-        />
-    ))}
-</Tabs>
+                                    value={selectedTab}
+                                    onChange={handleTabChange}
+                                    sx={{
+                                        borderBottom: "none",
+                                        ".MuiTabs-flexContainer": {
+                                            backgroundColor: "white",
+                                            height: "80%",
+                                            borderRadius: "5px",
+                                            boxShadow: "0 0 5px 0 rgba(36, 101, 233, 0.5)",
+                                            marginX: "10px",
+                                            fontWeight: "bold",
+                                            ...commonStyles
+                                        },
+                                    }}
+                                    TabIndicatorProps={{ style: { display: "none" } }}
+                                    size="small"
+                                >
+                                    {[
+                                        " Event Video",
+                                        " Live Streaming",
+                                        ...(selectedId?.type_id !== 0 ? [" Gen AI View"] : []),
+                                    ].map((label, index) => (
+                                        <Tab
+                                            key={index}
+                                            label={label}
+                                            sx={{
+                                                textTransform: "capitalize",
+                                                backgroundColor: selectedTab === index && "#BCD0F8",
+                                                color: selectedTab === index && "black !important",
+                                                minHeight: "30px !important",
+                                                margin: "5px",
+                                                borderRadius: "5px",
+                                            }}
+                                        />
+                                    ))}
+                                </Tabs>
 
                             </Box>
 
@@ -372,7 +372,7 @@ const CameraMapAlert = () => {
                                                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                                     <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
                                                         <Typography color="black" sx={{ fontSize: "14px" }}>
-                                                         {selectedId.event_type_name}
+                                                            {selectedId.event_type_name}
                                                         </Typography>
                                                         <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", paddingTop: "5px" }}>
                                                             {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
@@ -451,23 +451,27 @@ const CameraMapAlert = () => {
                                                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                                     <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
                                                         <Typography color="black" sx={{ fontSize: "14px" }}>
-                                                        {selectedId.event_type_name}
+                                                            {selectedId.event_type_name}
                                                         </Typography>
                                                         <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", paddingTop: "5px" }}>
                                                             {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
                                                         </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            License Plate: {selectedId?.plate || ''}
-                                                        </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            Type of Vehicle: {selectedId?.record?.car_type || ''}
-                                                        </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            Color: {selectedId?.record?.color || ''}
-                                                        </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            Make: {selectedId?.record?.brand || ''}
-                                                        </Typography>
+                                                        {!(selectedId?.type_id === 1 && selectedId?.event_type_id === 2) && (
+                                                            <>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    License Plate: {selectedId?.plate || ''}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    Type of Vehicle: {selectedId?.record?.car_type || ''}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    Color: {selectedId?.record?.color || ''}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    Make: {selectedId?.record?.brand || ''}
+                                                                </Typography>
+                                                            </>
+                                                        )}
                                                         <Typography sx={{ fontSize: "12px" }}>
                                                             Event Captured: {selectedId?.create_time || ''}
                                                         </Typography>
@@ -650,23 +654,27 @@ const CameraMapAlert = () => {
                                                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                                     <CardContent sx={{ flex: '1 0 auto', fontSize: "10px" }}>
                                                         <Typography color="black" sx={{ fontSize: "14px" }}>
-                                                        {selectedId?.event_type_name}
+                                                            {selectedId?.event_type_name}
                                                         </Typography>
                                                         <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}>
                                                             {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}
                                                         </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            License Plate: {genrowData?.record?.plate || ''}
-                                                        </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            Type of Vehicle: {genrowData?.record?.car_type || ''}
-                                                        </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            Color: {genrowData?.record?.color || ''}
-                                                        </Typography>
-                                                        <Typography sx={{ fontSize: "12px" }}>
-                                                            Make: {genrowData?.record?.brand || ''}
-                                                        </Typography>
+                                                        {!(genrowData?.type_id === 1 && genrowData?.event_type_id === 2) && (
+                                                            <>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    License Plate: {genrowData?.plate || ''}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    Type of Vehicle: {genrowData?.record?.car_type || ''}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    Color: {genrowData?.record?.color || ''}
+                                                                </Typography>
+                                                                <Typography sx={{ fontSize: "12px" }}>
+                                                                    Make: {genrowData?.record?.brand || ''}
+                                                                </Typography>
+                                                            </>
+                                                        )}
                                                         <Typography sx={{ fontSize: "12px" }}>
                                                             Event Captured: {genrowData?.create_time || ''}
                                                         </Typography>
