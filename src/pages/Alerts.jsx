@@ -258,7 +258,7 @@ const Alerts = () => {
                                 <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
                               )}
                            <Box display="flex" flexDirection="column" p={0} sx={{ fontSize: { md: "14px", sm: "14px" }, ...commonStyles, color: "#657889" }} fontWeight="bold">
-  {(row.type_id === 1 && row.event_type_id === 1) && row.plate}
+
 
   {/* Event Type Name with Red Color Based on Conditions */}
   {(row.type_id === 0 && row.event_type_id === 2) ||
@@ -268,7 +268,7 @@ const Alerts = () => {
       {row.event_type_name}
     </Typography>
   ) : null}
-
+  {(row.type_id === 1 && row.event_type_id === 1) && row.plate}
   {/* Show is_in_property condition only for Blacklisted Vehicle Detected */}
   {row.type_id === 1 && row.event_type_id === 1 && (
     <>
