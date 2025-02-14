@@ -293,7 +293,7 @@ const CameraMapAlert = () => {
                                     {[
                                         " Event Video",
                                         " Live Streaming",
-                                        ...(selectedId?.type_id !== 0 ? [" Gen AI View"] : []),
+                                        ...(selectedId?.type_id === 1 && selectedId?.event_type_id === 1 ? [" Gen AI View"] : []),
                                     ].map((label, index) => (
                                         <Tab
                                             key={index}
@@ -453,9 +453,11 @@ const CameraMapAlert = () => {
                                                         <Typography color="black" sx={{ fontSize: "14px" }}>
                                                             {selectedId.event_type_name}
                                                         </Typography>
-                                                        <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", paddingTop: "5px" }}>
-                                                            {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
-                                                        </Typography>
+                                                        {selectedId?.type_id === 1 && selectedId?.event_type_id === 1 && (
+                                                            <Typography variant="body-2" sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
+                                                                {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
+                                                            </Typography>
+                                                        )}
                                                         {!(selectedId?.type_id === 1 && selectedId?.event_type_id === 2) && (
                                                             <>
                                                                 <Typography sx={{ fontSize: "12px" }}>
@@ -575,9 +577,12 @@ const CameraMapAlert = () => {
                                                             <Typography color="black" sx={{ fontSize: "14px" }}>
                                                                 Person Detected
                                                             </Typography>
-                                                            <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}>
-                                                                {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}
-                                                            </Typography>
+
+                                                            {genrowData?.type_id === 1 && genrowData?.event_type_id === 1 && (
+                                                                <Typography variant="body-2" sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
+                                                                    {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}
+                                                                </Typography>
+                                                            )}
                                                             <Typography sx={{ fontSize: "12px" }}>
                                                                 Age: {genrowData?.record?.plate || ''}
                                                             </Typography>
@@ -656,9 +661,12 @@ const CameraMapAlert = () => {
                                                         <Typography color="black" sx={{ fontSize: "14px" }}>
                                                             {selectedId?.event_type_name}
                                                         </Typography>
-                                                        <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles, paddingTop: "5px" }}>
-                                                            {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}
-                                                        </Typography>
+                                                        {genrowData?.type_id === 1 && genrowData?.event_type_id === 1 && (
+                                                            <Typography variant="body-2" sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
+                                                                {genrowData?.is_in_property === 1 ? "Still on property" : genrowData?.is_in_property === 0 ? "Not on property" : ""}
+                                                            </Typography>
+                                                        )}
+
                                                         {!(genrowData?.type_id === 1 && genrowData?.event_type_id === 2) && (
                                                             <>
                                                                 <Typography sx={{ fontSize: "12px" }}>

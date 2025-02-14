@@ -38,15 +38,15 @@ const Alerts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const date = useSelector(state => state.alertInside.selectedDate)
-  const createTime = location.state?.createTime; 
-    const dateOnly = createTime ? createTime.split(" ")[0] : ""; 
+  const createTime = location.state?.createTime;
+  const dateOnly = createTime ? createTime.split(" ")[0] : "";
   const [selectedDate, setSelectedDate] = useState(dateOnly || date);
   const [isAlert, setIsAlert] = useState([]);
   const [anchorSortEl, setAnchorSortEl] = useState(null);
-console.log("date",dateOnly);
+  console.log("date", dateOnly);
 
   const handleTableRowClick = (row) => {
-    navigate(`/cameramapalert/${row.id}?property_id=${seleProp?.id}&start_time=${selectedDate}&end_time=${selectedDate}&plate=${row?.plate }`);
+    navigate(`/cameramapalert/${row.id}?property_id=${seleProp?.id}&start_time=${selectedDate}&end_time=${selectedDate}&plate=${row?.plate}`);
   };
 
   useEffect(() => {
@@ -257,12 +257,29 @@ console.log("date",dateOnly);
                               ) : (
                                 <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
                               )}
-                              <Box display="flex" flexDirection="column" p={0} sx={{ fontSize: { md: "14px", sm: "14px" }, ...commonStyles, color: "#657889" }} fontWeight="bold">
-  {!(row.type_id === 1 && row.event_type_id === 2) && row.plate}
-  <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
-    {row.is_in_property === 1 ? "Still on property" : row.is_in_property === 0 ? "Not on property" : ""}
-  </Typography>
+                           <Box display="flex" flexDirection="column" p={0} sx={{ fontSize: { md: "14px", sm: "14px" }, ...commonStyles, color: "#657889" }} fontWeight="bold">
+  {(row.type_id === 1 && row.event_type_id === 1) && row.plate}
+
+  {/* Event Type Name with Red Color Based on Conditions */}
+  {(row.type_id === 0 && row.event_type_id === 2) ||
+  (row.type_id === 1 && row.event_type_id === 2) ||
+  (row.type_id === 1 && row.event_type_id === 1) ? (
+    <Typography variant="body-2" sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
+      {row.event_type_name}
+    </Typography>
+  ) : null}
+
+  {/* Show is_in_property condition only for Blacklisted Vehicle Detected */}
+  {row.type_id === 1 && row.event_type_id === 1 && (
+    <>
+    <Typography variant="p" sx={{ textAlign: "start", py: "0px",fontSize:"12px", ...commonStyles }}>
+      {row.is_in_property === 1 ? "Still on property" : row.is_in_property === 0 ? "Not on property" : ""}
+    </Typography>
+    </>
+   
+  )}
 </Box>
+
 
                             </Box>
                           </TableCell>
