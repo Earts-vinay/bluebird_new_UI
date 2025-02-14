@@ -877,7 +877,24 @@ const CameraMapAlert = () => {
                                                             ) : (
                                                                 <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
                                                             )}</TableCell>
-                                                            <TableCell>{item.record?.plate}<Typography sx={{ color: 'red', fontSize: "10px", ...commonStyles }}> {item.is_in_property === 1 ? "Still on property" : item.is_in_property === 0 ? "Not on property" : ""}</Typography></TableCell>
+                                                              <TableCell>  
+                                                            {(item?.type_id === 0 && item?.event_type_id === 2) ||
+                                                          (item?.type_id === 1 && item?.event_type_id === 2) ||
+                                                          (item?.type_id === 1 && item?.event_type_id === 1) ? (
+                                                            <Typography variant="body-2" sx={{ color: "red", textAlign: "start",fontSize:"11px", py: "0px", ...commonStyles }}>
+                                                              {item?.event_type_name}
+                                                            </Typography>
+                                                          ) : null} <br/>
+                                                          {(item?.type_id === 1 && item?.event_type_id === 1) && item?.plate} <br/>
+                                                          {/* Show is_in_property condition only for Blacklisted Vehicle Detected */}
+                                                          {item?.type_id === 1 && item?.event_type_id === 1 && (
+                                                            <>
+                                                            <Typography variant="p" sx={{ textAlign: "start", py: "0px",fontSize:"12px", ...commonStyles }}>
+                                                              {item?.is_in_property === 1 ? "Still on property" : item?.is_in_property === 0 ? "Not on property" : ""}
+                                                            </Typography>
+                                                            </>
+                                                           
+                                                          )}</TableCell>
                                                             <TableCell>{item.create_time}</TableCell>
                                                         </TableRow>
                                                     ))}
