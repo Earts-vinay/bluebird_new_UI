@@ -798,7 +798,24 @@ const CameraMapAlert = () => {
                                                         ) : (
                                                             <img src={PublicUrl + '/assets/images/carx.svg'} alt="Car Icon" />
                                                         )}</TableCell>
-                                                        <TableCell>{selectedId?.record?.plate}<Typography sx={{ color: 'red', fontSize: "10px", ...commonStyles }}> {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}</Typography></TableCell>
+                                                        <TableCell>  
+                                                            {(selectedId?.type_id === 0 && selectedId?.event_type_id === 2) ||
+                                                          (selectedId?.type_id === 1 && selectedId?.event_type_id === 2) ||
+                                                          (selectedId?.type_id === 1 && selectedId?.event_type_id === 1) ? (
+                                                            <Typography variant="body-2" sx={{ color: "red", textAlign: "start",fontSize:"11px", py: "0px", ...commonStyles }}>
+                                                              {selectedId?.event_type_name}
+                                                            </Typography>
+                                                          ) : null} <br/>
+                                                          {(selectedId?.type_id === 1 && selectedId?.event_type_id === 1) && selectedId?.plate} <br/>
+                                                          {/* Show is_in_property condition only for Blacklisted Vehicle Detected */}
+                                                          {selectedId?.type_id === 1 && selectedId?.event_type_id === 1 && (
+                                                            <>
+                                                            <Typography variant="p" sx={{ textAlign: "start", py: "0px",fontSize:"12px", ...commonStyles }}>
+                                                              {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
+                                                            </Typography>
+                                                            </>
+                                                           
+                                                          )}</TableCell>
                                                         <TableCell>{selectedId?.create_time}</TableCell>
                                                     </TableRow>
                                                 ) : (
