@@ -374,9 +374,12 @@ const CameraMapAlert = () => {
                                                         <Typography color="black" sx={{ fontSize: "14px" }}>
                                                             {selectedId.event_type_name}
                                                         </Typography>
-                                                        <Typography variant='body-2' sx={{ color: "red", textAlign: "start", py: "0px", paddingTop: "5px" }}>
-                                                            {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
-                                                        </Typography>
+                                                        {(
+  (!selectedId?.type_id === 0 && !selectedId?.event_type_id === 2)) && (
+    <Typography variant="body-2" sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
+        {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
+    </Typography>
+)}
                                                         {/* <Typography sx={{ fontSize: "12px" }}>
                                                             Age: {selectedId?.plate || ''}
                                                         </Typography>
@@ -453,7 +456,7 @@ const CameraMapAlert = () => {
                                                         <Typography color="black" sx={{ fontSize: "14px" }}>
                                                             {selectedId.event_type_name}
                                                         </Typography>
-                                                        {selectedId?.type_id === 1 && selectedId?.event_type_id === 1 && (
+                                                        {selectedId?.type_id === 1 && selectedId?.event_type_id === 1 &&  (
                                                             <Typography variant="body-2" sx={{ color: "red", textAlign: "start", py: "0px", ...commonStyles }}>
                                                                 {selectedId?.is_in_property === 1 ? "Still on property" : selectedId?.is_in_property === 0 ? "Not on property" : ""}
                                                             </Typography>
