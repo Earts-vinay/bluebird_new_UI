@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { Navbar } from './components';
 import { PrivateRoute } from "./PrivateRoute";
 import ActiveUser from './components/ActiveUser';
+import Cookies from "js-cookie";
  
 const Main = () => {
   const location = useLocation();
@@ -65,7 +66,7 @@ const Main = () => {
 function App() {
   useEffect(() => {
     // Check if the user is already authenticated
-    const storedToken = localStorage.getItem('token');
+    const storedToken = Cookies.get('token');
     if (storedToken) {
       // Do something with the token if needed
     }

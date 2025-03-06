@@ -19,6 +19,7 @@ import { setShowNavbar } from "../redux/apiResponse/navBarSlice";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { fetchUserById, fetchUserList, updateUserById } from '../redux/apiResponse/userSlice';
 import { setSelectedDateSlice, setSelectedMapListDateSlice, getIsAlertInfo, setIsAlertInfo } from "../redux/apiResponse/alertInsideSlice";
+import Cookies from "js-cookie";
 
 const PublicUrl = process.env.PUBLIC_URL
 const BaseUrl = process.env.REACT_APP_API_URL;
@@ -87,7 +88,7 @@ const Navbar = () => {
   const UserList = useSelector((state) => state.User.userdata);
 
   const today = moment().format('YYYY-MM-DD');
-  const storedToken = localStorage.getItem('token');
+  const storedToken = Cookies.get('token');
   const Authorization = `Bearer ${storedToken}`
 
   const handleCloseUserMenu = () => {

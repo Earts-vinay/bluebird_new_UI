@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import {selectToken} from './loginApiSlice';
-import {selectPropertyResponseData} from './propertySlice';
+import Cookies from "js-cookie";
+
 
 const BaseUrl = process.env.REACT_APP_API_URL;
 const selectedPropertyId = sessionStorage.getItem('selectedPropertyId');
@@ -11,7 +12,7 @@ const selectedPropertyId = sessionStorage.getItem('selectedPropertyId');
 export const fetchVecAlertList = createAsyncThunk(`/api/vec_alert/pole?property_id=2`,
  async (requestData, { getState }) => {
     try {
-      const token = getState().auth.token || localStorage.getItem('token');
+      const token = getState().auth.token || Cookies.get('token');
   
       const response = await axios.get(BaseUrl, {
         headers: {

@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 export const loginApiSlice = createSlice({
   name: "loginApi",
-  initialState: { token: null, user: null, error: null },
+  initialState: { token: null, user: null, expire: null, error: null },
   reducers: {
     setLoginApiResponse: (state, action) => {
       const { code, data, msg } = action.payload;
@@ -12,24 +13,25 @@ export const loginApiSlice = createSlice({
         state.expire = data.expire;
         state.error = null;
 
-        // Store token in localStorage as user_token
-        localStorage.setItem("user_token", data.token);
+        // Store token in cookies
+        Cookies.set("user_token", data.token, { expires: data.expire / (24 * 60 * 60) });
       } else {
         state.token = null;
         state.user = null;
         state.error = msg;
 
-        // Remove token from localStorage on failure
-        localStorage.removeItem("user_token");
+        // Remove token from cookies on failure
+        Cookies.remove("user_token");
       }
     },
     clearTokenAndUser: (state) => {
       state.token = null;
       state.user = null;
+      state.expire = null;
       state.error = null;
 
-      // Remove token from localStorage when logging out
-      localStorage.removeItem("user_token");
+      // Remove token from cookies when logging out
+      Cookies.remove("user_token");
     },
   },
 });
@@ -37,7 +39,7 @@ export const loginApiSlice = createSlice({
 export const { setLoginApiResponse, clearTokenAndUser } = loginApiSlice.actions;
 
 export const selectLoginApiResponse = (state) => state.loginApi;
-export const selectToken = () => localStorage.getItem('user_token');
+export const selectToken = () => Cookies.get("user_token");
 export const getTokenExpiry = (state) => state.loginApi.expire;
 
 export default loginApiSlice.reducer;

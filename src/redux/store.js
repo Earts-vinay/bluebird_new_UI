@@ -32,7 +32,7 @@ import countingReducer from '../redux/apiResponse/countingSlice';
 const rootPersistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: ['loginApi', 'onboardingcompany', 'dictionary', 'auth', 'getproperty', 'navBar'],
+  whitelist: [ 'onboardingcompany', 'dictionary', 'auth', 'getproperty', 'navBar'],
 };
 
 // Configuration for alertInside (session storage)
