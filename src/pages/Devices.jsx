@@ -204,7 +204,7 @@ console.log("dispalyList",dispalyList);
                         <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Device Name</TableCell>
                         <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Device ID</TableCell>
                         <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Pole Name</TableCell>
-                        <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Camera Model</TableCell>
+                        {/* <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Camera Model</TableCell> */}
                         <TableCell sx={{ fontWeight: "bold", paddingY: "20px", fontSize: { md: "16px", sm: "14px" }, ...commonStyles }}>Status</TableCell>
                       </TableRow>
                     </TableHead>
@@ -263,9 +263,9 @@ console.log("dispalyList",dispalyList);
         <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>
           {row.pole_name}
         </TableCell>
-        <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>
+        {/* <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles }}>
           {row.camera_model}
-        </TableCell>
+        </TableCell> */}
         <TableCell sx={{ fontSize: { md: "14px", sm: "14px" }, fontWeight: "bold", paddingY: "12px", color: "#657889", ...commonStyles, color: row.status === "Online" ? 'green' : 'red' }}>
           {row.status}
         </TableCell>

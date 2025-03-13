@@ -57,10 +57,12 @@ export const fetchAlertStatistics = createAsyncThunk("Alert/fetchAlertStatistics
   });
 
   
-  // Thunk to Get a Alert Stat By Property
+  // Thunk to Get a vechicle Alert Stat By Property
   export const fetchVehicleData = createAsyncThunk(
     'Alert/fetchVehicleData',
-    async ({ propertyId, startDate, endDate }, {getState, rejectWithValue }) => {
+    async ({ propertyId, startDate, endDate,type,typeId }, {getState, rejectWithValue }) => {
+     console.log("typpp",type);
+     
       const token = selectToken(getState());
       try {
         const response = await axios.get(`${BaseUrl}/api/vec_alert/property`, {
@@ -70,9 +72,44 @@ export const fetchAlertStatistics = createAsyncThunk("Alert/fetchAlertStatistics
           },
           params: {
             property_id: propertyId,
-            time_type: 'date',
+            time_type: type,
             start_time: startDate,
             end_time: endDate,
+            type_id	:typeId
+          },
+        });
+        console.log("responsive",response);
+
+        if (response.data?.code === 200 && response.data?.data?.length > 0) {
+          return response.data.data;
+        } else {
+          return rejectWithValue('No data found or invalid response');
+        }
+      } catch (error) {
+        return rejectWithValue(error.response?.data || 'Error fetching data');
+      }
+    }
+  );
+
+  // Thunk to Get a person Alert Stat By Property
+  export const fetchPersonData = createAsyncThunk(
+    'Alert/fetchPersonData',
+    async ({ propertyId, startDate, endDate,type,typeId }, {getState, rejectWithValue }) => {
+     console.log("typpp",type);
+     
+      const token = selectToken(getState());
+      try {
+        const response = await axios.get(`${BaseUrl}/api/vec_alert/property`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          params: {
+            property_id: propertyId,
+            time_type: type,
+            start_time: startDate,
+            end_time: endDate,
+            type_id	:typeId
           },
         });
         console.log("responsive",response);
@@ -214,6 +251,7 @@ const AlertSlice = createSlice({
     initialState:{
       alertList: [],
       vecAlert:[],
+      personAlerts:[],
       zoneAlert: [],
       status: 'idle',
       error: null,
@@ -269,6 +307,20 @@ const AlertSlice = createSlice({
             state.loading = false;
             state.error = action.payload || 'Error fetching data';
           })
+            //person_alert/property
+            .addCase(fetchPersonData.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+            })
+            .addCase(fetchPersonData.fulfilled, (state, action) => {
+              console.log("aaaaaaaaaaa",action.payload);
+              state.loading = false;
+              state.personAlerts = action.payload;
+            })
+            .addCase(fetchPersonData.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload || 'Error fetching data';
+            })
           ///api/vec_alert/zone
           .addCase(fetchZoneAlert.pending, (state) => {
             state.loading = true;

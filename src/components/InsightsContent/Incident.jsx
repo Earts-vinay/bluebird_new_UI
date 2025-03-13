@@ -9,7 +9,7 @@ import DonutChart from './Charts/DonutChart';
 import IncidentChart from './Charts/IncidentChart';
 import HeatmapChart from './Charts/HeatmapChart';
 import { fetchDataList, fetchCountListHour, fetchLast7Count } from '../../redux/apiResponse/countingSlice';
-import { fetchVehicleData, fetchZoneAlert } from '../../redux/apiResponse/alertSlice';
+import { fetchPersonData, fetchVehicleData, fetchZoneAlert } from '../../redux/apiResponse/alertSlice';
 
 const BaseUrl = process.env.REACT_APP_API_URL;
 const PublicUrl = process.env.PUBLIC_URL;
@@ -19,7 +19,11 @@ const Incident = () => {
   const token = useSelector(selectToken);
   const [zones, setZones] = useState([]);
   const [percents, setPercents] = useState([]);
+  const [dataLables, setDataLables] = useState([]);
+console.log("dataLables",dataLables);
+
   const [alertsInfo, setAlertsInfo] = useState([]);
+
   const seleProp = useSelector(selectedPropertyByUser);
   const moment = require('moment');
   const today = moment();
@@ -33,6 +37,7 @@ const Incident = () => {
   const endDate = endTime;
   const { dataList,countListHour,  last7Count } = useSelector((state) => state.counting);
   const vehicleData = useSelector((state) => state.Alert.vecAlert);
+  const personAlertsData = useSelector((state) => state.Alert.personAlerts);
   const zoneAlert = useSelector((state) => state.Alert.zoneAlert);
 
     //counting Api
@@ -41,7 +46,8 @@ const Incident = () => {
         dispatch(fetchDataList({ propertyId, startDate: startTime, endDate: endTime, token }));
         dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
         // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
-        dispatch(fetchVehicleData({propertyId, startDate, endDate }));
+        dispatch(fetchVehicleData({propertyId, startDate, endDate,type:"date",typeId:"1" }));
+        dispatch(fetchPersonData({propertyId, startDate, endDate,type:"date",typeId:"0" }));
         dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
       }
     }, [propertyId, token ]);
@@ -58,12 +64,15 @@ const Incident = () => {
     let total = 0;
     let Zones = [];
     let Percents = [];
+    let count = [];
     const a = zoneAlert.map((item, ind) => {
       const totalAlertsByItem = item.list.reduce((acc, cam) => {
         acc = acc + cam.resolved_alert_num + cam.unresolved_alert_num
         return acc;
       }, 0);
+      console.log("totalAlertsByItem",totalAlertsByItem);
       total = total + totalAlertsByItem;
+     
       return {
         id: item.id,
         alertsPerZone: totalAlertsByItem
@@ -75,8 +84,14 @@ const Incident = () => {
       const percent = item.alertsPerZone === 0 ? 0 : (item.alertsPerZone / total) * 100;
       Percents.push(percent);
     })
+    a.forEach((item, ind) => {
+      Zones.push(item.id);
+      const dataLable = item.alertsPerZone
+      count.push(dataLable);
+    })
     setZones(Zones);
     setPercents(Percents)
+   setDataLables(count)
   }, [zoneAlert])
 
   const zoneNames = zoneAlert.map(zone => zone.name);
@@ -86,6 +101,7 @@ const Incident = () => {
   const formattedDate = currentDate;
   const filteredData = dataList.filter(item => item.date_time.slice(0, 10) === formattedDate);
   const filteredVehicleData = vehicleData[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
+  const filteredPersonAlertsData = personAlertsData[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
 
   const totalPeopleEnterToday = filteredData.reduce((acc, item) => acc + item.people_enter, 0);
   const peopleOccupancyToday = filteredData.reduce((acc, item) => acc + item.people_occupancy, 0);
@@ -94,6 +110,7 @@ const Incident = () => {
 
   // alerts
   const todayVehiclealerts = filteredVehicleData?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
+  const todayPersonalerts = filteredPersonAlertsData?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
 
   const filteredDataStartDate = dataList.filter(item => {
     const itemDate = moment(item.date_time, 'YYYY-MM-DD');
@@ -101,6 +118,11 @@ const Incident = () => {
   });
 
   const vehicleFilteredDataStartDate = vehicleData[0]?.list?.filter(item => {
+    const itemDate = moment(item.date_time, 'YYYY-MM-DD');
+    return itemDate.isSame(startDate, 'day');
+  });
+
+  const personFilteredDataStartDate = personAlertsData[0]?.list?.filter(item => {
     const itemDate = moment(item.date_time, 'YYYY-MM-DD');
     return itemDate.isSame(startDate, 'day');
   });
@@ -113,6 +135,7 @@ const Incident = () => {
 
   const last7Vehiclealerts = vehicleFilteredDataStartDate?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
   const totalVehiclealerts = alertsInfo.reduce((acc, item) => acc + item, 0);
+  const last7Personalerts = personFilteredDataStartDate?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
 
   // Difference
   const percentagePeopleEnter = (((totalPeopleEnterToday - totalPeopleEnter) / totalPeopleEnter) * 100).toFixed(2);
@@ -125,7 +148,17 @@ const Incident = () => {
     percentageVehicleAlerts = 0; // Or any other appropriate value or message
   }
 
+
+  let percentagePersonAlerts;
+  if (totalVehiclealerts !== 0 && !isNaN(last7Personalerts)) {
+    percentagePersonAlerts = (((todayPersonalerts - last7Personalerts) / last7Personalerts) * 100).toFixed(2);
+  } else {
+    percentagePersonAlerts = 0; 
+  }
+
   const [heatmapSeries, setHeatmapSeries] = useState([]);
+
+
 
   useEffect(() => {
     const today = moment();
@@ -174,13 +207,13 @@ const Incident = () => {
 
 
   const cardData = [
-    {
+      {
       background: 'linear-gradient(121deg, #01669a 100%, #1b3664 2%)',
       icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
       title: 'Pedestrain Alerts',
-      mainValue: totalPeopleEnterToday,
-      subValue: totalPeopleEnter,
-      percentage: percentagePeopleEnter,
+      mainValue: todayPersonalerts,
+      subValue: last7Personalerts,
+      percentage: percentagePersonAlerts,
     },
     {
       background: "linear-gradient(120deg, #52a1cc 3%, #93d9ff)",
@@ -215,7 +248,7 @@ const Incident = () => {
         {/* Bar Chart, Donut Chart, and Stepline Chart */}
         <Grid container spacing={2} justifyContent="center" mt={1}>
           <Grid item xs={12} md={5}>
-            <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} size="90%" donutcolors={['#01669a','#46c8f5','#52a1cc']} markercolors={['#01669a','#46c8f5','#52a1cc']} />
+            <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} customDataLabels={dataLables} size="90%" donutcolors={['#01669a','#46c8f5','#52a1cc']} markercolors={['#01669a','#46c8f5','#52a1cc']} />
           </Grid>
           <Grid item xs={12} md={7}>
             <IncidentChart series={alertsInfo} title="Incidents Detected" />

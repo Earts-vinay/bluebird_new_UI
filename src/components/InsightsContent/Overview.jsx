@@ -62,7 +62,7 @@ const Overview = () => {
       // dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
       dispatch(fetchDeviceStatistics(propertyId));
-      dispatch(fetchVehicleData({propertyId, startDate, endDate }));
+      dispatch(fetchVehicleData({propertyId, startDate, endDate,type:"date" }));
       dispatch(fetchCountingByZone({ propertyId, startDate: startTime, endDate: endTime, token }));
     }
   }, [propertyId, token, dispatch, startTime, endTime,startDate, endDate ]);
@@ -241,7 +241,7 @@ const Overview = () => {
     {
       background: 'linear-gradient(120deg, #01669a 3%, #52a1cc)',
       icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
-      title: " Occupancy",
+      title: "Peak Occupancy",
       mainValue: peopleOccupancyToday,
       subValue: peopleOccupancy,
       percentage: percentagePeopleOccupancy,
@@ -257,7 +257,7 @@ const Overview = () => {
     {
       background: "linear-gradient(120deg, #46c8f5 40%, #abd9f4)",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
-      title: " Occupancy",
+      title: "Peak Occupancy",
       mainValue: vehicleOccupancyToday,
       subValue: vehicleOccupancy,
       percentage: percentageVehicleOccupancy,

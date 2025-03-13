@@ -212,13 +212,13 @@ console.log("fetchCountListHour",countListHour);
             <LineChart series={peopleEnterSeries} title="Pedestrain Entry" linechartcolors={'#ef7b73'} markercolors={'#ef7b73'} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <LineChart series={peopleOccupancySeries} title="Pedestrain Occupancy" linechartcolors={'#46c8f5'} markercolors={'#46c8f5'}/>
+            <LineChart series={peopleOccupancySeries} title="Pedestrain Peak Occupancy" linechartcolors={'#46c8f5'} markercolors={'#46c8f5'}/>
           </Grid>
           <Grid item xs={12} md={6}>
             <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={'#ef7b73'} markercolors={'#ef7b73'}/>
           </Grid>
           <Grid item xs={12} md={6}>
-            <LineChart series={vehicleOccupancySeries} title="Vehicle Occupancy" linechartcolors={'#46c8f5'} markercolors={'#46c8f5'}/>
+            <LineChart series={vehicleOccupancySeries} title="Vehicle Peak Occupancy" linechartcolors={'#46c8f5'} markercolors={'#46c8f5'}/>
           </Grid>
 
           <Grid item xs={12} md={4}>
