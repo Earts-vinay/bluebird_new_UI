@@ -27,6 +27,8 @@ import UserReducer from '../redux/apiResponse/userSlice';
 import poleInBoundaryReducer from '../redux/apiResponse/polesInBoundarySlice';
 import navBarReducer from '../redux/apiResponse/navBarSlice';
 import countingReducer from '../redux/apiResponse/countingSlice';
+import heatmapReducer from '../redux/apiResponse/heatmapSlice';
+
 
 // Configuration for root persist (local storage)
 const rootPersistConfig = {
@@ -65,6 +67,7 @@ const rootReducer = combineReducers({
   navBar: navBarReducer,
   propertylistview: propertyListViewReducer,
   counting: countingReducer,
+  heatmap: heatmapReducer
 });
 
 // Apply persistReducer to the rootReducer

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
-const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, percentage, percentageLabel, peakTime, commonStyles }) => (
+const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, percentage, percentageLabel, peakTime, commonStyles,daysago }) => (
   <Card
     sx={{
       borderRadius: '10px',
@@ -38,7 +38,7 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, perc
             {subValue}
           </Typography>
           <Typography variant="subtitle2" color="white" sx={commonStyles}>
-            7 days ago
+            {daysago}
           </Typography>
         </div>
         {peakTime && (

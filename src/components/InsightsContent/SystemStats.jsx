@@ -2,23 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Box, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Container, InputAdornment, Typography, Pagination, IconButton, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDeviceStatistics, fetchDeviceUnhealthy } from '../../redux/apiResponse/deviceSlice';
-import { selectToken } from '../../redux/apiResponse/loginApiSlice';
-import axios from 'axios';
 import { selectedPropertyByUser } from '../../redux/apiResponse/propertySlice';
 import Loader from '../Loader';
 import PieChart from './Charts/PieChart';
 import LineChart from './Charts/LineChart';
-import { fetchVehicleData } from '../../redux/apiResponse/alertSlice';
+import { fetchPersonData, fetchVehicleData } from '../../redux/apiResponse/alertSlice';
 
-
-const BaseUrl = process.env.REACT_APP_API_URL;
 const PublicUrl = process.env.PUBLIC_URL
 
-const SystemStats = () => {
+const SystemStats = ({ dateRange, selectedRange }) => {
   const dispatch = useDispatch();
-  const token = useSelector(selectToken);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [personalertsInfo, setPersonAlertsInfo] = useState([]);
   const seleProp = useSelector(selectedPropertyByUser);
   const [alertsInfo, setAlertsInfo] = useState([]);
   const propertyId = seleProp?.id;
@@ -27,6 +21,7 @@ const SystemStats = () => {
   const StatData = useSelector((state) => state.Device.StatData);
   const apiData = useSelector((state) => state.Device.unhealth);
   const vehicleData = useSelector((state) => state.Alert.vecAlert);
+  const personAlertsData = useSelector((state) => state.Alert.personAlerts);
 
 
   //loadings
@@ -35,20 +30,29 @@ const SystemStats = () => {
 
   const moment = require('moment');
   const today = moment();
-  const startTime = today.clone().subtract(7, 'days').format('YYYY-MM-DD');
-  const endTime = today.format('YYYY-MM-DD');
+  const startTime = dateRange.startDate
+  const endTime = dateRange.endDate
   const startDate = startTime;
   const endDate = endTime;
+
+  const type = selectedRange === "D"
+    ? "date"
+    : selectedRange === "W"
+      ? "date"
+      : selectedRange === "M"
+        ? "date"
+        : "month";
 
   useEffect(() => {
     if (propertyId) {
       dispatch(fetchDeviceStatistics(propertyId));
       dispatch(fetchDeviceUnhealthy(propertyId))
-      dispatch(fetchVehicleData({propertyId, startDate, endDate }));
+      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: type, typeId: "1" }));
+      dispatch(fetchPersonData({ propertyId, startDate, endDate, type: type, typeId: "0" }));
     }
-  }, [dispatch, propertyId,startDate, endDate]);
+  }, [dispatch, propertyId, startDate, endDate, type]);
 
- 
+
   useEffect(() => {
     const alerts = []
     vehicleData[0]?.list?.forEach(item => {
@@ -57,26 +61,31 @@ const SystemStats = () => {
     setAlertsInfo(alerts);
   }, [vehicleData]);
 
+  useEffect(() => {
+    const personalerts = []
+    personAlertsData[0]?.list?.forEach(item => {
+      personalerts.push(item.resolved_alert_num + item.unresolved_alert_num);
+    });
+    setPersonAlertsInfo(personalerts);
+  }, [personAlertsData]);
 
-    // Alerts line chart
-    const AlertsSeries = [
-      {
-        name: " Alerts",
-        data: alertsInfo
-      },
-      // {
-      //   name: "Vehicle Alerts",
-      //   data: [0, 1, 5, 3, 2, 7]
-      // }
-    ];
-    console.log("api data",apiData);
-    
+  // Alerts line chart
+  const AlertsSeries = [
+    {
+      name: "Vehicle Alerts",
+      data: alertsInfo,
+    },
+    {
+      name: "Person Alerts",
+      data: personalertsInfo
+    }
+  ];
 
   return (
     <>
       {StatDataloading && unhealthloading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-          <Loader loading={loading} />
+          <Loader loading={StatDataloading && unhealthloading} />
         </Box>
       ) : (
         <Container maxWidth="xxl" style={{ padding: "0px !important", marginTop: "10px" }} disableGutters>
@@ -84,7 +93,7 @@ const SystemStats = () => {
             <Grid container spacing={2.5}>
 
               <Grid item xs={12} md={7}>
-              <LineChart series={AlertsSeries} title="Alerts Raised"  linechartcolors={'#ef7b73'} markercolors={'#ef7b73'}/>
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} />
               </Grid>
               <Grid item xs={12} md={5}>
                 {StatData.data?.map?.((rowData, index) => (
@@ -118,43 +127,41 @@ const SystemStats = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-  {apiData.data && apiData.data?.length > 0 ? (
-    apiData.data.map((row, index) => (
-      <TableRow key={row.id} sx={{ cursor: 'pointer' }}>
-        <TableCell sx={{display:"flex",gap:"10px"}}>
-          {row.cameras.map((camera, cameraIndex) => (
-            <img
-              key={camera.id}
-              src={camera.screen_capture}
-              alt={`Camera ${cameraIndex + 1}`}
-              style={{
-                width: { lg: "150px", md: "150px", sm: "100px" },
-                height: '80px',
-                borderRadius: "5px",
-                marginRight: "10px", // Adjust space between images if needed
-              }}
-              onError={(e) => {
-                e.target.src = `${PublicUrl}/assets/images/noimage.png`;
-                e.target.alt = "No Image";
-              }}
-            />
-          ))}
-        </TableCell>
-        <TableCell><Typography>{row.name}</Typography></TableCell>
-        <TableCell>{row.pole && row.pole.name}</TableCell>
-        <TableCell>{row.healthy_info && row.healthy_info.last_online}</TableCell>
-        <TableCell>{row.healthy_info && row.healthy_info.offline_time}</TableCell>
-        <TableCell>{row.healthy_info && row.healthy_info.is_online ? 'Online' : 'Offline'}</TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={6} sx={{ textAlign: "center" }}>No data available</TableCell>
-    </TableRow>
-  )}
-</TableBody>
-
-
+                      {apiData.data && apiData.data?.length > 0 ? (
+                        apiData.data.map((row, index) => (
+                          <TableRow key={row.id} sx={{ cursor: 'pointer' }}>
+                            <TableCell sx={{ display: "flex", gap: "10px" }}>
+                              {row.cameras.map((camera, cameraIndex) => (
+                                <img
+                                  key={camera.id}
+                                  src={camera.screen_capture}
+                                  alt={`Camera ${cameraIndex + 1}`}
+                                  style={{
+                                    width: { lg: "150px", md: "150px", sm: "100px" },
+                                    height: '80px',
+                                    borderRadius: "5px",
+                                    marginRight: "10px", // Adjust space between images if needed
+                                  }}
+                                  onError={(e) => {
+                                    e.target.src = `${PublicUrl}/assets/images/noimage.png`;
+                                    e.target.alt = "No Image";
+                                  }}
+                                />
+                              ))}
+                            </TableCell>
+                            <TableCell><Typography>{row.name}</Typography></TableCell>
+                            <TableCell>{row.pole && row.pole.name}</TableCell>
+                            <TableCell>{row.healthy_info && row.healthy_info.last_online}</TableCell>
+                            <TableCell>{row.healthy_info && row.healthy_info.offline_time}</TableCell>
+                            <TableCell>{row.healthy_info && row.healthy_info.is_online ? 'Online' : 'Offline'}</TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={6} sx={{ textAlign: "center" }}>No data available</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
                   </Table>
                 </TableContainer>
               </Box>

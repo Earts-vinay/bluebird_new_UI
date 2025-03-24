@@ -3,15 +3,29 @@ import ApexCharts from 'react-apexcharts';
 import { Box } from '@mui/material';
 import moment from 'moment';
 
-const IncidentChart = ({ series, title }) => {
-  const generateCategories = () => {
-    const categories = [];
-    const today = moment();
-    for (let i = 0; i <= 7; i++) {
-      categories.push(today.clone().subtract(i, 'days').format('ddd')); // Use 'ddd' format for days of the week (e.g., Mon, Tue, etc.)
+const IncidentChart = ({ series, title,startDate, endDate, selectedRange }) => {
+const today = moment();
+  const startTime = startDate || today.clone().subtract(7, 'days').format('YYYY-MM-DD');
+  const endTime = endDate || today.format('YYYY-MM-DD');
+
+  let dateRange = [];
+
+  if (selectedRange === 'D') {
+      // Generate hourly data points for 24 hours
+      for (let i = 0; i < 24; i++) {
+          dateRange.push(`${i}:00`); // "0:00", "1:00", ..., "23:00"
+      }
+  } else if (selectedRange === 'W' || selectedRange === 'M') {
+      // Generate daily data points
+      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
+          dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02", etc.
+      }
+  } else if (selectedRange === 'Y') {
+      // Generate monthly data points
+      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
+        dateRange.push(date.format('MMM YY')); // "Jul-01", "Jul-02", etc.
     }
-    return categories.reverse(); // Reverse to get the order from last week to today
-  };
+  }
 
   const chartOptions = {
     series: [{
@@ -56,7 +70,7 @@ const IncidentChart = ({ series, title }) => {
       }
     },
     xaxis: {
-      categories: generateCategories()
+      categories: dateRange
     }
   };
 

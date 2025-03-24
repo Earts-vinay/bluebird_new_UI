@@ -8,7 +8,7 @@ const BaseUrl = process.env.REACT_APP_API_URL;
 // Thunk to fetch data list
 export const fetchDataList = createAsyncThunk(
   'counting/fetchDataList',
-  async ({ propertyId, startDate, endDate, token }) => {
+  async ({ propertyId, startDate, endDate, token,type,timeType }) => {
     const response = await axios.get(`${BaseUrl}/api/counting/property`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -16,9 +16,31 @@ export const fetchDataList = createAsyncThunk(
       },
       params: {
         property_id: propertyId,
-        time_type: 'date',
+        time_type: timeType,
         start_time: startDate,
         end_time: endDate,
+        type:type
+      },
+    });
+    return response.data.data[0].list;
+  }
+);
+
+// Thunk to fetch data Year
+export const fetchDataYearList = createAsyncThunk(
+  'counting/fetchDataYearList',
+  async ({ propertyId, startDate, endDate, token,type,timeType }) => {
+    const response = await axios.get(`${BaseUrl}/api/counting/property`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      params: {
+        property_id: propertyId,
+        time_type: timeType,
+        start_time: startDate,
+        end_time: endDate,
+        type:type
       },
     });
     return response.data.data[0].list;
@@ -72,6 +94,8 @@ const countingSlice = createSlice({
   name: 'counting',
   initialState: {
     dataList: [],
+    dataYearList: [],
+    loading:false,
     countListHour: [],
     last7Count: [],
     status: 'idle',
@@ -81,14 +105,29 @@ const countingSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchDataList.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
       })
       .addCase(fetchDataList.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.dataList = action.payload;
+        state.loading = false;
       })
       .addCase(fetchDataList.rejected, (state, action) => {
         state.status = 'failed';
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchDataYearList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDataYearList.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.dataYearList = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchDataYearList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.loading = false;
         state.error = action.error.message;
       })
       .addCase(fetchCountListHour.pending, (state) => {

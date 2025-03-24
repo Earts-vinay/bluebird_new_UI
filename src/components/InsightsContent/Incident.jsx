@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid,} from '@mui/material';
+import { Box, Grid, } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from '../../redux/apiResponse/loginApiSlice';
 import axios from 'axios';
@@ -9,49 +9,87 @@ import DonutChart from './Charts/DonutChart';
 import IncidentChart from './Charts/IncidentChart';
 import HeatmapChart from './Charts/HeatmapChart';
 import { fetchDataList, fetchCountListHour, fetchLast7Count } from '../../redux/apiResponse/countingSlice';
-import { fetchPersonData, fetchVehicleData, fetchZoneAlert } from '../../redux/apiResponse/alertSlice';
+import { fetchPersonData, fetchPersonDataCards, fetchVehicleData, fetchVehicleDataCards, fetchZoneAlert } from '../../redux/apiResponse/alertSlice';
+import Loader from '../Loader';
+import { fetchHeatmapData } from '../../redux/apiResponse/heatmapSlice';
 
 const BaseUrl = process.env.REACT_APP_API_URL;
 const PublicUrl = process.env.PUBLIC_URL;
 const commonStyles = { fontFamily: "montserrat-regular" };
-const Incident = () => {
+const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
   const dispatch = useDispatch();
   const token = useSelector(selectToken);
   const [zones, setZones] = useState([]);
   const [percents, setPercents] = useState([]);
   const [dataLables, setDataLables] = useState([]);
-console.log("dataLables",dataLables);
-
   const [alertsInfo, setAlertsInfo] = useState([]);
-
   const seleProp = useSelector(selectedPropertyByUser);
   const moment = require('moment');
   const today = moment();
-  const startTime = today.clone().subtract(7, 'days').format('YYYY-MM-DD');
-  const endTime = today.format('YYYY-MM-DD');
   const startonlytime = today.clone().startOf('day').format('YYYY-MM-DD HH:mm:ss')
   const endonlytime = today.clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
   const propertyId = seleProp?.id;
   const zoneId = zones;
-  const startDate = startTime;
-  const endDate = endTime;
-  const { dataList,countListHour,  last7Count } = useSelector((state) => state.counting);
+  const startDate = dateRange.startDate;
+  const endDate = dateRange.endDate;
   const vehicleData = useSelector((state) => state.Alert.vecAlert);
-  const personAlertsData = useSelector((state) => state.Alert.personAlerts);
+  const vecAlertsCards = useSelector((state) => state.Alert.vecAlertsCards);
+  const personAlertsCards = useSelector((state) => state.Alert.personAlertsCards);
+  const { heatmapSeries, loading, error } = useSelector(state => state.heatmap);
   const zoneAlert = useSelector((state) => state.Alert.zoneAlert);
 
-    //counting Api
-    useEffect(() => {
-      if (propertyId && token) {
-        dispatch(fetchDataList({ propertyId, startDate: startTime, endDate: endTime, token }));
-        dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
-        // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
-        dispatch(fetchVehicleData({propertyId, startDate, endDate,type:"date",typeId:"1" }));
-        dispatch(fetchPersonData({propertyId, startDate, endDate,type:"date",typeId:"0" }));
-        dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
-      }
-    }, [propertyId, token ]);
- 
+  const type = selectedRange === "D"
+    ? "date"
+    : selectedRange === "W"
+      ? "date"
+      : selectedRange === "M"
+        ? "date"
+        : "month";
+
+  const YearType = selectedRange === "D"
+    ? "date"
+    : selectedRange === "W"
+      ? "date"
+      : selectedRange === "M"
+        ? "date"
+        : selectedRange === "Y"
+          ? "date"
+          : "month";
+
+  // Calculate the difference in days only if a custom range is selected
+  const dayDifference = isCustomRangeSelected
+    ? moment(endDate).diff(moment(startDate), "days")
+    : null;
+
+  // Define the `daysago` message
+  const daysago = isCustomRangeSelected
+    ? `${dayDifference} days ago`
+    : selectedRange === "D"
+      ? "A day ago"
+      : selectedRange === "W"
+        ? "Last Week"
+        : selectedRange === "M"
+          ? "Last Month"
+          : selectedRange === "Y"
+            ? "Last Year"
+            : "week";
+
+  //counting Api
+  useEffect(() => {
+    if (propertyId && token) {
+      // dispatch(fetchDataList({ propertyId, startDate: startDate, endDate: endDate, token }));
+      dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
+      // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
+      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: type, typeId: "1" }));
+      dispatch(fetchVehicleDataCards({ propertyId, startDate, endDate, type: YearType, typeId: "1" }));
+      dispatch(fetchPersonDataCards({ propertyId, startDate, endDate, type: YearType, typeId: "0" }));
+      dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
+      dispatch(fetchHeatmapData({ token, propertyId, startDate, endDate }));
+    }
+  }, [propertyId, token]);
+
+
+
   useEffect(() => {
     const alerts = []
     vehicleData[0]?.list?.forEach(item => {
@@ -70,9 +108,8 @@ console.log("dataLables",dataLables);
         acc = acc + cam.resolved_alert_num + cam.unresolved_alert_num
         return acc;
       }, 0);
-      console.log("totalAlertsByItem",totalAlertsByItem);
       total = total + totalAlertsByItem;
-     
+
       return {
         id: item.id,
         alertsPerZone: totalAlertsByItem
@@ -91,7 +128,7 @@ console.log("dataLables",dataLables);
     })
     setZones(Zones);
     setPercents(Percents)
-   setDataLables(count)
+    setDataLables(count)
   }, [zoneAlert])
 
   const zoneNames = zoneAlert.map(zone => zone.name);
@@ -99,121 +136,54 @@ console.log("dataLables",dataLables);
   // Calculate the total people_enter for the current date
   const currentDate = endDate;
   const formattedDate = currentDate;
-  const filteredData = dataList.filter(item => item.date_time.slice(0, 10) === formattedDate);
-  const filteredVehicleData = vehicleData[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
-  const filteredPersonAlertsData = personAlertsData[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
-
-  const totalPeopleEnterToday = filteredData.reduce((acc, item) => acc + item.people_enter, 0);
-  const peopleOccupancyToday = filteredData.reduce((acc, item) => acc + item.people_occupancy, 0);
-  const vehicleEnterToday = filteredData.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const vehicleOccupancyToday = filteredData.reduce((acc, item) => acc + item.vechicle_occupancy, 0);
+  const filteredVehicleData = vecAlertsCards[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
+  const filteredPersonAlertsData = personAlertsCards[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
 
   // alerts
   const todayVehiclealerts = filteredVehicleData?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
   const todayPersonalerts = filteredPersonAlertsData?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
 
-  const filteredDataStartDate = dataList.filter(item => {
+  const vehicleFilteredDataStartDate = vecAlertsCards[0]?.list?.filter(item => {
     const itemDate = moment(item.date_time, 'YYYY-MM-DD');
     return itemDate.isSame(startDate, 'day');
   });
 
-  const vehicleFilteredDataStartDate = vehicleData[0]?.list?.filter(item => {
-    const itemDate = moment(item.date_time, 'YYYY-MM-DD');
-    return itemDate.isSame(startDate, 'day');
-  });
-
-  const personFilteredDataStartDate = personAlertsData[0]?.list?.filter(item => {
+  const personFilteredDataStartDate = personAlertsCards[0]?.list?.filter(item => {
     const itemDate = moment(item.date_time, 'YYYY-MM-DD');
     return itemDate.isSame(startDate, 'day');
   });
 
   // Calculate totals for the start date (7 days ago)
-  const totalPeopleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.people_enter, 0);
-  const peopleOccupancy = filteredDataStartDate.reduce((acc, item) => acc + item.people_occupancy, 0);
-  const vehicleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const vehicleOccupancy = filteredDataStartDate.reduce((acc, item) => acc + item.vechicle_occupancy, 0);
-
   const last7Vehiclealerts = vehicleFilteredDataStartDate?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
-  const totalVehiclealerts = alertsInfo.reduce((acc, item) => acc + item, 0);
   const last7Personalerts = personFilteredDataStartDate?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
 
-  // Difference
-  const percentagePeopleEnter = (((totalPeopleEnterToday - totalPeopleEnter) / totalPeopleEnter) * 100).toFixed(2);
-  const percentageVehicleOccupancy = (((todayVehiclealerts - totalVehiclealerts) / totalVehiclealerts) * 100).toFixed(2);
+  // Difference for vechiles and person alerts
   let percentageVehicleAlerts;
-  if (totalVehiclealerts !== 0 && !isNaN(last7Vehiclealerts)) {
+  if (last7Vehiclealerts > 0) {
     percentageVehicleAlerts = (((todayVehiclealerts - last7Vehiclealerts) / last7Vehiclealerts) * 100).toFixed(2);
   } else {
-    // Handle the case where totalVehiclealerts is zero or undefined
-    percentageVehicleAlerts = 0; // Or any other appropriate value or message
+    percentageVehicleAlerts = 0;
   }
-
 
   let percentagePersonAlerts;
-  if (totalVehiclealerts !== 0 && !isNaN(last7Personalerts)) {
+  if (last7Personalerts > 0) {
     percentagePersonAlerts = (((todayPersonalerts - last7Personalerts) / last7Personalerts) * 100).toFixed(2);
   } else {
-    percentagePersonAlerts = 0; 
+    percentagePersonAlerts = 0;
   }
 
-  const [heatmapSeries, setHeatmapSeries] = useState([]);
 
-
-
-  useEffect(() => {
-    const today = moment();
-    const startTime = today.clone().subtract(7, 'days').startOf('day').format('YYYY-MM-DD 00:00:00');
-    const endTime = today.endOf('day').format('YYYY-MM-DD 23:59:59');
-
-    const getPropertyData = async () => {
-      try {
-        const response = await axios.get(
-          `${BaseUrl}/api/vec_alert/property`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            },
-            params: {
-              property_id: propertyId,
-              time_type: 'hour',
-              start_time: startTime,
-              end_time: endTime
-            }
-          }
-        );
-        const data = response.data?.data?.[0]?.list;
-        let transformedData = [];
-        data.forEach((item) => {
-          const date = moment(item.date_time).format('YYYY-MM-DD');
-          let entry = transformedData.find(entry => entry.date === date);
-          if (!entry) {
-            entry = { date, data: [] };
-            transformedData.push(entry);
-          }
-          entry.data.push({ x: moment(item.date_time).format('HH:mm'), y: item.resolved_alert_num + item.unresolved_alert_num });
-        });
-        const seriesData = transformedData.map(day => ({
-          name: moment(day.date).format('ddd'),
-          data: day.data
-        }));
-        setHeatmapSeries(seriesData.reverse());
-      } catch (error) {
-        console.error('Error fetching property data:', error);
-      }
-    };
-
-    getPropertyData();
-  }, [token, propertyId]);
 
 
   const cardData = [
-      {
+    {
       background: 'linear-gradient(121deg, #01669a 100%, #1b3664 2%)',
       icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
       title: 'Pedestrain Alerts',
       mainValue: todayPersonalerts,
       subValue: last7Personalerts,
       percentage: percentagePersonAlerts,
+      daysago: daysago
     },
     {
       background: "linear-gradient(120deg, #52a1cc 3%, #93d9ff)",
@@ -222,39 +192,45 @@ console.log("dataLables",dataLables);
       mainValue: todayVehiclealerts,
       subValue: last7Vehiclealerts,
       percentage: percentageVehicleAlerts,
+      daysago: daysago
     },
   ];
 
   return (
     <>
-      <Box sx={{ padding: 0, marginTop: "10px" }}>
-        <Box sx={{ width: "100%", display: "flex", gap: "20px" }}>
-          <Box sx={{ width: "24%" }}>
-            <Box>
-              {cardData.map((card, index) => (
-                <Box key={index} width={{ xs: '100%', sm: '48%', md: '100%' }} mb={3}>
-                  <StatCard {...card} commonStyles={commonStyles} />
-                </Box>
-              ))}
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+          <Loader loading={loading} />
+        </Box>
+      ) : (
+        <Box sx={{ padding: 0, marginTop: "10px" }}>
+          <Box sx={{ width: "100%", display: "flex", gap: "20px" }}>
+            <Box sx={{ width: "24%" }}>
+              <Box>
+                {cardData.map((card, index) => (
+                  <Box key={index} width={{ xs: '100%', sm: '48%', md: '100%' }} mb={3}>
+                    <StatCard {...card} commonStyles={commonStyles} />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+
+            {/* Heatmap */}
+            <Box sx={{ width: "74%" }}>
+              <HeatmapChart series={heatmapSeries} />
             </Box>
           </Box>
 
-          {/* Heatmap */}
-          <Box sx={{ width: "74%" }}>
-          <HeatmapChart series={heatmapSeries} />
-          </Box>
-        </Box>
-
-        {/* Bar Chart, Donut Chart, and Stepline Chart */}
-        <Grid container spacing={2} justifyContent="center" mt={1}>
-          <Grid item xs={12} md={5}>
-            <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} customDataLabels={dataLables} size="90%" donutcolors={['#01669a','#46c8f5','#52a1cc']} markercolors={['#01669a','#46c8f5','#52a1cc']} />
+          {/* Bar Chart, Donut Chart, and Stepline Chart */}
+          <Grid container spacing={2} justifyContent="center" mt={1}>
+            <Grid item xs={12} md={4}>
+              <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} size="90%" customDataLabels={dataLables} donutcolors={['#01669a', '#46c8f5', '#52a1cc']} markercolors={['#01669a', '#46c8f5', '#52a1cc']} />
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <IncidentChart series={alertsInfo} title="Incidents Detected" startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={7}>
-            <IncidentChart series={alertsInfo} title="Incidents Detected" />
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>)}
     </>
   )
 };
