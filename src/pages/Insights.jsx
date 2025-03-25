@@ -20,6 +20,7 @@ const TabPanel = ({ value, index, children }) => (
 const Insights = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedRange, setSelectedRange] = useState("W");
+  const [customDates, setCustomDates] = useState("W");
   const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
   const [loading, setLoading] = useState(false);
   const [isCustomRangeSelected, setIsCustomRangeSelected] = useState(false);
@@ -119,23 +120,32 @@ const Insights = () => {
             </Box>
 
             <Box display="flex" alignItems="center" sx={{ paddingRight: "30px", gap: "10px" }}>
-              <RangePicker
-                disabledDate={(current) => current && current > dayjs()}
-                onChange={(dates) => {
-                  if (dates) {
-                    setLoading(true);
-                    setIsCustomRangeSelected(true); // Mark custom range as selected
-                    setTimeout(() => {
-                      setDateRange({
-                        startDate: dates[0].format("YYYY-MM-DD"),
-                        endDate: dates[1].format("YYYY-MM-DD"),
-                      });
-                      setLoading(false);
-                    }, 1000); // Simulating API delay
-                  }
-                }}
-                style={{ marginLeft: "10px" }}
-              />
+            <RangePicker
+  disabledDate={(current) => current && current > dayjs()}
+  onChange={(dates) => {
+    if (dates) {
+      setLoading(true);
+      setIsCustomRangeSelected(true);
+
+      setTimeout(() => {
+        const startDate = dates[0].format("YYYY-MM-DD");
+        const endDate = dates[1].format("YYYY-MM-DD");
+
+        // Calculate the difference in days
+        const diffDays = dayjs(endDate).diff(dayjs(startDate), "days");
+
+        // Set type conditionally
+        const customType = diffDays >= 30 ? "month" : "date";
+
+        setDateRange({ startDate, endDate });
+        setCustomDates(customType); // Store this in state
+        setLoading(false);
+      }, 1000);
+    }
+  }}
+  style={{ marginLeft: "10px" }}
+/>
+
 
               <Box sx={{ border: "1px solid #ccc", borderRadius: "5px" }}>
                 {["D", "W", "M", "Y"].map((range) => (
@@ -178,16 +188,16 @@ const Insights = () => {
             ) : (
               <>
                 <TabPanel value={selectedTab} index={0}>
-                  <Overview dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} />
+                  <Overview dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
                 </TabPanel>
                 <TabPanel value={selectedTab} index={1}>
-                  <SystemStats dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} />
+                  <SystemStats dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
                 </TabPanel>
                 <TabPanel value={selectedTab} index={2}>
-                  <Incident dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} />
+                  <Incident dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
                 </TabPanel>
                 <TabPanel value={selectedTab} index={3}>
-                  <TrafficComponent dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} />
+                  <TrafficComponent dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
                 </TabPanel>
               </>
             )}

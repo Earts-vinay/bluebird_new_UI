@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Box, Grid, } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from '../../redux/apiResponse/loginApiSlice';
-import axios from 'axios';
 import { selectedPropertyByUser } from '../../redux/apiResponse/propertySlice';
 import StatCard from '../customStyles/StatCard';
 import DonutChart from './Charts/DonutChart';
@@ -13,7 +12,6 @@ import { fetchPersonData, fetchPersonDataCards, fetchVehicleData, fetchVehicleDa
 import Loader from '../Loader';
 import { fetchHeatmapData } from '../../redux/apiResponse/heatmapSlice';
 
-const BaseUrl = process.env.REACT_APP_API_URL;
 const PublicUrl = process.env.PUBLIC_URL;
 const commonStyles = { fontFamily: "montserrat-regular" };
 const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
@@ -87,8 +85,6 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
       dispatch(fetchHeatmapData({ token, propertyId, startDate, endDate }));
     }
   }, [propertyId, token]);
-
-
 
   useEffect(() => {
     const alerts = []
@@ -171,9 +167,6 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
   } else {
     percentagePersonAlerts = 0;
   }
-
-
-
 
   const cardData = [
     {

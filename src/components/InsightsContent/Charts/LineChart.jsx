@@ -1,11 +1,10 @@
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 import ApexCharts from 'react-apexcharts';
 
-const LineChart = ({ series, title, labels, linechartcolors, markercolors, startDate, endDate, selectedRange,min,max,stepSize }) => {
-  console.log("type",selectedRange);
-
+const LineChart = ({ series, title, labels, linechartcolors, markercolors, startDate, endDate, selectedRange, responseDates, customDates }) => {
+  console.log("type", selectedRange);
 
   const today = moment();
   const startTime = startDate || today.clone().subtract(7, 'days').format('YYYY-MM-DD');
@@ -13,90 +12,64 @@ const LineChart = ({ series, title, labels, linechartcolors, markercolors, start
 
   let dateRange = [];
 
+  // Use responseDates if customDates is "month"
+
   if (selectedRange === 'D') {
-      // Generate hourly data points for 24 hours
-      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
-        dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02", etc.
+    // Generate daily data points
+    for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
+      dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02", etc.
     }
   } else if (selectedRange === 'W' || selectedRange === 'M') {
-      // Generate daily data points
-      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
-          dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02", etc.
-      }
-  } else if (selectedRange === 'Y') {
-      // Generate monthly data points
-      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
-        dateRange.push(date.format('MMM YY')); // "Jul-01", "Jul-02", etc.
+    // Generate daily data points
+    for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
+      dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02", etc.
     }
+  } else if (selectedRange === 'Y') {
+    // Generate monthly data points
+    for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
+      dateRange.push(date.format('MMM YY')); // "Jul 24", "Aug 24", etc.
+    }
+  } 
+  
+  if (customDates === "month") {
+    dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM DD")) || [];
   }
+  
   
   const lineChartOptions = {
     labels: [labels],
     chart: {
       height: 350,
       type: 'line',
-      zoom: {
-        enabled: false
-      },
-      toolbar: {
-        show: false
-      },
+      zoom: { enabled: false },
+      toolbar: { show: false },
       animations: {
         enabled: true,
         easing: 'easeinout',
         speed: 800,
-        animateGradually: {
-          enabled: true,
-          delay: 150
-        },
-        dynamicAnimation: {
-          enabled: true,
-          speed: 350
-        }
+        animateGradually: { enabled: true, delay: 150 },
+        dynamicAnimation: { enabled: true, speed: 350 }
       }
     },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      curve: 'smooth',
-      width: 3,
-      lineCap: 'round'
-    },
+    dataLabels: { enabled: false },
+    stroke: { curve: 'smooth', width: 3, lineCap: 'round' },
     colors: linechartcolors,
-    title: {
-      text: title,
-      style: {
-        color: '#003A6F',
-        fontWeight: 'normal',
-      }
-    },
+    title: { text: title, style: { color: '#003A6F', fontWeight: 'normal' } },
     markers: {
       size: 5,
       colors: markercolors,
       strokeColors: '#fff',
       strokeWidth: 2,
-      hover: {
-        size: 7,
-      }
+      hover: { size: 7 }
     },
     grid: {
-      row: {
-        colors: ['transparent', 'transparent'],
-        opacity: 0.5
-      },
-      column: {
-        colors: ['transparent', 'transparent']
-      }
+      row: { colors: ['transparent', 'transparent'], opacity: 0.5 },
+      column: { colors: ['transparent', 'transparent'] }
     },
     xaxis: {
       categories: dateRange,
       labels: {
-        style: {
-          fontSize: '14px',
-          fontWeight: 400,
-          colors: '#666'
-        },
+        style: { fontSize: '14px', fontWeight: 400, colors: '#666' },
         rotate: -45,
         offsetY: 0,
         offsetX: 0
@@ -125,12 +98,12 @@ const LineChart = ({ series, title, labels, linechartcolors, markercolors, start
       ]
     }
   };
- 
+
   return (
     <Box style={{ backgroundColor: "white", borderRadius: "5px", padding: "15px", boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)" }}>
       <ApexCharts options={lineChartOptions} series={series} type="line" height={350} />
     </Box>
-  )
-}
+  );
+};
 
-export default LineChart
+export default LineChart;

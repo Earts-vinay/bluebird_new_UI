@@ -10,8 +10,9 @@ import { fetchDataList, fetchCountListHour, fetchLast7Count, fetchDataYearList }
 import { fetchZoneAlert } from '../../redux/apiResponse/alertSlice';
 import { fetchCountingByProperty, fetchCountingByZone } from '../../redux/apiResponse/insightSlice';
 import Loader from '../Loader';
+import dayjs from 'dayjs';
 
-const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
+const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, customDates }) => {
   const dispatch = useDispatch();
   const token = useSelector(selectToken);
   const [zones, setZones] = useState([]);
@@ -34,6 +35,11 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected }) =
   const zoneAlert = useSelector((state) => state.Alert.zoneAlert);
   const { zonecount } = useSelector((state) => state.Insight);
 
+  const responseDates = dataList?.map((item) => item.date_time) || [];
+
+
+  console.log("datalist", dataList, responseDates);
+
   const type = selectedRange === "D"
     ? "date"
     : selectedRange === "W"
@@ -51,6 +57,14 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected }) =
         : selectedRange === "Y"
           ? "date"
           : "month";
+
+  const alerttype = isCustomRangeSelected
+    ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
+      ? "month"
+      : "date"
+    : selectedRange === "Y"
+      ? "month"
+      : "date";
 
   // Calculate the difference in days only if a custom range is selected
   const dayDifference = isCustomRangeSelected
@@ -73,8 +87,8 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected }) =
   //counting Api
   useEffect(() => {
     if (propertyId && token) {
-      dispatch(fetchDataList({ propertyId, startDate: startDate, endDate: endDate, token, timeType: type }));
-      dispatch(fetchDataYearList({ propertyId, startDate: startDate, endDate: endDate, token, timeType: YearType }));
+      dispatch(fetchDataList({ propertyId, startDate: startDate, endDate: endDate, token, timeType: alerttype }));
+      dispatch(fetchDataYearList({ propertyId, startDate: startDate, endDate: endDate, token, timeType: type }));
       dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
       dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
@@ -239,16 +253,16 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected }) =
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} mt={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={6}>
-                <LineChart series={peopleEnterSeries} title="Pedestrain Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
+                <LineChart series={peopleEnterSeries} title="Pedestrain Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <LineChart series={peopleOccupancySeries} title="Pedestrain Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
+                <LineChart series={peopleOccupancySeries} title="Pedestrain Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
+                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <LineChart series={vehicleOccupancySeries} title="Vehicle Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
+                <LineChart series={vehicleOccupancySeries} title="Vehicle Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
               </Grid>
 
               {/* <Grid item xs={12} md={4}>

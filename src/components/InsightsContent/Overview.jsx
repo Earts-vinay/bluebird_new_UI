@@ -17,13 +17,14 @@ import { fetchCountingByProperty, fetchCountingByZone } from '../../redux/apiRes
 import { fetchDeviceStatistics } from '../../redux/apiResponse/deviceSlice';
 import { fetchPersonData, fetchVehicleData, fetchVehicleDataCards } from '../../redux/apiResponse/alertSlice';
 import HorizontalBarChart from './Charts/HorizontalBarChart';
+import dayjs from 'dayjs';
 
 const PublicUrl = process.env.PUBLIC_URL
 
 const commonStyles = {
   fontFamily: "montserrat-regular",
 };
-const Overview = ({ dateRange, isCustomRangeSelected, selectedRange }) => {
+const Overview = ({ dateRange, isCustomRangeSelected, selectedRange,customDates }) => {
   const dispatch = useDispatch();
   const token = useSelector(selectToken);
   const [alertsInfo, setAlertsInfo] = useState([]);
@@ -44,6 +45,11 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange }) => {
   const endTime = dateRange.endDate
   const startDate = startTime;
   const endDate = endTime;
+  const responseDates = vehicleData?.flatMap((zone) =>
+    zone.list?.map((item) => item.date_time) || []
+  );
+  console.log("vehicle",vehicleData);
+  
 
   const type = selectedRange === "D"
     ? "date"
@@ -55,9 +61,16 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange }) => {
           ? "month"
           : "date";
 
-  if (selectedRange === isCustomRangeSelected) {
-    type = "date";
-  }
+          const alerttype = isCustomRangeSelected
+          ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
+            ? "month"
+            : "date"
+          : selectedRange === "Y"
+            ? "month"
+            : "date";
+
+            console.log();
+            
 
   const YearType = selectedRange === "D"
     ? "date"
@@ -87,7 +100,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange }) => {
             ? "Last Year"
             : "week";
 
-
+    
   //counting Api
   useEffect(() => {
     if (propertyId && token) {
@@ -97,9 +110,9 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange }) => {
       // dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
       dispatch(fetchDeviceStatistics(propertyId));
-      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: type, typeId: "1" }));
+      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: alerttype, typeId: "1" }));
       dispatch(fetchVehicleDataCards({ propertyId, startDate, endDate, type: YearType, typeId: "1" }));
-      dispatch(fetchPersonData({ propertyId, startDate, endDate, type: type, typeId: "0" }));
+      dispatch(fetchPersonData({ propertyId, startDate, endDate, type: alerttype, typeId: "0" }));
 
       dispatch(fetchCountingByZone({ propertyId, startDate: startTime, endDate: endTime, token }));
     }
@@ -187,7 +200,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange }) => {
     percentageVehicleAlerts = (((todayVehiclealerts - totalVehiclealerts) / totalVehiclealerts) * 100).toFixed(2);
   } else {
     // Handle the case where totalVehiclealerts is zero or undefined
-    percentageVehicleAlerts = 0; // Or any other appropriate value or message
+    percentageVehicleAlerts = 0; 
   }
 
   //formats
@@ -335,7 +348,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange }) => {
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} my={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={8}>
-                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} />
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates}/>
               </Grid>
               <Grid item xs={12} md={4}>
                 <RadialBarChart

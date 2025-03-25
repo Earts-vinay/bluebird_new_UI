@@ -7,10 +7,11 @@ import Loader from '../Loader';
 import PieChart from './Charts/PieChart';
 import LineChart from './Charts/LineChart';
 import { fetchPersonData, fetchVehicleData } from '../../redux/apiResponse/alertSlice';
+import dayjs from 'dayjs';
 
 const PublicUrl = process.env.PUBLIC_URL
 
-const SystemStats = ({ dateRange, selectedRange }) => {
+const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDates }) => {
   const dispatch = useDispatch();
   const [personalertsInfo, setPersonAlertsInfo] = useState([]);
   const seleProp = useSelector(selectedPropertyByUser);
@@ -34,23 +35,26 @@ const SystemStats = ({ dateRange, selectedRange }) => {
   const endTime = dateRange.endDate
   const startDate = startTime;
   const endDate = endTime;
+  const responseDates = vehicleData?.flatMap((zone) =>
+    zone.list?.map((item) => item.date_time) || []
+  );
 
-  const type = selectedRange === "D"
-    ? "date"
-    : selectedRange === "W"
-      ? "date"
-      : selectedRange === "M"
-        ? "date"
-        : "month";
+  const alerttype = isCustomRangeSelected
+    ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
+      ? "month"
+      : "date"
+    : selectedRange === "Y"
+      ? "month"
+      : "date";
 
   useEffect(() => {
     if (propertyId) {
       dispatch(fetchDeviceStatistics(propertyId));
       dispatch(fetchDeviceUnhealthy(propertyId))
-      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: type, typeId: "1" }));
-      dispatch(fetchPersonData({ propertyId, startDate, endDate, type: type, typeId: "0" }));
+      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: alerttype, typeId: "1" }));
+      dispatch(fetchPersonData({ propertyId, startDate, endDate, type: alerttype, typeId: "0" }));
     }
-  }, [dispatch, propertyId, startDate, endDate, type]);
+  }, [dispatch, propertyId, startDate, endDate, alerttype]);
 
 
   useEffect(() => {
@@ -93,7 +97,7 @@ const SystemStats = ({ dateRange, selectedRange }) => {
             <Grid container spacing={2.5}>
 
               <Grid item xs={12} md={7}>
-                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} />
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates}/>
               </Grid>
               <Grid item xs={12} md={5}>
                 {StatData.data?.map?.((rowData, index) => (
