@@ -94,6 +94,15 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
     setAlertsInfo(alerts);
   }, [vehicleData]);
 
+  const AlertsSeries = [
+    {
+      name: "Alerts",
+      data: alertsInfo
+    }
+  ];
+  console.log("alertsinfo",AlertsSeries);
+  
+
   useEffect(() => {
     let total = 0;
     let Zones = [];
@@ -220,7 +229,7 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
               <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} size="90%" customDataLabels={dataLables} donutcolors={['#01669a', '#46c8f5', '#52a1cc']} markercolors={['#01669a', '#46c8f5', '#52a1cc']} />
             </Grid>
             <Grid item xs={12} md={8}>
-              <IncidentChart series={alertsInfo} title="Incidents Detected" startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
+              <IncidentChart series={AlertsSeries} title="Incidents Detected" startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
             </Grid>
           </Grid>
         </Box>)}

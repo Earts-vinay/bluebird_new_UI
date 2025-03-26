@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import ApexCharts from 'react-apexcharts';
 
-const LineChart = ({ series, title, labels, linechartcolors, markercolors, startDate, endDate, selectedRange, responseDates, customDates }) => {
+const LineChart = ({ series, title, labels, linechartcolors, markercolors, startDate, endDate, selectedRange, responseDates, customDates,isCustomRangeSelected }) => {
   console.log("type", selectedRange);
 
   const today = moment();
@@ -14,26 +14,26 @@ const LineChart = ({ series, title, labels, linechartcolors, markercolors, start
 
   // Use responseDates if customDates is "month"
 
-  if (selectedRange === 'D') {
-    // Generate daily data points
-    for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
-      dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02", etc.
+  if (isCustomRangeSelected && customDates === "month") {
+    // If a custom range is selected and it's by month, use responseDates
+    dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM")) || [];
+  } else {
+    // Default logic based on selectedRange
+    if (selectedRange === 'D') {
+      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
+        dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02"
+      }
+    } else if (selectedRange === 'W' || selectedRange === 'M') {
+      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
+        dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02"
+      }
+    } else if (selectedRange === 'Y') {
+      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
+        dateRange.push(date.format('MMM')); // "Jul", "Aug"
+      }
     }
-  } else if (selectedRange === 'W' || selectedRange === 'M') {
-    // Generate daily data points
-    for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
-      dateRange.push(date.format('MMM-DD')); // "Jul-01", "Jul-02", etc.
-    }
-  } else if (selectedRange === 'Y') {
-    // Generate monthly data points
-    for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
-      dateRange.push(date.format('MMM YY')); // "Jul 24", "Aug 24", etc.
-    }
-  } 
-  
-  if (customDates === "month") {
-    dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM DD")) || [];
   }
+  
   
   
   const lineChartOptions = {

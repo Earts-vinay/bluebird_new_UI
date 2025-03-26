@@ -253,16 +253,16 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} mt={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={6}>
-                <LineChart series={peopleEnterSeries} title="Pedestrain Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
+                <LineChart series={peopleEnterSeries} title="Pedestrain Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
               </Grid>
               <Grid item xs={12} md={6}>
-                <LineChart series={peopleOccupancySeries} title="Pedestrain Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
+                <LineChart series={peopleOccupancySeries} title="Pedestrain Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
               </Grid>
               <Grid item xs={12} md={6}>
-                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
+                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
               </Grid>
               <Grid item xs={12} md={6}>
-                <LineChart series={vehicleOccupancySeries} title="Vehicle Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} />
+                <LineChart series={vehicleOccupancySeries} title="Vehicle Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
               </Grid>
 
               {/* <Grid item xs={12} md={4}>

@@ -23,14 +23,12 @@ const today = moment();
   } else if (selectedRange === 'Y') {
       // Generate monthly data points
       for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
-        dateRange.push(date.format('MMM YY')); // "Jul-01", "Jul-02", etc.
+        dateRange.push(date.format('MMM ')); // "Jul-01", "Jul-02", etc.
     }
   }
 
   const chartOptions = {
-    series: [{
-      data: series
-    }],
+    series:series,
     colors: ["#46c8f5"],
     chart: {
       type: 'line',

@@ -97,7 +97,7 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
             <Grid container spacing={2.5}>
 
               <Grid item xs={12} md={7}>
-                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates}/>
+              <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
               </Grid>
               <Grid item xs={12} md={5}>
                 {StatData.data?.map?.((rowData, index) => (

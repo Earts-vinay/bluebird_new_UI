@@ -121,6 +121,7 @@ const Insights = () => {
 
             <Box display="flex" alignItems="center" sx={{ paddingRight: "30px", gap: "10px" }}>
             <RangePicker
+  value={isCustomRangeSelected ? [dayjs(dateRange.startDate), dayjs(dateRange.endDate)] : null}
   disabledDate={(current) => current && current > dayjs()}
   onChange={(dates) => {
     if (dates) {
@@ -147,33 +148,36 @@ const Insights = () => {
 />
 
 
+
               <Box sx={{ border: "1px solid #ccc", borderRadius: "5px" }}>
                 {["D", "W", "M", "Y"].map((range) => (
-                  <Button
-                    key={range}
-                    onClick={() => {
-                      setSelectedRange(range);
-                      setIsCustomRangeSelected(false); // Reset custom range selection
-                      updateDateRange(range);
-                    }}
-                    sx={{
-                      ...commonStyles,
-                      backgroundColor: isCustomRangeSelected
-                        ? "#fff" // When custom range is selected, buttons remain white
-                        : selectedRange === range
-                          ? "#52a1cc8b" // When button is selected, it turns blue
-                          : "#fff", // Default white
-                      color: "#000",
-                      border: "none",
-                      minWidth: "40px",
-                      height: "30px",
-                      fontWeight: "bold",
-                      transition: "background-color 0.3s ease-in-out",
-                    }}
-                    disabled={loading}
-                  >
-                    {range}
-                  </Button>
+              <Button
+              key={range}
+              onClick={() => {
+                setSelectedRange(range);
+                setIsCustomRangeSelected(false); // Reset custom range selection
+                setDateRange({ startDate: "", endDate: "" }); // Clear selected dates
+                updateDateRange(range);
+              }}
+              sx={{
+                ...commonStyles,
+                backgroundColor: isCustomRangeSelected
+                  ? "#fff" // When custom range is selected, buttons remain white
+                  : selectedRange === range
+                  ? "#52a1cc8b" // When button is selected, it turns blue
+                  : "#fff", // Default white
+                color: "#000",
+                border: "none",
+                minWidth: "40px",
+                height: "30px",
+                fontWeight: "bold",
+                transition: "background-color 0.3s ease-in-out",
+              }}
+              disabled={loading}
+            >
+              {range}
+            </Button>
+            
                 ))}
               </Box>
 
@@ -188,16 +192,16 @@ const Insights = () => {
             ) : (
               <>
                 <TabPanel value={selectedTab} index={0}>
-                  <Overview dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
+                  <Overview dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates} />
                 </TabPanel>
                 <TabPanel value={selectedTab} index={1}>
-                  <SystemStats dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
+                  <SystemStats dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates} />
                 </TabPanel>
                 <TabPanel value={selectedTab} index={2}>
-                  <Incident dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
+                  <Incident dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates} />
                 </TabPanel>
                 <TabPanel value={selectedTab} index={3}>
-                  <TrafficComponent dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates}/>
+                  <TrafficComponent dateRange={dateRange} isCustomRangeSelected={isCustomRangeSelected} selectedRange={selectedRange} customDates={customDates} />
                 </TabPanel>
               </>
             )}

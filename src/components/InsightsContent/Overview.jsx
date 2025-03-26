@@ -348,7 +348,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange,customDates 
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} my={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={8}>
-                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates}/>
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
               </Grid>
               <Grid item xs={12} md={4}>
                 <RadialBarChart
