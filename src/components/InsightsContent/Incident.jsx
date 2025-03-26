@@ -11,10 +11,11 @@ import { fetchDataList, fetchCountListHour, fetchLast7Count } from '../../redux/
 import { fetchPersonData, fetchPersonDataCards, fetchVehicleData, fetchVehicleDataCards, fetchZoneAlert } from '../../redux/apiResponse/alertSlice';
 import Loader from '../Loader';
 import { fetchHeatmapData } from '../../redux/apiResponse/heatmapSlice';
+import dayjs from 'dayjs';
 
 const PublicUrl = process.env.PUBLIC_URL;
 const commonStyles = { fontFamily: "montserrat-regular" };
-const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
+const Incident = ({ dateRange, isCustomRangeSelected, selectedRange, customDates }) => {
   const dispatch = useDispatch();
   const token = useSelector(selectToken);
   const [zones, setZones] = useState([]);
@@ -24,25 +25,23 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
   const seleProp = useSelector(selectedPropertyByUser);
   const moment = require('moment');
   const today = moment();
+  const vehicletoday = moment().format("YYYY-MM-DD");
   const startonlytime = today.clone().startOf('day').format('YYYY-MM-DD HH:mm:ss')
   const endonlytime = today.clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
   const propertyId = seleProp?.id;
   const zoneId = zones;
   const startDate = dateRange.startDate;
   const endDate = dateRange.endDate;
+  const vehicleStartDate = vehicletoday;
+  const vehicleEndDate = vehicletoday;
   const vehicleData = useSelector((state) => state.Alert.vecAlert);
   const vecAlertsCards = useSelector((state) => state.Alert.vecAlertsCards);
   const personAlertsCards = useSelector((state) => state.Alert.personAlertsCards);
   const { heatmapSeries, loading, error } = useSelector(state => state.heatmap);
   const zoneAlert = useSelector((state) => state.Alert.zoneAlert);
-
-  const type = selectedRange === "D"
-    ? "date"
-    : selectedRange === "W"
-      ? "date"
-      : selectedRange === "M"
-        ? "date"
-        : "month";
+  const responseDates = vehicleData?.flatMap((zone) =>
+    zone.list?.map((item) => item.date_time) || []
+  );
 
   const YearType = selectedRange === "D"
     ? "date"
@@ -53,6 +52,18 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
         : selectedRange === "Y"
           ? "date"
           : "month";
+
+  const alerttype = isCustomRangeSelected
+    ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
+      ? "month"
+      : "date"
+    : selectedRange === "D"
+      ? "hour"
+      : selectedRange === "Y"
+        ? "month"
+        : customDates // If customDates is selected, set type to "date"
+          ? "date"
+          : "date";
 
   // Calculate the difference in days only if a custom range is selected
   const dayDifference = isCustomRangeSelected
@@ -78,7 +89,13 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
       // dispatch(fetchDataList({ propertyId, startDate: startDate, endDate: endDate, token }));
       dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
-      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: type, typeId: "1" }));
+      dispatch(fetchVehicleData({
+        propertyId,
+        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate,
+        type: alerttype,
+        typeId: "1"
+      }));
       dispatch(fetchVehicleDataCards({ propertyId, startDate, endDate, type: YearType, typeId: "1" }));
       dispatch(fetchPersonDataCards({ propertyId, startDate, endDate, type: YearType, typeId: "0" }));
       dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
@@ -100,8 +117,6 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
       data: alertsInfo
     }
   ];
-  console.log("alertsinfo",AlertsSeries);
-  
 
   useEffect(() => {
     let total = 0;
@@ -229,7 +244,7 @@ const Incident = ({ dateRange,isCustomRangeSelected, selectedRange }) => {
               <DonutChart series={percents} title="Alerts By Zone" labels={zoneNames} size="90%" customDataLabels={dataLables} donutcolors={['#01669a', '#46c8f5', '#52a1cc']} markercolors={['#01669a', '#46c8f5', '#52a1cc']} />
             </Grid>
             <Grid item xs={12} md={8}>
-              <IncidentChart series={AlertsSeries} title="Incidents Detected" startDate={startDate} endDate={endDate} selectedRange={selectedRange} />
+              <IncidentChart series={AlertsSeries} title="Incidents Detected" startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} />
             </Grid>
           </Grid>
         </Box>)}

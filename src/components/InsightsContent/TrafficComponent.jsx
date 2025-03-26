@@ -22,6 +22,7 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
   const seleProp = useSelector(selectedPropertyByUser);
   const moment = require('moment');
   const today = moment();
+  const vehicletoday = moment().format("YYYY-MM-DD");
   const seventhDayAgo = today.clone().subtract(7, 'days');
   const start7thTime = seventhDayAgo.clone().startOf('day').format('YYYY-MM-DD HH:mm:ss');
   const end7thTime = seventhDayAgo.clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
@@ -31,6 +32,8 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
   const zoneId = zones;
   const startDate = dateRange.startDate;
   const endDate = dateRange.endDate;
+  const vehicleStartDate = vehicletoday;
+  const vehicleEndDate = vehicletoday;
   const { dataList, dataYearList, countListHour, loading, last7Count } = useSelector((state) => state.counting);
   const zoneAlert = useSelector((state) => state.Alert.zoneAlert);
   const { zonecount } = useSelector((state) => state.Insight);
@@ -48,23 +51,17 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
         ? "date"
         : "month";
 
-  const YearType = selectedRange === "D"
-    ? "date"
-    : selectedRange === "W"
-      ? "date"
-      : selectedRange === "M"
-        ? "date"
-        : selectedRange === "Y"
-          ? "date"
-          : "month";
-
   const alerttype = isCustomRangeSelected
     ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
       ? "month"
       : "date"
-    : selectedRange === "Y"
-      ? "month"
-      : "date";
+    : selectedRange === "D"
+      ? "hour"
+      : selectedRange === "Y"
+        ? "month"
+        : customDates // If customDates is selected, set type to "date"
+          ? "date"
+          : "date";
 
   // Calculate the difference in days only if a custom range is selected
   const dayDifference = isCustomRangeSelected
@@ -87,7 +84,8 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
   //counting Api
   useEffect(() => {
     if (propertyId && token) {
-      dispatch(fetchDataList({ propertyId, startDate: startDate, endDate: endDate, token, timeType: alerttype }));
+      dispatch(fetchDataList({ propertyId,  startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate, token, timeType: alerttype }));
       dispatch(fetchDataYearList({ propertyId, startDate: startDate, endDate: endDate, token, timeType: type }));
       dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));

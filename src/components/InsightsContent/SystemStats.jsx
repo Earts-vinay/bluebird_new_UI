@@ -30,11 +30,13 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
   const unhealthloading = useSelector((state) => state.Device.unhealthloading);
 
   const moment = require('moment');
-  const today = moment();
+  const today = moment().format("YYYY-MM-DD");
   const startTime = dateRange.startDate
   const endTime = dateRange.endDate
   const startDate = startTime;
   const endDate = endTime;
+  const vehicleStartDate = today;
+  const vehicleEndDate = today;
   const responseDates = vehicleData?.flatMap((zone) =>
     zone.list?.map((item) => item.date_time) || []
   );
@@ -43,16 +45,33 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
     ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
       ? "month"
       : "date"
-    : selectedRange === "Y"
-      ? "month"
-      : "date";
+    : selectedRange === "D"
+      ? "hour"
+      : selectedRange === "Y"
+        ? "month"
+        : customDates // If customDates is selected, set type to "date"
+          ? "date"
+          : "date";
 
   useEffect(() => {
     if (propertyId) {
       dispatch(fetchDeviceStatistics(propertyId));
       dispatch(fetchDeviceUnhealthy(propertyId))
-      dispatch(fetchVehicleData({ propertyId, startDate, endDate, type: alerttype, typeId: "1" }));
-      dispatch(fetchPersonData({ propertyId, startDate, endDate, type: alerttype, typeId: "0" }));
+      dispatch(fetchVehicleData({
+        propertyId,
+        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate,
+        type: alerttype,
+        typeId: "1"
+      }));
+      dispatch(fetchPersonData({
+        propertyId,
+        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate,
+        type: alerttype,
+        typeId: "0"
+      }));
+     
     }
   }, [dispatch, propertyId, startDate, endDate, alerttype]);
 
@@ -97,7 +116,7 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
             <Grid container spacing={2.5}>
 
               <Grid item xs={12} md={7}>
-              <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
+              <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} />
               </Grid>
               <Grid item xs={12} md={5}>
                 {StatData.data?.map?.((rowData, index) => (
