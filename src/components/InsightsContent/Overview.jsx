@@ -275,14 +275,17 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
 
   const aggregatedAgeData = dataList?.reduce(
     (acc, day) => {
-      acc.less_20 += day.age_dist.less_20;
-      acc["20_40"] += day.age_dist["20_40"];
-      acc["40_60"] += day.age_dist["40_60"];
-      acc.more_60 += day.age_dist.more_60;
+      if (day?.age_dist) {
+        acc.less_20 += day.age_dist.less_20 || 0;
+        acc["20_40"] += day.age_dist["20_40"] || 0;
+        acc["40_60"] += day.age_dist["40_60"] || 0;
+        acc.more_60 += day.age_dist.more_60 || 0;
+      }
       return acc;
     },
     { less_20: 0, "20_40": 0, "40_60": 0, more_60: 0 }
   );
+  
 
   // Prepare the data for the chart
   const categories = ["Less than 20", "20-40", "40-60", "More than 60"];
