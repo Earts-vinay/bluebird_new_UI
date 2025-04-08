@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import ApexCharts from 'react-apexcharts';
 
-const LineChart = ({ series, title, labels, linechartcolors, markercolors, startDate, endDate, selectedRange, responseDates, customDates, isCustomRangeSelected }) => {
+const LineChart = ({ series, title, labels, linechartcolors,diffDays, markercolors, startDate, endDate, selectedRange, responseDates, customDates, isCustomRangeSelected }) => {
   console.log("type", selectedRange);
 
   const today = moment();
@@ -16,7 +16,11 @@ const LineChart = ({ series, title, labels, linechartcolors, markercolors, start
     dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM")) || [];
   } else {
     // Default logic based on selectedRange
-    if (selectedRange === 'D' && !isCustomRangeSelected) {
+    if (selectedRange === 'D' && diffDays===0 && !isCustomRangeSelected) {
+      for (let hour = 0; hour < 24; hour++) {
+        dateRange.push(moment({ hour }).format("HH:mm")); // "00:00", "01:00", ..., "23:00"
+      }
+    } else if (selectedRange === 'D' && diffDays===0 && isCustomRangeSelected) {
       for (let hour = 0; hour < 24; hour++) {
         dateRange.push(moment({ hour }).format("HH:mm")); // "00:00", "01:00", ..., "23:00"
       }

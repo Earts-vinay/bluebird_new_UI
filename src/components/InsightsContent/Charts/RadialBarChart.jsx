@@ -55,6 +55,9 @@ const RadialBarChart = ({ series, labels, title, colors }) => {
           },
           value: {
             show: true,
+            formatter: function(val) {
+              return parseInt(val);
+            },
             fontSize: '16px',
             fontWeight: 400,
             offsetY: 16,

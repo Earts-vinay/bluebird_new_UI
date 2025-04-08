@@ -6,9 +6,9 @@ import { selectedPropertyByUser } from '../../redux/apiResponse/propertySlice';
 import TrafficCards from './TrafficComponentContent/TrafficCards';
 import BarChart from './Charts/BarChart';
 import LineChart from './Charts/LineChart';
-import { fetchDataList, fetchCountListHour, fetchLast7Count, fetchDataYearList } from '../../redux/apiResponse/countingSlice';
+import { fetchDataList, fetchCountListHour, fetchLast7Count, fetchDataYearList, countingPreviousList } from '../../redux/apiResponse/countingSlice';
 import { fetchZoneAlert } from '../../redux/apiResponse/alertSlice';
-import { fetchCountingByProperty, fetchCountingByZone } from '../../redux/apiResponse/insightSlice';
+import { fetchCountingByProperty, fetchCountingByZone, PreviousCountingByZone } from '../../redux/apiResponse/insightSlice';
 import Loader from '../Loader';
 import dayjs from 'dayjs';
 
@@ -32,11 +32,16 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
   const zoneId = zones;
   const startDate = dateRange.startDate;
   const endDate = dateRange.endDate;
+  const previousStartDate = dateRange.previousStartDate
+  const previousEndDate = dateRange.previousEndDate
+  const latestStartDate = dateRange.latestStartDate
+  const latestEndDate = dateRange.latestEndDate
   const vehicleStartDate = vehicletoday;
   const vehicleEndDate = vehicletoday;
-  const { dataList, dataYearList, countListHour, loading, last7Count } = useSelector((state) => state.counting);
+  const { dataList, dataYearList,previousDataList, countListHour, loading, last7Count } = useSelector((state) => state.counting);
   const zoneAlert = useSelector((state) => state.Alert.zoneAlert);
-  const { zonecount } = useSelector((state) => state.Insight);
+  const { zonecount, previousZoneCount } = useSelector((state) => state.Insight);
+
 
   const responseDates = dataList?.map((item) => item.date_time) || [];
 
@@ -51,15 +56,19 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
         ? "date"
         : "month";
 
+  const diffDays = dayjs(dateRange.latestEndDate).diff(dayjs(dateRange.latestStartDate), "days");
+
   const alerttype = isCustomRangeSelected
-    ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
-      ? "month"
-      : "date"
+    ? diffDays === 0 // If only one day is selected, pass "hour"
+      ? "hour"
+      : diffDays >= 1 && diffDays < 30 // If more than 1 day but less than 30 days, pass "date"
+        ? "date"
+        : "month" // If 30 or more days are selected, pass "month"
     : selectedRange === "D"
       ? "hour"
       : selectedRange === "Y"
         ? "month"
-        : customDates // If customDates is selected, set type to "date"
+        : customDates
           ? "date"
           : "date";
 
@@ -84,13 +93,19 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
   //counting Api
   useEffect(() => {
     if (propertyId && token) {
-      dispatch(fetchDataList({ propertyId,  startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
-        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate, token, timeType: alerttype }));
-      dispatch(fetchDataYearList({ propertyId, startDate: startDate, endDate: endDate, token, timeType: type }));
+      dispatch(fetchDataList({ propertyId,  startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : latestStartDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : latestEndDate, token, timeType: alerttype }));
+
+      dispatch(fetchDataYearList({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token, timeType: type }));
+      dispatch(countingPreviousList({ propertyId, startDate: previousStartDate, endDate: previousEndDate, token, timeType: type }));
+
       dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
       dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
-      dispatch(fetchCountingByZone({ propertyId, startDate: startDate, endDate: endDate, token }));
+
+      dispatch(fetchCountingByZone({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token }));
+      dispatch(PreviousCountingByZone({ propertyId, startDate: previousStartDate, endDate: previousEndDate, token }));
+      
     }
   }, [propertyId, token]);
 
@@ -218,24 +233,33 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
   const personSeries = [
     {
       name: `Enter ${daysago}`,
-      data: zonecount?.map((zone) => zone.list?.[0]?.people_enter || 0), // First available day
+      data: previousZoneCount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.people_enter || 0), 0)
+      ) || []
     },
     {
       name: 'Enter Today',
-      data: zonecount?.map((zone) => zone.list?.[zone.list.length - 1]?.people_enter || 0), // Latest available day
+      data: zonecount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.people_enter || 0), 0)
+      ) || []
     },
   ];
 
   const vehicleSeries = [
     {
       name: `Enter ${daysago}`,
-      data: zonecount?.map((zone) => zone.list?.[0]?.vechicle_enter || 0), // First available day
+      data: previousZoneCount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.vechicle_enter || 0), 0)
+      ) || []
     },
     {
       name: 'Enter Today',
-      data: zonecount?.map((zone) => zone.list?.[zone.list.length - 1]?.vechicle_enter || 0), // Latest available day
+      data: zonecount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.vechicle_enter || 0), 0)
+      ) || []
     },
   ];
+
 
   return (
     <>
@@ -251,17 +275,17 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} mt={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={6}>
-                <LineChart series={peopleEnterSeries} title="Pedestrain Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
+                <LineChart series={peopleEnterSeries} title="Pedestrain Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays} />
               </Grid>
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <LineChart series={peopleOccupancySeries} title="Pedestrain Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} md={6}>
-                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
+                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays}/>
               </Grid>
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <LineChart series={vehicleOccupancySeries} title="Vehicle Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
-              </Grid>
+              </Grid> */}
 
               {/* <Grid item xs={12} md={4}>
             <DonutChart series={pedestrainWeekAverage} title="Pedestrain Entry By Day of week Averages" labels={dayLabels} size="40%" donutcolors={['#69499f','#1b3664','#01669a','#52a1cc','#46c8f5','#abd9f4','#ef7b73']} markercolors={['#69499f','#1b3664','#01669a','#52a1cc','#46c8f5','#abd9f4','#ef7b73']}/>

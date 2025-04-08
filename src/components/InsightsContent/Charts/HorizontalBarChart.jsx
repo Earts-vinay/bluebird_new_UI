@@ -19,7 +19,7 @@ const HorizontalBarChart = ({seriesData,title,categories}) => {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val) => val.toFixed(2),
+      formatter: (val) => val.toFixed(),
       style: {
         colors: ["#555"],
       },

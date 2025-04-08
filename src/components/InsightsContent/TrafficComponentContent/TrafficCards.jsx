@@ -1,38 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Typography, Card, CardContent } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchDataList, fetchCountListHour, fetchLast7Count } from '../../../redux/apiResponse/countingSlice';
-import { selectToken } from '../../../redux/apiResponse/loginApiSlice';
-import { selectedPropertyByUser } from '../../../redux/apiResponse/propertySlice';
+import { useSelector } from 'react-redux';
 import StatCard from '../../customStyles/StatCard';
-import moment from 'moment';
 import Loader from '../../Loader';
 
 const PublicUrl = process.env.PUBLIC_URL;
 const commonStyles = { fontFamily: "montserrat-regular" };
 
 const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
-  const today = moment();
-  const startTime = dateRange.startDate
-  const endTime = dateRange.endDate
-  const startonlytime = today.clone().startOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const endonlytime = today.clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const seventhDayAgo = today.clone().subtract(7, 'days');
-  const start7thTime = seventhDayAgo.clone().startOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const end7thTime = seventhDayAgo.clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const seleProp = useSelector(selectedPropertyByUser);
-  const token = useSelector(selectToken);
-  const dispatch = useDispatch();
-  const { dataList, dataYearList, loading, countListHour, last7Count } = useSelector((state) => state.counting);
-  const propertyId = seleProp?.id;
+  const startTime = dateRange.latestStartDate
+  const endTime = dateRange.latestEndDate
 
-  useEffect(() => {
-    if (propertyId && token) {
-      // dispatch(fetchDataList({ propertyId, startDate: startTime, endDate: endTime, token }));
-      dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
-      dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
-    }
-  }, [propertyId, token, dispatch, startTime, endTime, startonlytime, endonlytime, start7thTime, end7thTime]);
+  const { dataList, dataYearList, loading, previousDataList, countListHour, last7Count } = useSelector((state) => state.counting);
 
   // The rest of your calculations and rendering logic goes here...
   const currentDate = endTime;
@@ -45,56 +24,47 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
     return num?.toString(); // Keep as is if less than 1K
   };
 
-  // const filteredVehicleData = vehicleData[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
-  // const filteredZonesData = zoneAlert[0]?.list?.filter(item => item.date_time?.slice(0, 10) === formattedDate);
+  //latest calculations
+  const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
+  const latestPeoplePeakEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
+  const latestPeopleOccupancy = dataYearList?.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
+  const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
+  const latestVehiclePeakEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter_peak, 0);
+  const latestVehicleOccupancy = dataYearList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
 
-  const totalPeopleEnterToday = filteredData.reduce((acc, item) => acc + item.people_enter, 0);
-  const PeakPeopleEnterToday = filteredData.reduce((acc, item) => acc + item.people_enter_peak, 0);
-  const peopleOccupancyToday = filteredData.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
-  const vehicleEnterToday = filteredData.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const PeakvehicleEnterToday = filteredData.reduce((acc, item) => acc + item.vechicle_enter_peak, 0);
-  const vehicleOccupancyToday = filteredData.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
-
-  const totalPeopleEnterTodayFormatted = formatNumber(totalPeopleEnterToday);
-  const PeakPeopleEnterTodayFormatted = formatNumber(PeakPeopleEnterToday);
-  const peopleOccupancyTodayFormatted = formatNumber(peopleOccupancyToday);
-  const vehicleEnterTodayFormatted = formatNumber(vehicleEnterToday);
-  const PeakvehicleEnterTodayFormatted = formatNumber(PeakvehicleEnterToday);
-  const vehicleOccupancyTodayFormatted = formatNumber(vehicleOccupancyToday);
+  const latestPeopleEnterFormatted = formatNumber(latestPeopleEnter);
+  const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
+  const latestPeopleOccupancyFormatted = formatNumber(latestPeopleOccupancy);
+  const latestVehicleEnterFormatted = formatNumber(latestVehicleEnter);
+  const latestVehiclePeakEnterFormatted = formatNumber(latestVehiclePeakEnter);
+  const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
 
 
-  const filteredDataStartDate = dataYearList?.filter(item => {
-    const itemDate = moment(item.date_time, 'YYYY-MM-DD');
-    return itemDate.isSame(startTime, 'day');
-  });
+  // Previous claculations
+  const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
+  const previousPeoplePeakEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
+  const previousPeopleOccupancy = previousDataList?.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
+  const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
+  const previousPeakvehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter_peak, 0);
+  const previousVehicleOccupancy = previousDataList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
 
-  // Calculate totals for the start date (7 days ago)
-  const totalPeopleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.people_enter, 0);
-  const PeakPeopleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.people_enter_peak, 0);
-  const peopleOccupancy = filteredDataStartDate.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
-  const vehicleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const PeakvehicleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.vechicle_enter_peak, 0);
-  const vehicleOccupancy = filteredDataStartDate.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
-
-  const totalPeopleEnterFormatted = formatNumber(totalPeopleEnter);
-  const PeakPeopleEnterFormatted = formatNumber(PeakPeopleEnter);
-  const peopleOccupancyFormatted = formatNumber(peopleOccupancy);
-  const vehicleEnterFormatted = formatNumber(vehicleEnter);
-  const PeakvehicleEnterFormatted = formatNumber(PeakvehicleEnter);
-  const vehicleOccupancyFormatted = formatNumber(vehicleOccupancy);
-
-  // const Zonesalerts = zonesFilteredDataStartDate?.reduce((acc, item) => acc + item.resolved_alert_num + item.unresolved_alert_num, 0);
+  const previousPeopleEnterFormatted = formatNumber(previousPeopleEnter);
+  const previousPeoplePeakEnterFormatted = formatNumber(previousPeoplePeakEnter);
+  const previousPeopleOccupancyFormatted = formatNumber(previousPeopleOccupancy);
+  const previousVehicleEnterFormatted = formatNumber(previousVehicleEnter);
+  const previousPeakvehicleEnterFormatted = formatNumber(previousPeakvehicleEnter);
+  const previousVehicleOccupancyFormatted = formatNumber(previousVehicleOccupancy);
 
   // Differences
   const handlePercentageError = (value) => {
     return !isNaN(value) && isFinite(value) ? value : 0;
   };
-  const percentagePeopleEnter = handlePercentageError(((totalPeopleEnterToday - totalPeopleEnter) / totalPeopleEnter) * 100).toFixed(2);
-  const percentagePeakPeopleEnter = handlePercentageError(((PeakPeopleEnterToday - PeakPeopleEnter) / PeakPeopleEnter) * 100).toFixed(2);
-  const percentagePeopleOccupancy = handlePercentageError(((peopleOccupancyToday - peopleOccupancy) / peopleOccupancy) * 100).toFixed(2);
-  const percentageVehicleEnter = handlePercentageError(((vehicleEnterToday - vehicleEnter) / vehicleEnter) * 100).toFixed(2);
-  const percentagePeakVehicleEnter = handlePercentageError(((PeakvehicleEnterToday - PeakvehicleEnter) / PeakvehicleEnter) * 100).toFixed(2);
-  const percentageVehicleOccupancy = handlePercentageError(((vehicleOccupancyToday - vehicleOccupancy) / vehicleOccupancy) * 100).toFixed(2);
+  const percentagePeopleEnter = handlePercentageError(((latestPeopleEnter - previousPeopleEnter) / previousPeopleEnter) * 100).toFixed(2);
+  const percentagePeoplePeakEnter = handlePercentageError(((latestPeoplePeakEnter - previousPeoplePeakEnter) / previousPeoplePeakEnter) * 100).toFixed(2);
+  const percentagePeopleOccupancy = handlePercentageError(((latestPeopleOccupancy - previousPeopleOccupancy) / previousPeopleOccupancy) * 100).toFixed(2);
+  const percentageVehicleEnter = handlePercentageError(((latestVehicleEnter - previousVehicleEnter) / previousVehicleEnter) * 100).toFixed(2);
+  const percentagePeakVehicleEnter = handlePercentageError(((latestVehiclePeakEnter - previousPeakvehicleEnter) / previousPeakvehicleEnter) * 100).toFixed(2);
+  const percentageVehicleOccupancy = handlePercentageError(((latestVehicleOccupancy - previousVehicleOccupancy) / previousVehicleOccupancy) * 100).toFixed(2);
 
   //peak entries and occupance time
   const getCurrentTime = () => new Date().toLocaleTimeString("en-GB", { hour12: false });
@@ -103,36 +73,31 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
     const time = item.people_enter_peaktime?.split(" ")[1] || getCurrentTime();
     return acc + time;
   }, "");
-  
+
   const peakpopleOccupancyTime = filteredData.reduce((acc, item) => {
     const time = item.people_occupancy_peaktime?.split(" ")[1] || getCurrentTime();
     return acc + time;
   }, "");
-  
+
   const peakVehicleEnterTime = filteredData.reduce((acc, item) => {
     const time = item.vechicle_enter_peaktime?.split(" ")[1] || getCurrentTime();
     return acc + time;
   }, "");
-  
+
   const peakVehicleOccupancyTime = filteredData.reduce((acc, item) => {
     const time = item.vechicle_occupancy_peak_time?.split(" ")[1] || getCurrentTime();
     return acc + time;
   }, "");
-  
+
 
   // Ratio calculation
-  const todayratio = vehicleEnterToday > 0 ? (totalPeopleEnterToday / vehicleEnterToday).toFixed(2) : '0';
-  const sevendayratio = vehicleEnter > 0 ? (totalPeopleEnter / vehicleEnter).toFixed(2) : '0';
-  const ratiopercentage = handlePercentageError(((todayratio - sevendayratio) / sevendayratio) * 100).toFixed(2);
-
-  // Calculate the difference in days only if a custom range is selected
-  const dayDifference = isCustomRangeSelected
-    ? moment(endTime).diff(moment(startTime), "days")
-    : null;
+  const latestRatio = latestVehicleEnter > 0 ? (latestPeopleEnter / latestVehicleEnter).toFixed(2) : '0';
+  const previousRatio = previousVehicleEnter > 0 ? (previousPeopleEnter / previousVehicleEnter).toFixed(2) : '0';
+  const ratiopercentage = handlePercentageError(((latestRatio - previousRatio) / previousRatio) * 100).toFixed(2);
 
   // Define the `daysago` message
   const daysago = isCustomRangeSelected
-    ? `${dayDifference} days ago`
+    ? "Last Period"
     : selectedRange === "D"
       ? "A day ago"
       : selectedRange === "W"
@@ -148,27 +113,27 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       background: "#1b3664",
       icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
       title: "Total Entries",
-      mainValue: totalPeopleEnterTodayFormatted,
-      subValue: totalPeopleEnterFormatted,
+      mainValue: latestPeopleEnterFormatted,
+      subValue: previousPeopleEnterFormatted,
       percentage: percentagePeopleEnter,
       daysago: daysago
     },
     {
       background: "#01669a",
-      icon: PublicUrl + "/assets/icons/PersonPeak entries.svg",
+      icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
       title: "Peak Entries",
-      mainValue: PeakPeopleEnterTodayFormatted,
-      subValue: PeakPeopleEnterFormatted,
+      mainValue: latestPeoplePeakEnterFormatted,
+      subValue: previousPeoplePeakEnterFormatted,
       peakTime: peakpopleentryTime,
-      percentage: percentagePeakPeopleEnter,
+      percentage: percentagePeoplePeakEnter,
       daysago: daysago
     },
     {
       background: "#52a1cc",
       icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
       title: "Peak Occupancy",
-      mainValue: peopleOccupancyTodayFormatted,
-      subValue: peopleOccupancyFormatted,
+      mainValue: latestPeopleOccupancyFormatted,
+      subValue: previousPeopleOccupancyFormatted,
       peakTime: peakpopleOccupancyTime,
       percentage: percentagePeopleOccupancy,
       daysago: daysago
@@ -177,8 +142,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       background: "#46c8f5",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
       title: "Total Entries",
-      mainValue: vehicleEnterTodayFormatted,
-      subValue: vehicleEnterFormatted,
+      mainValue: latestVehicleEnterFormatted,
+      subValue: previousVehicleEnterFormatted,
       percentage: percentageVehicleEnter,
       daysago: daysago
     },
@@ -186,8 +151,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       background: "#52a1cc",
       icon: PublicUrl + "/assets/icons/VehiclePeakEntries.svg",
       title: "Peak Entries",
-      mainValue: PeakvehicleEnterTodayFormatted,
-      subValue: PeakvehicleEnterFormatted,
+      mainValue: latestVehiclePeakEnterFormatted,
+      subValue: previousPeakvehicleEnterFormatted,
       peakTime: peakVehicleEnterTime,
       percentage: percentagePeakVehicleEnter,
       daysago: daysago
@@ -196,8 +161,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       background: "#abd9f4",
       icon: PublicUrl + "/assets/icons/VehiclePeakOccupancy.svg",
       title: "Peak Occupancy",
-      mainValue: vehicleOccupancyTodayFormatted,
-      subValue: vehicleOccupancyFormatted,
+      mainValue: latestVehicleOccupancyFormatted,
+      subValue: previousVehicleOccupancyFormatted,
       peakTime: peakVehicleOccupancyTime,
       percentage: percentageVehicleOccupancy,
       daysago: daysago
@@ -249,7 +214,7 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
                         Pedestrain by <br /> Vechile Ratio
                       </Typography>
                       <Typography variant="h1" color="white" style={{ fontSize: '50px', ...commonStyles }}>
-                        {todayratio}
+                        {latestRatio}
                       </Typography>
 
                     </div>
@@ -262,7 +227,7 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ paddingTop: "65px" }}>
                       <Typography variant="h3" color="white" style={{ fontSize: '40px', ...commonStyles }}>
-                        {sevendayratio}
+                        {previousRatio}
                       </Typography>
                       <Typography variant="subtitle2" color="white" sx={commonStyles}>
                         {daysago}

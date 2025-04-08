@@ -12,10 +12,10 @@ import BarChart from './Charts/BarChart';
 import LineChart from './Charts/LineChart';
 import PieChart from './Charts/PieChart';
 import RadialBarChart from './Charts/RadialBarChart';
-import { fetchDataList, fetchCountListHour, fetchLast7Count, fetchDataYearList } from '../../redux/apiResponse/countingSlice';
-import { fetchCountingByProperty, fetchCountingByZone } from '../../redux/apiResponse/insightSlice';
+import { fetchDataList, fetchCountListHour, fetchLast7Count, fetchDataYearList, countingPreviousList } from '../../redux/apiResponse/countingSlice';
+import { fetchCountingByProperty, fetchCountingByZone, PreviousCountingByZone } from '../../redux/apiResponse/insightSlice';
 import { fetchDeviceStatistics } from '../../redux/apiResponse/deviceSlice';
-import { fetchPersonData, fetchVehicleData, fetchVehicleDataCards } from '../../redux/apiResponse/alertSlice';
+import { fetchPersonData, fetchVehicleData, fetchVehicleDataCards, latestTotalAlerts, previousTotalAlerts } from '../../redux/apiResponse/alertSlice';
 import HorizontalBarChart from './Charts/HorizontalBarChart';
 import dayjs from 'dayjs';
 
@@ -31,11 +31,13 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const [personalertsInfo, setPersonAlertsInfo] = useState([]);
   const seleProp = useSelector(selectedPropertyByUser);
   const propertyId = seleProp?.id;
-  const { dataList, dataYearList, loading, countListHour, last7Count } = useSelector((state) => state.counting);
-  const { zonecount } = useSelector((state) => state.Insight);
+  const { dataList, dataYearList, loading, previousDataList, countListHour, last7Count } = useSelector((state) => state.counting);
+  const { zonecount, previousZoneCount } = useSelector((state) => state.Insight);
   const StatData = useSelector((state) => state.Device.StatData);
   const vehicleData = useSelector((state) => state.Alert.vecAlert);
-  const vecAlertsCards = useSelector((state) => state.Alert.vecAlertsCards);
+  const latestTotalALert = useSelector((state) => state.Alert.latestTotalAlerts);
+  const previousTotalAlert = useSelector((state) => state.Alert.previousTotalAlerts);
+  // const vecAlertsCards = useSelector((state) => state.Alert.vecAlertsCards);
   const personAlertsData = useSelector((state) => state.Alert.personAlerts);
 
   const moment = require('moment');
@@ -46,12 +48,17 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const endTime = dateRange.endDate
   const startDate = startTime;
   const endDate = endTime;
+  const previousStartDate = dateRange.previousStartDate
+  const previousEndDate = dateRange.previousEndDate
+  const latestStartDate = dateRange.latestStartDate
+  const latestEndDate = dateRange.latestEndDate
   const vehicleStartDate = today;
   const vehicleEndDate = today;
   const responseDates = vehicleData?.flatMap((zone) =>
     zone.list?.map((item) => item.date_time) || []
   );
 
+  console.log("zones Dates", dataYearList);
 
   const type = selectedRange === "D"
     ? "date"
@@ -63,17 +70,22 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
           ? "month"
           : "date";
 
+  const diffDays = dayjs(dateRange.latestEndDate).diff(dayjs(dateRange.latestStartDate), "days");
+
   const alerttype = isCustomRangeSelected
-    ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
-      ? "month"
-      : "date"
+    ? diffDays === 0 // If only one day is selected, pass "hour"
+      ? "hour"
+      : diffDays >= 1 && diffDays < 30 // If more than 1 day but less than 30 days, pass "date"
+        ? "date"
+        : "month" // If 30 or more days are selected, pass "month"
     : selectedRange === "D"
       ? "hour"
       : selectedRange === "Y"
         ? "month"
-        : customDates // If customDates is selected, set type to "date"
+        : customDates
           ? "date"
           : "date";
+
 
 
   const YearType = selectedRange === "D"
@@ -93,7 +105,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
 
   // Define the `daysago` message
   const daysago = isCustomRangeSelected
-    ? `${dayDifference} days ago`
+    ? "Last Period"
     : selectedRange === "D"
       ? "A day ago"
       : selectedRange === "W"
@@ -108,29 +120,34 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   //counting Api
   useEffect(() => {
     if (propertyId && token) {
-      dispatch(fetchDataList({ propertyId, startDate: startTime, endDate: endTime, token, timeType: type }));
-      dispatch(fetchDataYearList({ propertyId, startDate: startTime, endDate: endTime, token, timeType: YearType }));
+      dispatch(fetchDataList({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token, timeType: type }));
+      dispatch(fetchDataYearList({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token, timeType: YearType }));
+      dispatch(countingPreviousList({ propertyId, startDate: previousStartDate, endDate: previousEndDate, token, timeType: YearType }));
 
       // dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       // dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
       dispatch(fetchDeviceStatistics(propertyId));
       dispatch(fetchVehicleData({
         propertyId,
-        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
-        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate,
+        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : latestStartDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : latestEndDate,
         type: alerttype,
         typeId: "1"
       }));
-      dispatch(fetchVehicleDataCards({ propertyId, startDate, endDate, type: YearType, typeId: "1" }));
-
       dispatch(fetchPersonData({
         propertyId,
-        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
-        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate,
+        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : latestStartDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : latestEndDate,
         type: alerttype,
         typeId: "0"
       }));
-      dispatch(fetchCountingByZone({ propertyId, startDate: startTime, endDate: endTime, token }));
+      // dispatch(fetchVehicleDataCards({ propertyId, startDate: latestStartDate, endDate: latestEndDate, type: YearType, typeId: "1" }));
+      dispatch(latestTotalAlerts({ propertyId, startDate: latestStartDate, endDate: latestEndDate, type: YearType, }));
+      dispatch(previousTotalAlerts({ propertyId, startDate: previousStartDate, endDate: previousEndDate, type: YearType, }));
+
+      dispatch(fetchCountingByZone({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token }));
+      dispatch(PreviousCountingByZone({ propertyId, startDate: previousStartDate, endDate: previousEndDate, token }));
+
     }
   }, [propertyId, token, dispatch, startTime, endTime, startDate, endDate]);
 
@@ -166,98 +183,97 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
 
   //Camera Status
   let totalseries;
-  const onlineSeries = StatData?.data?.reduce((total, rowData) => total + (rowData?.online_num ?? 0), 0);
-  const offlineSeries = StatData?.data?.reduce((total, rowData) => total + (rowData?.offline_num ?? 0), 0);
+
+  const onlineSeries = StatData?.data?.[0]?.online_num;
+  const offlineSeries = StatData?.data?.[0]?.offline_num;
+
   totalseries = onlineSeries + offlineSeries; // Calculate totalseries
   const onlinePercentage = ((onlineSeries / totalseries) * 100).toFixed(2);
   const offlinePercentage = ((offlineSeries / totalseries) * 100).toFixed(2);
 
-  // Calculate the total people_enter for the current date
-  const currentDate = endDate;
-  const formattedDate = currentDate;
-  const filteredData = dataYearList?.filter(item => item.date_time.slice(0, 10) === formattedDate);
-  const filteredVehicleData = vecAlertsCards[0]?.list?.filter(item => item.date_time.slice(0, 10) === formattedDate);
+  // card vaules at upper part latest dates
+  const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
+  const latestPeoplePeakEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
+  const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
+  const latestVehicleOccupancy = dataYearList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
 
-  const totalPeopleEnterToday = filteredData.reduce((acc, item) => acc + item.people_enter, 0);
-  const peopleOccupancyToday = filteredData.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
-  const vehicleEnterToday = filteredData.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const vehicleOccupancyToday = filteredData.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
+  // card vaules at lower part previous dates
+  const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
+  const previousPeoplePeakEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
+  const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
+  const previousVehicleOccupancy = previousDataList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
 
-  const filteredDataStartDate = dataYearList?.filter(item => {
-    const itemDate = moment(item.date_time, 'YYYY-MM-DD');
-    return itemDate.isSame(startDate, 'day');
-  });
+  //total alerts card latest and previous
+  const todayVehiclealerts = latestTotalALert[0]?.list?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
+  const totalVehiclealerts = previousTotalAlert[0]?.list?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
 
-  const vehicleFilteredDataStartDate = vecAlertsCards[0]?.list?.filter(item => {
-    const itemDate = moment(item.date_time, 'YYYY-MM-DD');
-    return itemDate.isSame(startDate, 'day');
-  });
 
-  // Calculate totals for the start date (7 days ago)
-  const totalPeopleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.people_enter, 0);
-  const peopleOccupancy = filteredDataStartDate.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
-  const vehicleEnter = filteredDataStartDate.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const vehicleOccupancy = filteredDataStartDate.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
-
-  const todayVehiclealerts = filteredVehicleData?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
-  const totalVehiclealerts = vehicleFilteredDataStartDate?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
-
-  // Differences
+  // percentages for cards 
   const handlePercentageError = (value) => {
     return !isNaN(value) && isFinite(value) ? value : 0;
   };
-  const percentagePeopleEnter = handlePercentageError((((totalPeopleEnterToday - totalPeopleEnter) / totalPeopleEnter) * 100).toFixed(2));
-  const percentagePeopleOccupancy = handlePercentageError((((peopleOccupancyToday - peopleOccupancy) / peopleOccupancy) * 100).toFixed(2));
-  const percentageVehicleEnter = handlePercentageError((((vehicleEnterToday - vehicleEnter) / vehicleEnter) * 100).toFixed(2));
-  const percentageVehicleOccupancy = handlePercentageError((((vehicleOccupancyToday - vehicleOccupancy) / vehicleOccupancy) * 100).toFixed(2));
+  const percentagePeopleEnter = handlePercentageError((((latestPeopleEnter - previousPeopleEnter) / previousPeopleEnter) * 100).toFixed(2));
+  const percentagePeoplePeakEnter = handlePercentageError((((latestPeoplePeakEnter - previousPeoplePeakEnter) / previousPeoplePeakEnter) * 100).toFixed(2));
+  const percentageVehicleEnter = handlePercentageError((((latestVehicleEnter - previousVehicleEnter) / previousVehicleEnter) * 100).toFixed(2));
+  const percentageVehicleOccupancy = handlePercentageError((((latestVehicleOccupancy - previousVehicleOccupancy) / previousVehicleOccupancy) * 100).toFixed(2));
 
+  // percentage for alerts card
   let percentageVehicleAlerts;
   if (totalVehiclealerts !== 0 && !isNaN(totalVehiclealerts)) {
     percentageVehicleAlerts = (((todayVehiclealerts - totalVehiclealerts) / totalVehiclealerts) * 100).toFixed(2);
   } else {
-    // Handle the case where totalVehiclealerts is zero or undefined
     percentageVehicleAlerts = 0;
   }
 
   //formats
   const formatNumber = (num) => {
-    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M"; // Convert to Millions
-    if (num >= 1_000) return (num / 1_000).toFixed(1) + "K"; // Convert to Thousands
-    return num?.toString(); // Keep as is if less than 1K
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
+    if (num >= 1_000) return (num / 1_000).toFixed(1) + "K";
+    return num?.toString();
   };
 
   // Applying formatting to your totals
-  const totalPeopleEnterTodayFormatted = formatNumber(totalPeopleEnterToday);
-  const peopleOccupancyTodayFormatted = formatNumber(peopleOccupancyToday);
-  const vehicleEnterTodayFormatted = formatNumber(vehicleEnterToday);
-  const vehicleOccupancyTodayFormatted = formatNumber(vehicleOccupancyToday);
+  const latestPeopleEnterFormatted = formatNumber(latestPeopleEnter);
+  const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
+  const latestVehicleEnterFormatted = formatNumber(latestVehicleEnter);
+  const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
 
-  const totalPeopleEnterFormatted = formatNumber(totalPeopleEnter);
-  const peopleOccupancyFormatted = formatNumber(peopleOccupancy);
-  const vehicleEnterFormatted = formatNumber(vehicleEnter);
-  const vehicleOccupancyFormatted = formatNumber(vehicleOccupancy);
+  const previousPeopleEnterFormatted = formatNumber(previousPeopleEnter);
+  const previousPeoplePeakEnterFormatted = formatNumber(previousPeoplePeakEnter);
+  const previousVehicleEnterFormatted = formatNumber(previousVehicleEnter);
+  const vehicleOccupancyFormatted = formatNumber(previousVehicleOccupancy);
 
   const zoneNames = zonecount?.map((zone) => zone.name);
+  //zones related data 
+
 
   const personSeries = [
     {
       name: `Enter ${daysago}`,
-      data: zonecount?.map((zone) => zone.list?.[0]?.people_enter || 0), // First available day
+      data: previousZoneCount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.people_enter || 0), 0)
+      ) || []
     },
     {
       name: 'Enter Today',
-      data: zonecount?.map((zone) => zone.list?.[zone.list.length - 1]?.people_enter || 0), // Latest available day
+      data: zonecount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.people_enter || 0), 0)
+      ) || []
     },
   ];
 
   const vehicleSeries = [
     {
       name: `Enter ${daysago}`,
-      data: zonecount?.map((zone) => zone.list?.[0]?.vechicle_enter || 0), // First available day
+      data: previousZoneCount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.vechicle_enter || 0), 0)
+      ) || []
     },
     {
       name: 'Enter Today',
-      data: zonecount?.map((zone) => zone.list?.[zone.list.length - 1]?.vechicle_enter || 0), // Latest available day
+      data: zonecount?.map((zone) =>
+        zone.list?.reduce((sum, day) => sum + (day.vechicle_enter || 0), 0)
+      ) || []
     },
   ];
 
@@ -276,16 +292,15 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const aggregatedAgeData = dataList?.reduce(
     (acc, day) => {
       if (day?.age_dist) {
-        acc.less_20 += day.age_dist.less_20 || 0;
-        acc["20_40"] += day.age_dist["20_40"] || 0;
-        acc["40_60"] += day.age_dist["40_60"] || 0;
-        acc.more_60 += day.age_dist.more_60 || 0;
+        acc.less_20 = Math.round(acc.less_20 + (day.age_dist.less_20 || 0));
+        acc["20_40"] = Math.round(acc["20_40"] + (day.age_dist["20_40"] || 0));
+        acc["40_60"] = Math.round(acc["40_60"] + (day.age_dist["40_60"] || 0));
+        acc.more_60 = Math.round(acc.more_60 + (day.age_dist.more_60 || 0));
       }
       return acc;
     },
     { less_20: 0, "20_40": 0, "40_60": 0, more_60: 0 }
   );
-  
 
   // Prepare the data for the chart
   const categories = ["Less than 20", "20-40", "40-60", "More than 60"];
@@ -302,26 +317,26 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       background: 'linear-gradient(302deg, #01669a 100%, #1b3664 2%)',
       icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
       title: ' Enter Count',
-      mainValue: totalPeopleEnterTodayFormatted,
-      subValue: totalPeopleEnterFormatted,
+      mainValue: latestPeopleEnterFormatted,
+      subValue: previousPeopleEnterFormatted,
       percentage: percentagePeopleEnter,
       daysago: daysago
     },
     {
       background: 'linear-gradient(120deg, #01669a 3%, #52a1cc)',
       icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
-      title: "Peak Occupancy",
-      mainValue: peopleOccupancyTodayFormatted,
-      subValue: peopleOccupancyFormatted,
-      percentage: percentagePeopleOccupancy,
+      title: "Peak Entries",
+      mainValue: latestPeoplePeakEnterFormatted,
+      subValue: previousPeoplePeakEnterFormatted,
+      percentage: percentagePeoplePeakEnter,
       daysago: daysago
     },
     {
       background: " linear-gradient(120deg, #52a1cc 3%, #abd9f4)",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
       title: "Enter Count",
-      mainValue: vehicleEnterTodayFormatted,
-      subValue: vehicleEnterFormatted,
+      mainValue: latestVehicleEnterFormatted,
+      subValue: previousVehicleEnterFormatted,
       percentage: percentageVehicleEnter,
       daysago: daysago
     },
@@ -329,7 +344,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       background: "linear-gradient(120deg, #46c8f5 40%, #abd9f4)",
       icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
       title: "Peak Occupancy",
-      mainValue: vehicleOccupancyTodayFormatted,
+      mainValue: latestVehicleOccupancyFormatted,
       subValue: vehicleOccupancyFormatted,
       percentage: percentageVehicleOccupancy,
       daysago: daysago
@@ -367,13 +382,13 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} my={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={8}>
-                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} />
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays}/>
               </Grid>
               <Grid item xs={12} md={4}>
                 <RadialBarChart
-                  series={[onlinePercentage, offlinePercentage]}
+                  series={[onlineSeries, offlineSeries]}
                   labels={['Online', 'Offline']}
-                  title="Camera Status"
+                  title="Device Status"
                   colors={['#1BBAFD', '#FF5733']}
                 />
               </Grid>

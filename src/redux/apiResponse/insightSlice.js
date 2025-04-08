@@ -63,11 +63,34 @@ export const fetchCountingByPole = createAsyncThunk("Insight/fetchCountingByPole
     }
   );
 
+  // previous count by zone
+  export const PreviousCountingByZone = createAsyncThunk(
+    'insight/PreviousCountingByZone',
+    async ({ propertyId, startDate, endDate, token }) => {
+      const response = await axios.get(`${BaseUrl}/api/counting/zone`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        params: {
+          property_id: propertyId,
+          time_type: 'date',
+          start_time: startDate,
+          end_time: endDate,
+        },
+      });
+      console.log("zoonecount",response.data);
+      
+      return response.data.data;
+    }
+  );
+
 const InsightSlice = createSlice({
     name: 'Insight',
     initialState:{
       insightList: [],
       zonecount:[],
+      previousZoneCount:[],
       status: 'idle',
       error: null,
     },
@@ -105,6 +128,19 @@ const InsightSlice = createSlice({
             state.zonecount = action.payload;
           })
           .addCase(fetchCountingByZone.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+          })
+          
+          //previous zone count
+          .addCase(PreviousCountingByZone.pending, (state) => {
+            state.status = 'loading';
+          })
+          .addCase(PreviousCountingByZone.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.previousZoneCount = action.payload;
+          })
+          .addCase(PreviousCountingByZone.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
           })

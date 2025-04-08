@@ -21,7 +21,7 @@ const Insights = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedRange, setSelectedRange] = useState("W");
   const [customDates, setCustomDates] = useState("W");
-  const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
+  const [dateRange, setDateRange] = useState({ latestStartDate: "", latestEndDate: "" });
   const [loading, setLoading] = useState(false);
   const [isCustomRangeSelected, setIsCustomRangeSelected] = useState(false);
 
@@ -35,29 +35,96 @@ const Insights = () => {
     }
   }, []);
 
+  // const updateDateRange = (range) => {
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     const today = moment().format("YYYY-MM-DD");
+  //     let startDate = today;
+  //     let endDate = today;
+
+  //     if (range === "D") {
+  //       startDate = moment().subtract(1, "days").format("YYYY-MM-DD");
+  //     } else if (range === "W") {
+  //       startDate = moment().subtract(6, "days").format("YYYY-MM-DD");
+  //     } else if (range === "M") {
+  //       startDate = moment().subtract(1, "month").format("YYYY-MM-DD");
+  //     } else if (range === "Y") {
+  //       startDate = moment().subtract(1, "year").format("YYYY-MM-DD");
+  //     }
+
+  //     setDateRange({ startDate, endDate });
+  //     localStorage.setItem("selectedRange", range);
+  //     localStorage.setItem("dateRange", JSON.stringify({ startDate, endDate }));
+  //     setLoading(false);
+  //   }, 1000);
+  // };
+
   const updateDateRange = (range) => {
     setLoading(true);
     setTimeout(() => {
       const today = moment().format("YYYY-MM-DD");
-      let startDate = today;
-      let endDate = today;
+      let startDate, endDate;
+      let previousStartDate, previousEndDate, latestStartDate, latestEndDate;
 
       if (range === "D") {
-        startDate = moment().subtract(1, "days").format("YYYY-MM-DD");
-      } else if (range === "W") {
-        startDate = moment().subtract(7, "days").format("YYYY-MM-DD");
-      } else if (range === "M") {
-        startDate = moment().subtract(1, "month").format("YYYY-MM-DD");
-      } else if (range === "Y") {
-        startDate = moment().subtract(1, "year").format("YYYY-MM-DD");
+        // Day: Yesterday & Today
+        previousStartDate = moment().subtract(1, "days").format("YYYY-MM-DD");
+        previousEndDate =  moment().subtract(1, "days").format("YYYY-MM-DD");
+        latestStartDate = today;
+        latestEndDate = today;
+      }
+      else if (range === "W") {
+        // Week
+        const currentDay = moment().day(); // Get current day index (Sunday = 0)
+        const lastSunday = moment().subtract(7 + currentDay, "days").startOf("day"); // Last week's Sunday
+        const lastSaturday = moment(lastSunday).add(6, "days"); // Correctly get last week's Saturday        
+        const thisSunday = moment().subtract(currentDay, "days").startOf("day"); // This week's Sunday
+
+        // Cards: Last week (last Sunday - last Saturday)
+        previousStartDate = lastSunday.format("YYYY-MM-DD");
+        previousEndDate = lastSaturday.format("YYYY-MM-DD");
+
+        // Charts: This week (This Sunday - Current Date)
+        latestStartDate = thisSunday.format("YYYY-MM-DD");
+        latestEndDate = today;
+      }
+      else if (range === "M") {
+        // Month
+        const currentMonth = moment().month() + 1; // Get current month index (April = 4)
+
+        // Cards: Last month (March 1 - March 31)
+        previousStartDate = moment().month(2).startOf("month").format("YYYY-MM-DD"); // 01-03
+        previousEndDate = moment().month(2).endOf("month").format("YYYY-MM-DD"); // 31-03
+
+        // Charts: This month (April 1 - Current Date)
+        latestStartDate = moment().month(3).startOf("month").format("YYYY-MM-DD"); // 01-04
+        latestEndDate = today;
+      }
+      else if (range === "Y") {
+        // Year
+        const currentYear = moment().year();
+        const lastYear = currentYear - 1;
+
+        // Cards: Last year (01-01-24 to 31-12-24)
+        previousStartDate = moment(`${lastYear}-01-01`).format("YYYY-MM-DD");
+        previousEndDate = moment(`${lastYear}-12-31`).format("YYYY-MM-DD");
+
+        // Charts: This year (01-01-25 to Current Date)
+        latestStartDate = moment(`${currentYear}-01-01`).format("YYYY-MM-DD");
+        latestEndDate = today;
       }
 
-      setDateRange({ startDate, endDate });
+      setDateRange({ previousStartDate, previousEndDate, latestStartDate, latestEndDate });
       localStorage.setItem("selectedRange", range);
-      localStorage.setItem("dateRange", JSON.stringify({ startDate, endDate }));
+      localStorage.setItem(
+        "dateRange",
+        JSON.stringify({ previousStartDate, previousEndDate, latestStartDate, latestEndDate })
+      );
+
       setLoading(false);
     }, 1000);
   };
+
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -121,7 +188,7 @@ const Insights = () => {
 
             <Box display="flex" alignItems="center" sx={{ paddingRight: "30px", gap: "10px" }}>
             <RangePicker
-  value={isCustomRangeSelected ? [dayjs(dateRange.startDate), dayjs(dateRange.endDate)] : null}
+  value={isCustomRangeSelected ? [dayjs(dateRange.latestStartDate), dayjs(dateRange.latestEndDate)] : null}
   disabledDate={(current) => current && current > dayjs()}
   onChange={(dates) => {
     if (dates) {
@@ -129,17 +196,22 @@ const Insights = () => {
       setIsCustomRangeSelected(true);
 
       setTimeout(() => {
-        const startDate = dates[0].format("YYYY-MM-DD");
-        const endDate = dates[1].format("YYYY-MM-DD");
+        const latestStartDate = dates[0].format("YYYY-MM-DD");
+        const latestEndDate = dates[1].format("YYYY-MM-DD");
 
-        // Calculate the difference in days
-        const diffDays = dayjs(endDate).diff(dayjs(startDate), "days");
+        // Calculate previous period range
+        const diffDays = dayjs(latestEndDate).diff(dayjs(latestStartDate), "days");
 
-        // Set type conditionally
-        const customType = diffDays >= 30 ? "month" : "date";
+        const previousStartDate = dayjs(latestStartDate).subtract(diffDays + 1, "days").format("YYYY-MM-DD");
+        const previousEndDate = dayjs(latestEndDate).subtract(diffDays + 1, "days").format("YYYY-MM-DD");
 
-        setDateRange({ startDate, endDate });
-        setCustomDates(customType); // Store this in state
+        setDateRange({ previousStartDate, previousEndDate, latestStartDate, latestEndDate });
+
+        localStorage.setItem(
+          "dateRange",
+          JSON.stringify({ previousStartDate, previousEndDate, latestStartDate, latestEndDate })
+        );
+
         setLoading(false);
       }, 1000);
     }
@@ -147,40 +219,37 @@ const Insights = () => {
   style={{ marginLeft: "10px" }}
 />
 
-
-
               <Box sx={{ border: "1px solid #ccc", borderRadius: "5px" }}>
                 {["D", "W", "M", "Y"].map((range) => (
-              <Button
-              key={range}
-              onClick={() => {
-                setSelectedRange(range);
-                setIsCustomRangeSelected(false); // Reset custom range selection
-                setDateRange({ startDate: "", endDate: "" }); // Clear selected dates
-                updateDateRange(range);
-              }}
-              sx={{
-                ...commonStyles,
-                backgroundColor: isCustomRangeSelected
-                  ? "#fff" // When custom range is selected, buttons remain white
-                  : selectedRange === range
-                  ? "#52a1cc8b" // When button is selected, it turns blue
-                  : "#fff", // Default white
-                color: "#000",
-                border: "none",
-                minWidth: "40px",
-                height: "30px",
-                fontWeight: "bold",
-                transition: "background-color 0.3s ease-in-out",
-              }}
-              disabled={loading}
-            >
-              {range}
-            </Button>
-            
+                  <Button
+                    key={range}
+                    onClick={() => {
+                      setSelectedRange(range);
+                      setIsCustomRangeSelected(false); // Reset custom range selection
+                      setDateRange({ startDate: "", endDate: "" }); // Clear selected dates
+                      updateDateRange(range);
+                    }}
+                    sx={{
+                      ...commonStyles,
+                      backgroundColor: isCustomRangeSelected
+                        ? "#fff" // When custom range is selected, buttons remain white
+                        : selectedRange === range
+                          ? "#52a1cc8b" // When button is selected, it turns blue
+                          : "#fff", // Default white
+                      color: "#000",
+                      border: "none",
+                      minWidth: "40px",
+                      height: "30px",
+                      fontWeight: "bold",
+                      transition: "background-color 0.3s ease-in-out",
+                    }}
+                    disabled={loading}
+                  >
+                    {range}
+                  </Button>
+
                 ))}
               </Box>
-
             </Box>
           </Box>
 

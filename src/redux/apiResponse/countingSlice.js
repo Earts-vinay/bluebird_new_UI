@@ -47,6 +47,27 @@ export const fetchDataYearList = createAsyncThunk(
   }
 );
 
+// Thunk to fetch data for cards previous period that display at lower values of cards
+export const countingPreviousList = createAsyncThunk(
+  'counting/countingPreviousList',
+  async ({ propertyId, startDate, endDate, token,type,timeType }) => {
+    const response = await axios.get(`${BaseUrl}/api/counting/property`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      params: {
+        property_id: propertyId,
+        time_type: timeType,
+        start_time: startDate,
+        end_time: endDate,
+        type:type
+      },
+    });
+    return response.data.data[0].list;
+  }
+);
+
 // Thunk to fetch count list by hour
 export const fetchCountListHour = createAsyncThunk(
   'counting/fetchCountListHour',
@@ -95,6 +116,7 @@ const countingSlice = createSlice({
   initialState: {
     dataList: [],
     dataYearList: [],
+    previousDataList:[],
     loading:false,
     countListHour: [],
     last7Count: [],
@@ -113,6 +135,20 @@ const countingSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchDataList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      //previous data list 
+      .addCase(countingPreviousList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(countingPreviousList.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.previousDataList = action.payload;
+        state.loading = false;
+      })
+      .addCase(countingPreviousList.rejected, (state, action) => {
         state.status = 'failed';
         state.loading = false;
         state.error = action.error.message;

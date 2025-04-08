@@ -35,21 +35,32 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
   const endTime = dateRange.endDate
   const startDate = startTime;
   const endDate = endTime;
+  const previousStartDate = dateRange.previousStartDate
+  const previousEndDate = dateRange.previousEndDate
+  const latestStartDate = dateRange.latestStartDate
+  const latestEndDate = dateRange.latestEndDate
   const vehicleStartDate = today;
   const vehicleEndDate = today;
   const responseDates = vehicleData?.flatMap((zone) =>
     zone.list?.map((item) => item.date_time) || []
   );
 
+  console.log("data",apiData.data);
+  
+
+  const diffDays = dayjs(dateRange.latestEndDate).diff(dayjs(dateRange.latestStartDate), "days");
+
   const alerttype = isCustomRangeSelected
-    ? dayjs(dateRange.endDate).diff(dayjs(dateRange.startDate), "days") >= 30
-      ? "month"
-      : "date"
+    ? diffDays === 0 // If only one day is selected, pass "hour"
+      ? "hour"
+      : diffDays >= 1 && diffDays < 30 // If more than 1 day but less than 30 days, pass "date"
+        ? "date"
+        : "month" // If 30 or more days are selected, pass "month"
     : selectedRange === "D"
       ? "hour"
       : selectedRange === "Y"
         ? "month"
-        : customDates // If customDates is selected, set type to "date"
+        : customDates
           ? "date"
           : "date";
 
@@ -59,19 +70,19 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
       dispatch(fetchDeviceUnhealthy(propertyId))
       dispatch(fetchVehicleData({
         propertyId,
-        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
-        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate,
+        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : latestStartDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : latestEndDate,
         type: alerttype,
         typeId: "1"
       }));
       dispatch(fetchPersonData({
         propertyId,
-        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : startDate,
-        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : endDate,
+        startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : latestStartDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : latestEndDate,
         type: alerttype,
         typeId: "0"
       }));
-     
+
     }
   }, [dispatch, propertyId, startDate, endDate, alerttype]);
 
@@ -116,7 +127,7 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
             <Grid container spacing={2.5}>
 
               <Grid item xs={12} md={7}>
-              <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={startTime} endDate={endTime} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} />
+              <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays} />
               </Grid>
               <Grid item xs={12} md={5}>
                 {StatData.data?.map?.((rowData, index) => (
@@ -124,7 +135,7 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
                     <PieChart
                       series={[rowData?.offline_num ?? 0, rowData?.online_num ?? 0, rowData?.no_paired_num ?? 0]}
                       labels={['No. Offline', 'No. Online', 'No. not paired']}
-                      title="Camera Paired"
+                      title="Device Paired"
                       colors={['#01669a', '#abd9f4', '#ef7b73']}
                     />
                   </div>
@@ -136,7 +147,7 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
           <div style={{ marginTop: "20px" }}>
             <div maxWidth="4xl" sx={{ height: "55vh" }}>
               <Box sx={{ backgroundColor: "#FFFFFF", width: "100%", marginTop: "10px", borderRadius: "10px" }}>
-                <Typography variant="h6" align="left" sx={{ paddingTop: '10px', paddingLeft: "10px", color: '#003A6F', }}>Offline Cameras</Typography>
+                <Typography variant="h6" align="left" sx={{ paddingTop: '10px', paddingLeft: "10px", color: '#003A6F', }}>Offline Devices</Typography>
                 <TableContainer sx={{ backgroundColor: "transparent", height: "40vh", overflow: "auto" }}>
                   <Table>
                     <TableHead>
@@ -175,7 +186,19 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
                             <TableCell><Typography>{row.name}</Typography></TableCell>
                             <TableCell>{row.pole && row.pole.name}</TableCell>
                             <TableCell>{row.healthy_info && row.healthy_info.last_online}</TableCell>
-                            <TableCell>{row.healthy_info && row.healthy_info.offline_time}</TableCell>
+                            <TableCell>
+  {row.healthy_info && row.healthy_info.offline_time && (() => {
+    const [hoursStr, minutesStr, secondsStr] = row.healthy_info.offline_time.split(':');
+    const hours = parseInt(hoursStr, 10);
+    const minutes = parseInt(minutesStr, 10);
+    const totalMinutes = (hours * 60) + minutes;
+
+    if (totalMinutes < 30) return '0 H';
+    if (totalMinutes >= 30 && totalMinutes <= 60) return '1 H';
+    return `${hours} H`;
+  })()}
+</TableCell>
+
                             <TableCell>{row.healthy_info && row.healthy_info.is_online ? 'Online' : 'Offline'}</TableCell>
                           </TableRow>
                         ))
