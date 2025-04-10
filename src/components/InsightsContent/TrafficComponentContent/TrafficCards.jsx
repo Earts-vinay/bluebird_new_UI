@@ -66,29 +66,39 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
   const percentagePeakVehicleEnter = handlePercentageError(((latestVehiclePeakEnter - previousPeakvehicleEnter) / previousPeakvehicleEnter) * 100).toFixed(2);
   const percentageVehicleOccupancy = handlePercentageError(((latestVehicleOccupancy - previousVehicleOccupancy) / previousVehicleOccupancy) * 100).toFixed(2);
 
-  //peak entries and occupance time
   const getCurrentTime = () => new Date().toLocaleTimeString("en-GB", { hour12: false });
 
-  const peakpopleentryTime = filteredData.reduce((acc, item) => {
-    const time = item.people_enter_peaktime?.split(" ")[1] || getCurrentTime();
-    return acc + time;
-  }, "");
+  const startDate = dateRange.latestStartDate; // should be in "YYYY-MM-DD"
+  const endDate = dateRange.latestEndDate;
+  
 
-  const peakpopleOccupancyTime = filteredData.reduce((acc, item) => {
-    const time = item.people_occupancy_peaktime?.split(" ")[1] || getCurrentTime();
-    return acc + time;
-  }, "");
-
-  const peakVehicleEnterTime = filteredData.reduce((acc, item) => {
-    const time = item.vechicle_enter_peaktime?.split(" ")[1] || getCurrentTime();
-    return acc + time;
-  }, "");
-
-  const peakVehicleOccupancyTime = filteredData.reduce((acc, item) => {
-    const time = item.vechicle_occupancy_peak_time?.split(" ")[1] || getCurrentTime();
-    return acc + time;
-  }, "");
-
+  
+  // Compare directly as strings
+  const startEntry = dataYearList.find(item => item.date_time === startDate);
+  const endEntry = dataYearList.find(item => item.date_time === endDate);
+  console.log("Start ===fd:", startDate,startEntry,endEntry);
+  // Fallback if not found
+  if (!startEntry) console.warn("Start entry not found for:", startDate,startEntry,endEntry);
+  if (!endEntry) console.warn("End entry not found for:", endDate);
+  
+  const extractTime = (value) => value?.split(" ")[1] || getCurrentTime();
+  
+  // People enter peak time
+  const peakPeopleEntryTimeCurrent = extractTime(endEntry?.people_enter_peaktime);
+  const peakPeopleEntryTimePrevious = extractTime(startEntry?.people_enter_peaktime);
+  
+  // People occupancy peak time
+  const peakPeopleOccupancyTimeCurrent = extractTime(endEntry?.people_occupancy_peaktime);
+  const peakPeopleOccupancyTimePrevious = extractTime(startEntry?.people_occupancy_peaktime);
+  
+  // Vehicle enter peak time
+  const peakVehicleEnterTimeCurrent = extractTime(endEntry?.vechicle_enter_peaktime);
+  const peakVehicleEnterTimePrevious = extractTime(startEntry?.vechicle_enter_peaktime);
+  
+  // Vehicle occupancy peak time
+  const peakVehicleOccupancyTimeCurrent = extractTime(endEntry?.vechicle_occupancy_peak_time);
+  const peakVehicleOccupancyTimePrevious = extractTime(startEntry?.vechicle_occupancy_peak_time);
+  
 
   // Ratio calculation
   const latestRatio = latestVehicleEnter > 0 ? (latestPeopleEnter / latestVehicleEnter).toFixed(2) : '0';
@@ -124,7 +134,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Entries",
       mainValue: latestPeoplePeakEnterFormatted,
       subValue: previousPeoplePeakEnterFormatted,
-      peakTime: peakpopleentryTime,
+      peakTime: peakPeopleEntryTimeCurrent,
+      previousPeakTime:peakPeopleEntryTimePrevious,
       percentage: percentagePeoplePeakEnter,
       daysago: daysago
     },
@@ -134,7 +145,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Occupancy",
       mainValue: latestPeopleOccupancyFormatted,
       subValue: previousPeopleOccupancyFormatted,
-      peakTime: peakpopleOccupancyTime,
+      peakTime: peakPeopleOccupancyTimeCurrent,
+      previousPeakTime:peakPeopleOccupancyTimePrevious,
       percentage: percentagePeopleOccupancy,
       daysago: daysago
     },
@@ -153,7 +165,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Entries",
       mainValue: latestVehiclePeakEnterFormatted,
       subValue: previousPeakvehicleEnterFormatted,
-      peakTime: peakVehicleEnterTime,
+      peakTime: peakVehicleEnterTimeCurrent,
+      previousPeakTime:peakVehicleEnterTimePrevious,
       percentage: percentagePeakVehicleEnter,
       daysago: daysago
     },
@@ -163,7 +176,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Occupancy",
       mainValue: latestVehicleOccupancyFormatted,
       subValue: previousVehicleOccupancyFormatted,
-      peakTime: peakVehicleOccupancyTime,
+      peakTime: peakVehicleOccupancyTimeCurrent,
+      previousPeakTime:peakVehicleOccupancyTimePrevious,
       percentage: percentageVehicleOccupancy,
       daysago: daysago
     },
