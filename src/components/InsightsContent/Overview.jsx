@@ -194,18 +194,14 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   // card vaules at upper part latest dates
   const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
   const latestPeoplePeakEnter = Math.max(...(dataYearList?.map(item => item.people_enter_peak) || []));
- console.log("latest people peak",latestPeoplePeakEnter,dataYearList);
- 
   const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const latestVehicleOccupancy = dataYearList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
+  const latestVehicleOccupancy = Math.max(...(dataYearList?.map(item => item.vechicle_occupancy_peak) || []));
 
   // card vaules at lower part previous dates
   const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
-  const previousPeoplePeakEnter = Math.max(...(previousDataList?.map(item => item.people_enter_peak) || []));
-  console.log("previous people peak",previousPeoplePeakEnter,previousDataList);
-  
+  const previousPeoplePeakEnter = Math.max(...(previousDataList?.map(item => item.people_enter_peak) || []))
   const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const previousVehicleOccupancy = previousDataList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
+  const previousVehicleOccupancy = Math.max(...(previousDataList?.map(item => item.vechicle_occupancy_peak) || []));
 
   //total alerts card latest and previous
   const todayVehiclealerts = latestTotalALert[0]?.list?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
