@@ -79,9 +79,9 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
 
   // Define the `daysago` message
   const daysago = isCustomRangeSelected
-    ? `${dayDifference} days ago`
+    ? "Last Period"
     : selectedRange === "D"
-      ? "A day ago"
+      ? "Yesterday"
       : selectedRange === "W"
         ? "Last Week"
         : selectedRange === "M"

@@ -107,7 +107,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const daysago = isCustomRangeSelected
     ? "Last Period"
     : selectedRange === "D"
-      ? "A day ago"
+      ? "Yesterday"
       : selectedRange === "W"
         ? "Last Week"
         : selectedRange === "M"
@@ -120,7 +120,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   //counting Api
   useEffect(() => {
     if (propertyId && token) {
-      dispatch(fetchDataList({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token, timeType: type }));
+      // dispatch(fetchDataList({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token, timeType: type }));
       dispatch(fetchDataYearList({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token, timeType: YearType }));
       dispatch(countingPreviousList({ propertyId, startDate: previousStartDate, endDate: previousEndDate, token, timeType: YearType }));
 
@@ -193,13 +193,17 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
 
   // card vaules at upper part latest dates
   const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
-  const latestPeoplePeakEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
+  const latestPeoplePeakEnter = Math.max(...(dataYearList?.map(item => item.people_enter_peak) || []));
+ console.log("latest people peak",latestPeoplePeakEnter,dataYearList);
+ 
   const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const latestVehicleOccupancy = dataYearList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
 
   // card vaules at lower part previous dates
   const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
-  const previousPeoplePeakEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
+  const previousPeoplePeakEnter = Math.max(...(previousDataList?.map(item => item.people_enter_peak) || []));
+  console.log("previous people peak",previousPeoplePeakEnter,previousDataList);
+  
   const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const previousVehicleOccupancy = previousDataList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
 
@@ -279,7 +283,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
 
 
   //gender data
-  const totalGenderData = dataList?.reduce(
+  const totalGenderData = dataYearList?.reduce(
     (acc, item) => {
       acc.male += item.gender_dist?.male;
       acc.female += item.gender_dist?.female;
@@ -289,7 +293,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   );
   const genderSeries = [totalGenderData?.male, totalGenderData?.female];
 
-  const aggregatedAgeData = dataList?.reduce(
+  const aggregatedAgeData = dataYearList?.reduce(
     (acc, day) => {
       if (day?.age_dist) {
         acc.less_20 = Math.round(acc.less_20 + (day.age_dist.less_20 || 0));

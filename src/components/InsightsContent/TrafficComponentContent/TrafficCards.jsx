@@ -24,13 +24,31 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
     return num?.toString(); // Keep as is if less than 1K
   };
 
+  //latest max people & Vehicle calculations
+  const maxPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
+  );
+  const maxPeoplePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
+  );
+  const maxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
+  );
+  const maxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  );
+
   //latest calculations
   const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
-  const latestPeoplePeakEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
-  const latestPeopleOccupancy = dataYearList?.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
+  const latestPeoplePeakEnter = maxPeoplePeakItem?.people_enter_peak;
+  const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime;
+  const latestPeopleOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peak;
+  const latestPeoplePeakTimeOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peaktime;
   const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const latestVehiclePeakEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter_peak, 0);
-  const latestVehicleOccupancy = dataYearList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
+  const latestVehiclePeakEnter = maxVehiclePeakItem?.vechicle_enter_peak;
+  const latestVehiclePeakTime = maxVehiclePeakItem?.vechicle_enter_peaktime;
+  const latestVehicleOccupancy = maxVehiclePeakOccupancy?.vechicle_occupancy_peak;
+  const latestVehiclePeakTimeOccupancy = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time;
 
   const latestPeopleEnterFormatted = formatNumber(latestPeopleEnter);
   const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
@@ -39,14 +57,31 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
   const latestVehiclePeakEnterFormatted = formatNumber(latestVehiclePeakEnter);
   const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
 
+  //previous max people & Vehicle calculations
+  const previousMaxPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+    currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
+  );
+  const previousPeoplePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
+  );
+  const previousMaxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
+  );
+  const previousMaxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  );
 
   // Previous claculations
   const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
-  const previousPeoplePeakEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter_peak, 0);
-  const previousPeopleOccupancy = previousDataList?.reduce((acc, item) => acc + item.people_occupancy_peak, 0);
+  const previousPeoplePeakEnter = previousMaxPeoplePeakItem?.people_enter_peak;
+  const previousPeoplePeakTime = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
+  const previousPeopleOccupancy = previousPeoplePeakOccupancy?.people_occupancy_peak;
+  const previousPeoplePeakTimeOccupancy = previousPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[1];
   const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const previousPeakvehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter_peak, 0);
-  const previousVehicleOccupancy = previousDataList?.reduce((acc, item) => acc + item.vechicle_occupancy_peak, 0);
+  const previousPeakvehicleEnter = previousMaxVehiclePeakItem?.vechicle_enter_peak;
+  const previousVehiclePeakTime = previousMaxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[1];
+  const previousVehicleOccupancy = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak;
+  const previousVehiclePeakTimeOccupancy = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
 
   const previousPeopleEnterFormatted = formatNumber(previousPeopleEnter);
   const previousPeoplePeakEnterFormatted = formatNumber(previousPeoplePeakEnter);
@@ -65,40 +100,6 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
   const percentageVehicleEnter = handlePercentageError(((latestVehicleEnter - previousVehicleEnter) / previousVehicleEnter) * 100).toFixed(2);
   const percentagePeakVehicleEnter = handlePercentageError(((latestVehiclePeakEnter - previousPeakvehicleEnter) / previousPeakvehicleEnter) * 100).toFixed(2);
   const percentageVehicleOccupancy = handlePercentageError(((latestVehicleOccupancy - previousVehicleOccupancy) / previousVehicleOccupancy) * 100).toFixed(2);
-
-  const getCurrentTime = () => new Date().toLocaleTimeString("en-GB", { hour12: false });
-
-  const startDate = dateRange.latestStartDate; // should be in "YYYY-MM-DD"
-  const endDate = dateRange.latestEndDate;
-  
-
-  
-  // Compare directly as strings
-  const startEntry = dataYearList.find(item => item.date_time === startDate);
-  const endEntry = dataYearList.find(item => item.date_time === endDate);
-  console.log("Start ===fd:", startDate,startEntry,endEntry);
-  // Fallback if not found
-  if (!startEntry) console.warn("Start entry not found for:", startDate,startEntry,endEntry);
-  if (!endEntry) console.warn("End entry not found for:", endDate);
-  
-  const extractTime = (value) => value?.split(" ")[1] || getCurrentTime();
-  
-  // People enter peak time
-  const peakPeopleEntryTimeCurrent = extractTime(endEntry?.people_enter_peaktime);
-  const peakPeopleEntryTimePrevious = extractTime(startEntry?.people_enter_peaktime);
-  
-  // People occupancy peak time
-  const peakPeopleOccupancyTimeCurrent = extractTime(endEntry?.people_occupancy_peaktime);
-  const peakPeopleOccupancyTimePrevious = extractTime(startEntry?.people_occupancy_peaktime);
-  
-  // Vehicle enter peak time
-  const peakVehicleEnterTimeCurrent = extractTime(endEntry?.vechicle_enter_peaktime);
-  const peakVehicleEnterTimePrevious = extractTime(startEntry?.vechicle_enter_peaktime);
-  
-  // Vehicle occupancy peak time
-  const peakVehicleOccupancyTimeCurrent = extractTime(endEntry?.vechicle_occupancy_peak_time);
-  const peakVehicleOccupancyTimePrevious = extractTime(startEntry?.vechicle_occupancy_peak_time);
-  
 
   // Ratio calculation
   const latestRatio = latestVehicleEnter > 0 ? (latestPeopleEnter / latestVehicleEnter).toFixed(2) : '0';
@@ -130,12 +131,12 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
     },
     {
       background: "#01669a",
-      icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
+      icon: PublicUrl + "/assets/icons/peak_entries.svg",
       title: "Peak Entries",
       mainValue: latestPeoplePeakEnterFormatted,
       subValue: previousPeoplePeakEnterFormatted,
-      peakTime: peakPeopleEntryTimeCurrent,
-      previousPeakTime:peakPeopleEntryTimePrevious,
+      peakTime: latestPeoplePeakTime,
+      previousPeakTime:previousPeoplePeakTime,
       percentage: percentagePeoplePeakEnter,
       daysago: daysago
     },
@@ -145,8 +146,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Occupancy",
       mainValue: latestPeopleOccupancyFormatted,
       subValue: previousPeopleOccupancyFormatted,
-      peakTime: peakPeopleOccupancyTimeCurrent,
-      previousPeakTime:peakPeopleOccupancyTimePrevious,
+      peakTime: latestPeoplePeakTimeOccupancy,
+      previousPeakTime:previousPeoplePeakTimeOccupancy,
       percentage: percentagePeopleOccupancy,
       daysago: daysago
     },
@@ -165,8 +166,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Entries",
       mainValue: latestVehiclePeakEnterFormatted,
       subValue: previousPeakvehicleEnterFormatted,
-      peakTime: peakVehicleEnterTimeCurrent,
-      previousPeakTime:peakVehicleEnterTimePrevious,
+      peakTime: latestVehiclePeakTime,
+      previousPeakTime:previousVehiclePeakTime,
       percentage: percentagePeakVehicleEnter,
       daysago: daysago
     },
@@ -176,8 +177,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Occupancy",
       mainValue: latestVehicleOccupancyFormatted,
       subValue: previousVehicleOccupancyFormatted,
-      peakTime: peakVehicleOccupancyTimeCurrent,
-      previousPeakTime:peakVehicleOccupancyTimePrevious,
+      peakTime: latestVehiclePeakTimeOccupancy,
+      previousPeakTime:previousVehiclePeakTimeOccupancy,
       percentage: percentageVehicleOccupancy,
       daysago: daysago
     },
@@ -238,7 +239,7 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
                   </div>
                 </CardContent>
                 <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "10px", paddingBottom: "15px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',marginTop:"16px" }}>
                     <div style={{ paddingTop: "65px" }}>
                       <Typography variant="h3" color="white" style={{ fontSize: '40px', ...commonStyles }}>
                         {previousRatio}

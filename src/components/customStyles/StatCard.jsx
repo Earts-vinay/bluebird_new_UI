@@ -28,7 +28,7 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, perc
           </Typography>
         </Box>
         {peakTime && (
-          <div style={{ width: "100px" }}>
+          <div style={{ width: "100px",marginTop:"10px" }}>
             <Typography variant="h3" color="white" style={{ fontSize: '15px', ...commonStyles }}>
               {peakTime}
             </Typography>

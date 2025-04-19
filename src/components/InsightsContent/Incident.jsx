@@ -78,7 +78,7 @@ const Incident = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const daysago = isCustomRangeSelected
     ? "Last Period"
     : selectedRange === "D"
-      ? "A day ago"
+      ? "Yesterday"
       : selectedRange === "W"
         ? "Last Week"
         : selectedRange === "M"
