@@ -89,6 +89,17 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
           : selectedRange === "Y"
             ? "Last Year"
             : "week";
+            const latestDays = isCustomRangeSelected
+            ? "Current Period"
+            : selectedRange === "D"
+              ? "Today"
+              : selectedRange === "W"
+                ? "This Week"
+                : selectedRange === "M"
+                  ? "This Month"
+                  : selectedRange === "Y"
+                    ? "This Year"
+                    : "week";
 
   //counting Api
   useEffect(() => {
@@ -238,7 +249,7 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
       ) || []
     },
     {
-      name: 'Enter Today',
+      name: `Enter ${latestDays}`,
       data: zonecount?.map((zone) =>
         zone.list?.reduce((sum, day) => sum + (day.people_enter || 0), 0)
       ) || []
@@ -253,7 +264,7 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
       ) || []
     },
     {
-      name: 'Enter Today',
+      name: `Enter ${latestDays}`,
       data: zonecount?.map((zone) =>
         zone.list?.reduce((sum, day) => sum + (day.vechicle_enter || 0), 0)
       ) || []

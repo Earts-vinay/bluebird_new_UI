@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
-const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, percentage, percentageLabel, peakTime, previousPeakTime, commonStyles, daysago }) => (
+const StatCard = ({ background, icon, title, mainValue, subValue, subLabel,previousPeakDate, percentage,peakDate, percentageLabel, peakTime, previousPeakTime, commonStyles, daysago }) => (
   <Card
     sx={{
       borderRadius: '10px',
@@ -28,9 +28,12 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, perc
           </Typography>
         </Box>
         {peakTime && (
-          <div style={{ width: "100px",marginTop:"10px" }}>
-            <Typography variant="h3" color="white" style={{ fontSize: '15px', ...commonStyles }}>
+          <div style={{ marginTop:"10px" ,width:"100px"}}>
+            <Typography variant="h3" color="white" style={{ fontSize: '12px', ...commonStyles }}>
               {peakTime}
+            </Typography>
+            <Typography variant="h3" color="white" style={{ fontSize: '12px', ...commonStyles }}>
+              {peakDate}
             </Typography>
           </div>
         )}
@@ -39,7 +42,7 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, perc
         </Box>
       </Box>
     </CardContent>
-    <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "10px", paddingBottom: "5px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+    <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "20px", paddingBottom: "5px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <Typography variant="h3" color="white" style={{ fontSize: '20px', ...commonStyles }}>
@@ -50,9 +53,12 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel, perc
           </Typography>
         </div>
         {previousPeakTime && (
-          <div>
-            <Typography variant="h3" color="white" style={{ fontSize: '15px', ...commonStyles }}>
-              {previousPeakTime}
+          <div >
+            <Typography variant="h3" color="white" style={{  fontSize: '12px', ...commonStyles }}>
+            {previousPeakTime}
+            </Typography>
+            <Typography variant="h3" color="white" style={{  fontSize: '12px', ...commonStyles }}>
+            {previousPeakDate}
             </Typography>
             <Typography variant="subtitle2" color="white" sx={commonStyles}>
               Peak Time

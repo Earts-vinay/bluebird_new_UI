@@ -115,6 +115,18 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
           : selectedRange === "Y"
             ? "Last Year"
             : "week";
+              // Define the `daysago` message
+  const latestDays = isCustomRangeSelected
+  ? "Current Period"
+  : selectedRange === "D"
+    ? "Today"
+    : selectedRange === "W"
+      ? "This Week"
+      : selectedRange === "M"
+        ? "This Month"
+        : selectedRange === "Y"
+          ? "This Year"
+          : "week";
 
 
   //counting Api
@@ -191,17 +203,56 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const onlinePercentage = ((onlineSeries / totalseries) * 100).toFixed(2);
   const offlinePercentage = ((offlineSeries / totalseries) * 100).toFixed(2);
 
+   //latest max people & Vehicle calculations
+   const maxPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
+  );
+  const maxPeoplePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
+  );
+  const maxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
+  );
+  const maxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  );
+
   // card vaules at upper part latest dates
   const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
   const latestPeoplePeakEnter = Math.max(...(dataYearList?.map(item => item.people_enter_peak) || []));
+  const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
+  const latestPeoplePeakDate = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
+
   const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const latestVehicleOccupancy = Math.max(...(dataYearList?.map(item => item.vechicle_occupancy_peak) || []));
+  const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
+  const latestVehiclePeakOccupancyDate = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
+
+
+    //previous max people & Vehicle calculations
+    const previousMaxPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+      currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
+    );
+    const previousPeoplePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
+      currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
+    );
+    const previousMaxVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+      currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
+    );
+    const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
+      currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+    );
 
   // card vaules at lower part previous dates
   const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
   const previousPeoplePeakEnter = Math.max(...(previousDataList?.map(item => item.people_enter_peak) || []))
+  const previousPeoplePeakTime = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
+  const previousPeoplePeakDate = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
+
   const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const previousVehicleOccupancy = Math.max(...(previousDataList?.map(item => item.vechicle_occupancy_peak) || []));
+  const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
+  const previousVehiclePeakOccupancyDate = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
 
   //total alerts card latest and previous
   const todayVehiclealerts = latestTotalALert[0]?.list?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
@@ -255,7 +306,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       ) || []
     },
     {
-      name: 'Enter Today',
+      name: `Enter ${latestDays}`,
       data: zonecount?.map((zone) =>
         zone.list?.reduce((sum, day) => sum + (day.people_enter || 0), 0)
       ) || []
@@ -270,7 +321,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       ) || []
     },
     {
-      name: 'Enter Today',
+      name: `Enter ${latestDays}`,
       data: zonecount?.map((zone) =>
         zone.list?.reduce((sum, day) => sum + (day.vechicle_enter || 0), 0)
       ) || []
@@ -329,6 +380,10 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       mainValue: latestPeoplePeakEnterFormatted,
       subValue: previousPeoplePeakEnterFormatted,
       percentage: percentagePeoplePeakEnter,
+      peakTime: latestPeoplePeakTime,
+      peakDate:latestPeoplePeakDate,
+      previousPeakTime:previousPeoplePeakTime,
+      previousPeakDate:previousPeoplePeakDate,
       daysago: daysago
     },
     {
@@ -347,6 +402,11 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       mainValue: latestVehicleOccupancyFormatted,
       subValue: vehicleOccupancyFormatted,
       percentage: percentageVehicleOccupancy,
+      peakTime: latestVehiclePeakOccupancyTime,
+      peakDate: latestVehiclePeakOccupancyDate,
+
+      previousPeakTime:previousVehiclePeakOccupancyTime,
+      previousPeakDate:previousVehiclePeakOccupancyDate,
       daysago: daysago
     },
     {
@@ -372,7 +432,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
           <Box mt={1} >
             <Box display="flex" flexWrap="wrap" justifyContent="space-between">
               {cardData.map((card, index) => (
-                <Box key={index} width={{ xs: '100%', sm: '48%', md: '19%' }} mb={2}>
+                <Box key={index} width={{ xs: '100%', sm: '48%', md: '19.5%' }} mb={2}>
                   <StatCard {...card} commonStyles={commonStyles} />
                 </Box>
               ))}

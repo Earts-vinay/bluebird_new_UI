@@ -41,14 +41,22 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
   //latest calculations
   const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
   const latestPeoplePeakEnter = maxPeoplePeakItem?.people_enter_peak;
-  const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime;
+  const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
+  const latestPeoplePeakDate = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
+  
   const latestPeopleOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peak;
-  const latestPeoplePeakTimeOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peaktime;
+  const latestPeoplePeakTimeOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[1];
+  const latestPeoplePeakTimeDate = maxPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[0];
+
   const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const latestVehiclePeakEnter = maxVehiclePeakItem?.vechicle_enter_peak;
-  const latestVehiclePeakTime = maxVehiclePeakItem?.vechicle_enter_peaktime;
+  const latestVehiclePeakTime = maxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[1];
+  const latestVehiclePeakDate = maxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[0];
+
   const latestVehicleOccupancy = maxVehiclePeakOccupancy?.vechicle_occupancy_peak;
-  const latestVehiclePeakTimeOccupancy = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time;
+  const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
+  const latestVehiclePeakOccupancyDate = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
+
 
   const latestPeopleEnterFormatted = formatNumber(latestPeopleEnter);
   const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
@@ -61,13 +69,13 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
   const previousMaxPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
     currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
   );
-  const previousPeoplePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+  const previousPeoplePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
     currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
   );
-  const previousMaxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+  const previousMaxVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
     currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
   );
-  const previousMaxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+  const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
     currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
   );
 
@@ -75,13 +83,21 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
   const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
   const previousPeoplePeakEnter = previousMaxPeoplePeakItem?.people_enter_peak;
   const previousPeoplePeakTime = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
+  const previousPeoplePeakDate = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
+
   const previousPeopleOccupancy = previousPeoplePeakOccupancy?.people_occupancy_peak;
-  const previousPeoplePeakTimeOccupancy = previousPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[1];
+  const previousPeoplePeakOccupancyTime = previousPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[1];
+  const previousPeoplePeakOccupancyDate = previousPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[0];
+
   const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const previousPeakvehicleEnter = previousMaxVehiclePeakItem?.vechicle_enter_peak;
   const previousVehiclePeakTime = previousMaxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[1];
+  const previousVehiclePeakDate = previousMaxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[0];
+
   const previousVehicleOccupancy = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak;
-  const previousVehiclePeakTimeOccupancy = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
+  const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
+  const previousVehiclePeakOccupancyDate = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
+
 
   const previousPeopleEnterFormatted = formatNumber(previousPeopleEnter);
   const previousPeoplePeakEnterFormatted = formatNumber(previousPeoplePeakEnter);
@@ -136,7 +152,9 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       mainValue: latestPeoplePeakEnterFormatted,
       subValue: previousPeoplePeakEnterFormatted,
       peakTime: latestPeoplePeakTime,
+      peakDate:latestPeoplePeakDate,
       previousPeakTime:previousPeoplePeakTime,
+      previousPeakDate:previousPeoplePeakDate,
       percentage: percentagePeoplePeakEnter,
       daysago: daysago
     },
@@ -147,7 +165,11 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       mainValue: latestPeopleOccupancyFormatted,
       subValue: previousPeopleOccupancyFormatted,
       peakTime: latestPeoplePeakTimeOccupancy,
-      previousPeakTime:previousPeoplePeakTimeOccupancy,
+      peakDate: latestPeoplePeakTimeDate,
+
+      previousPeakTime:previousPeoplePeakOccupancyTime,
+      previousPeakDate:previousPeoplePeakOccupancyDate,
+
       percentage: percentagePeopleOccupancy,
       daysago: daysago
     },
@@ -167,7 +189,11 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       mainValue: latestVehiclePeakEnterFormatted,
       subValue: previousPeakvehicleEnterFormatted,
       peakTime: latestVehiclePeakTime,
+      peakDate: latestVehiclePeakDate,
+
       previousPeakTime:previousVehiclePeakTime,
+      previousPeakDate:previousVehiclePeakDate,
+
       percentage: percentagePeakVehicleEnter,
       daysago: daysago
     },
@@ -177,8 +203,11 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       title: "Peak Occupancy",
       mainValue: latestVehicleOccupancyFormatted,
       subValue: previousVehicleOccupancyFormatted,
-      peakTime: latestVehiclePeakTimeOccupancy,
-      previousPeakTime:previousVehiclePeakTimeOccupancy,
+      peakTime: latestVehiclePeakOccupancyTime,
+      peakDate: latestVehiclePeakOccupancyDate,
+
+      previousPeakTime:previousVehiclePeakOccupancyTime,
+      previousPeakDate:previousVehiclePeakOccupancyDate,
       percentage: percentageVehicleOccupancy,
       daysago: daysago
     },
@@ -195,13 +224,13 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
           <Box sx={{ width: { xs: '100%', sm: '100%', md: '79%' } }}>
             <Box display="flex" flexWrap="wrap" justifyContent="space-between">
               {cardData.map((card, index) => (
-                <Box key={index} width={{ xs: '100%', sm: '48%', md: '32%' }} mb={2}>
+                <Box key={index} width={{ xs: '100%', sm: '48%', md: '32.2%' }} mb={2}>
                   <StatCard {...card} commonStyles={commonStyles} />
                 </Box>
               ))}
             </Box>
           </Box>
-          <Box sx={{ width: { xs: '100%', sm: '100%', md: '19%' } }}>
+          <Box sx={{ width: { xs: '100%', sm: '100%', md: '19.5%' } }}>
             <Box
               sx={{
                 width: { xs: '100%', sm: '100%', md: '100%' },
@@ -238,7 +267,7 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
                     </div>
                   </div>
                 </CardContent>
-                <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "10px", paddingBottom: "15px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "35px", paddingBottom: "15px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',marginTop:"16px" }}>
                     <div style={{ paddingTop: "65px" }}>
                       <Typography variant="h3" color="white" style={{ fontSize: '40px', ...commonStyles }}>
