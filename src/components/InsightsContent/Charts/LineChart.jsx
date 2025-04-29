@@ -3,65 +3,48 @@ import moment from 'moment';
 import React from 'react';
 import ApexCharts from 'react-apexcharts';
 
-const LineChart = ({ 
-  series, 
-  title, 
-  labels, 
-  linechartcolors, 
-  diffDays, 
-  markercolors, 
-  startDate, 
-  endDate, 
-  selectedRange, 
-  responseDates, 
-  customDates, 
-  isCustomRangeSelected 
+const LineChart = ({
+  series,
+  title,
+  labels,
+  linechartcolors,
+  diffDays,
+  markercolors,
+  startDate,
+  endDate,
+  selectedRange,
+  responseDates,
+  customDates,
+  isCustomRangeSelected
 }) => {
-  console.log("daysdiff", selectedRange,diffDays,customDates,responseDates);
-
   const today = moment();
   const startTime = startDate || today.clone().subtract(7, 'days').format('YYYY-MM-DD');
   const endTime = endDate || today.format('YYYY-MM-DD');
 
   let dateRange = [];
-  console.log("daterange",dateRange);
-  if (isCustomRangeSelected ) {
-    dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM")) || [];
-   
-    
-  } else if (isCustomRangeSelected && customDates === "month") {
-    dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM - DD")) || [];
-   
-    
+
+  if (isCustomRangeSelected) {
+    if (customDates === "month") {
+      dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM - DD")) || [];
+    } else {
+      dateRange = responseDates?.map(date => moment(date, "YYYY-MM-DD").format("MMM - DD")) || [];
+    }
   } else {
-    if (selectedRange === 'D' && diffDays === 0 && !isCustomRangeSelected) {
+    if (selectedRange === 'D' && diffDays === 0) {
       for (let hour = 0; hour < 24; hour++) {
         dateRange.push(moment({ hour }).format("HH:mm"));
       }
-    } else if (selectedRange === 'D' && diffDays === 0 && isCustomRangeSelected) {
-      for (let hour = 0; hour < 24; hour++) {
-        dateRange.push(moment({ hour }).format("HH:mm"));
-      }
-    } else if (selectedRange === 'D' && isCustomRangeSelected) {
+    } else if ((selectedRange === 'D' && diffDays > 0) || selectedRange === 'W' || selectedRange === 'M') {
       for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
         dateRange.push(date.format('MMM-DD'));
       }
-    } else if (selectedRange === 'W' || selectedRange === 'M') {
-      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
-        dateRange.push(date.format('MMM-DD'));
-      }
-    } else if (selectedRange === 'Y' && !isCustomRangeSelected) {
+    } else if (selectedRange === 'Y') {
       for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
         dateRange.push(date.format('MMM'));
-      }
-    } else if (selectedRange === 'Y' && isCustomRangeSelected) {
-      for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
-        dateRange.push(date.format('MMM-DD'));
       }
     }
   }
 
-  // ➡️ Calculate dynamic min and max values
   const allDataPoints = series.flatMap(s => s.data);
   const padding = 5;
   const dynamicMin = Math.max(0, Math.min(...allDataPoints) - padding);
@@ -101,9 +84,7 @@ const LineChart = ({
       categories: dateRange,
       labels: {
         style: { fontSize: '14px', fontWeight: 400, colors: '#666' },
-        rotate: -45,
-        offsetY: 0,
-        offsetX: 0
+        rotate: -45
       }
     },
     yaxis: {
@@ -113,13 +94,9 @@ const LineChart = ({
       labels: {
         style: { fontSize: "12px", colors: "#666" },
         formatter: (value) => {
-          if (value >= 1000000) {
-            return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-          } else if (value >= 1000) {
-            return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-          } else {
-            return Math.round(value);
-          }
+          if (value >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+          if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+          return Math.round(value);
         }
       }
     },

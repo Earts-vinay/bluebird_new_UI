@@ -168,30 +168,46 @@ const Insights = () => {
                 disabledDate={(current) => current && current > dayjs()}
                 onChange={(dates) => {
                   if (dates) {
-                    setLoading(true);
+                    const latestStartDate = dates[0].format("YYYY-MM-DD");
+                    const latestEndDate = dates[1].format("YYYY-MM-DD");
+                
+                    // Immediately reflect in UI
                     setIsCustomRangeSelected(true);
-
+                    setDateRange((prev) => ({ ...prev, latestStartDate, latestEndDate }));
+                
+                    setLoading(true);
                     setTimeout(() => {
-                      const latestStartDate = dates[0].format("YYYY-MM-DD");
-                      const latestEndDate = dates[1].format("YYYY-MM-DD");
-
-                      // Calculate previous period range
                       const diffDays = dayjs(latestEndDate).diff(dayjs(latestStartDate), "days");
-
-                      const previousStartDate = dayjs(latestStartDate).subtract(diffDays + 1, "days").format("YYYY-MM-DD");
-                      const previousEndDate = dayjs(latestEndDate).subtract(diffDays + 1, "days").format("YYYY-MM-DD");
-
-                      setDateRange({ previousStartDate, previousEndDate, latestStartDate, latestEndDate });
-
+                
+                      const previousStartDate = dayjs(latestStartDate)
+                        .subtract(diffDays + 1, "days")
+                        .format("YYYY-MM-DD");
+                      const previousEndDate = dayjs(latestEndDate)
+                        .subtract(diffDays + 1, "days")
+                        .format("YYYY-MM-DD");
+                
+                      setDateRange({
+                        previousStartDate,
+                        previousEndDate,
+                        latestStartDate,
+                        latestEndDate,
+                      });
+                
                       localStorage.setItem(
                         "dateRange",
-                        JSON.stringify({ previousStartDate, previousEndDate, latestStartDate, latestEndDate })
+                        JSON.stringify({
+                          previousStartDate,
+                          previousEndDate,
+                          latestStartDate,
+                          latestEndDate,
+                        })
                       );
-
+                
                       setLoading(false);
                     }, 1000);
                   }
                 }}
+                
                 style={{ marginLeft: "10px" }}
               />
 
