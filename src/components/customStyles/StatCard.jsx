@@ -21,29 +21,14 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel,previ
       <Typography variant="subtitle2" color="white" sx={{ fontSize: '14px', ...commonStyles }}>
         {title}
       </Typography>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box sx={{display:'flex',justifyContent:"space-between"}}>
+    
+      <Box sx={{ display: "flex",flexDirection:"column", alignItems: "start",height:"100px",gap:"32px" }}>
         <Box>
-          <Typography variant="h1" color="white" style={{ fontSize: '30px', fontWeight: "bold", ...commonStyles }}>
+          <Typography variant="h1" color="white" style={{ fontSize: '30px',width:"70px", fontWeight: "bold", ...commonStyles }}>
             {mainValue}
           </Typography>
         </Box>
-        {peakTime && (
-          <div style={{ marginTop:"10px" ,width:"100px"}}>
-            <Typography variant="h3" color="white" style={{ fontSize: '12px', ...commonStyles }}>
-              {peakTime}
-            </Typography>
-            <Typography variant="h3" color="white" style={{ fontSize: '12px', ...commonStyles }}>
-              {peakDate}
-            </Typography>
-          </div>
-        )}
-        <Box sx={{ marginTop: "-20px" }}>
-          <img src={icon} width="30px" style={{ fill: "white" }} alt="" />
-        </Box>
-      </Box>
-    </CardContent>
-    <CardContent sx={{ height: '50%', paddingX: '15px', paddingTop: "20px", paddingBottom: "5px !important", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <Typography variant="h3" color="white" style={{ fontSize: '20px', ...commonStyles }}>
             {subValue}
@@ -52,19 +37,41 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel,previ
             {daysago}
           </Typography>
         </div>
-        {previousPeakTime && (
-          <div >
-            <Typography variant="h3" color="white" style={{  fontSize: '12px', ...commonStyles }}>
-            {previousPeakTime}
+   
+      </Box>
+
+      <Box sx={{ display: "flex",flexDirection:"column", alignItems: "start",justifyContent:"space-between",height:"85%" }}>
+        <Box sx={{height:"30px", width:"80px"}}>
+        {peakTime && (
+          <div style={{ marginTop:"10px" }}>
+            <Typography variant="h3" color="white" style={{ fontSize: '12px', ...commonStyles }}>
+              {peakTime}
             </Typography>
-            <Typography variant="h3" color="white" style={{  fontSize: '12px', ...commonStyles }}>
-            {previousPeakDate}
+        
+          </div>
+        )}
+        </Box>
+        <Box sx={{ display: "flex",flexDirection:"column", alignItems: "end",justifyContent:"end", }}>
+        {previousPeakTime && (
+          <Box sx={{height:"20px",width:"80px",}}>
+            <Typography variant="h3" color="white" style={{  fontSize: '12px',height:"26px", ...commonStyles }}>
+            {previousPeakTime}
             </Typography>
             <Typography variant="subtitle2" color="white" sx={commonStyles}>
               Peak Time
             </Typography>
-          </div>
+          </Box>
         )}
+        </Box>
+        </Box>
+
+        <Box sx={{ display: "flex",flexDirection:"column", alignItems: "end",height:"100px",gap:"30px" }}>
+        <Box>
+        <Box sx={{textAlign:"end",width:"30px",height:"40px"}}>
+          <img src={icon} width="30px" style={{ fill: "white" }} alt="" />
+        </Box>
+        </Box>
+      
         <div>
           <Typography variant="subtitle2" color="white" style={{ textAlign: "right", ...commonStyles }}>
             {percentage}%
@@ -73,7 +80,9 @@ const StatCard = ({ background, icon, title, mainValue, subValue, subLabel,previ
             Difference
           </Typography>
         </div>
-      </div>
+        </Box>
+
+        </Box>
     </CardContent>
   </Card>
 );

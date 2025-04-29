@@ -24,85 +24,125 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
     return num?.toString(); // Keep as is if less than 1K
   };
 
-  //latest max people & Vehicle calculations
-  const maxPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
-    currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
-  );
-  const maxPeoplePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
-    currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
-  );
-  const maxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
-    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
-  );
-  const maxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
-    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
-  );
+  // latest max people & Vehicle calculations
+const maxPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+  (currentItem.people_enter_peak || 0) > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
+);
+const maxMoreDaysPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+  (currentItem.people_enter || 0) > (maxItem?.people_enter || 0) ? currentItem : maxItem, null
+);
+const maxPeoplePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+  (currentItem.people_occupancy_peak || 0) > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
+);
+const maxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+  (currentItem.vechicle_enter_peak || 0) > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
+);
+const maxMoreDaysVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+  (currentItem.vechicle_enter || 0) > (maxItem?.vechicle_enter || 0) ? currentItem : maxItem, null
+);
+const maxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+  (currentItem.vechicle_occupancy_peak || 0) > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+);
 
-  //latest calculations
-  const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
-  const latestPeoplePeakEnter = maxPeoplePeakItem?.people_enter_peak;
-  const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
-  const latestPeoplePeakDate = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
-  
-  const latestPeopleOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peak;
-  const latestPeoplePeakTimeOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[1];
-  const latestPeoplePeakTimeDate = maxPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[0];
+// latest calculations
+const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + (item.people_enter || 0), 0) || 0;
+const latestMoreDaysPeoplePeakEnter = maxMoreDaysPeoplePeakItem?.people_enter || 0;
+const latestMoreDaysPeoplePeakTime = maxMoreDaysPeoplePeakItem?.date_time || "";
 
-  const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const latestVehiclePeakEnter = maxVehiclePeakItem?.vechicle_enter_peak;
-  const latestVehiclePeakTime = maxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[1];
-  const latestVehiclePeakDate = maxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[0];
+const latestPeoplePeakEnter = maxPeoplePeakItem?.people_enter_peak || 0;
+const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime
+  ? maxPeoplePeakItem.people_enter_peaktime.split(" ").reverse().join(" ")
+  : "";
 
-  const latestVehicleOccupancy = maxVehiclePeakOccupancy?.vechicle_occupancy_peak;
-  const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
-  const latestVehiclePeakOccupancyDate = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
+const latestPeopleOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peak || 0;
+const latestPeoplePeakTimeOccupancy = maxPeoplePeakOccupancy?.people_occupancy_peaktime
+  ? maxPeoplePeakOccupancy.people_occupancy_peaktime.split(" ").reverse().join(" ")
+  : "";
+
+const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + (item.vechicle_enter || 0), 0) || 0;
+const latestMoreDaysVehiclePeakEnter = maxMoreDaysVehiclePeakItem?.vechicle_enter || 0;
+const latestMoreDaysVehiclePeakTime = maxMoreDaysVehiclePeakItem?.date_time
+
+const latestVehiclePeakEnter = maxVehiclePeakItem?.vechicle_enter_peak || 0;
+const latestVehiclePeakTime = maxVehiclePeakItem?.vechicle_enter_peaktime
+  ? maxVehiclePeakItem.vechicle_enter_peaktime.split(" ").reverse().join(" ")
+  : "";
+
+const latestVehicleOccupancy = maxVehiclePeakOccupancy?.vechicle_occupancy_peak || 0;
+const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
+  ? maxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+  : "";
 
 
-  const latestPeopleEnterFormatted = formatNumber(latestPeopleEnter);
-  const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
-  const latestPeopleOccupancyFormatted = formatNumber(latestPeopleOccupancy);
-  const latestVehicleEnterFormatted = formatNumber(latestVehicleEnter);
-  const latestVehiclePeakEnterFormatted = formatNumber(latestVehiclePeakEnter);
-  const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
+// format numbers
+const latestPeopleEnterFormatted = formatNumber(latestPeopleEnter);
+const latestMoreDaysPeoplePeakEnterFormatted = formatNumber(latestMoreDaysPeoplePeakEnter);
+const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
+const latestPeopleOccupancyFormatted = formatNumber(latestPeopleOccupancy);
+const latestVehicleEnterFormatted = formatNumber(latestVehicleEnter);
+const latestMoreDaysVehiclePeakEnterFormatted = formatNumber(latestMoreDaysVehiclePeakEnter)
+const latestVehiclePeakEnterFormatted = formatNumber(latestVehiclePeakEnter);
+const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
 
-  //previous max people & Vehicle calculations
-  const previousMaxPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
-    currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
-  );
-  const previousPeoplePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
-    currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
-  );
-  const previousMaxVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
-    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
-  );
-  const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
-    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
-  );
+// previous max people & Vehicle calculations
+const previousMaxPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+  (currentItem.people_enter_peak || 0) > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
+);
+const previousMaxMoreDaysPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+  (currentItem.people_enter || 0) > (maxItem?.people_enter || 0) ? currentItem : maxItem, null
+);
 
-  // Previous claculations
-  const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
-  const previousPeoplePeakEnter = previousMaxPeoplePeakItem?.people_enter_peak;
-  const previousPeoplePeakTime = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
-  const previousPeoplePeakDate = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
+const previousPeoplePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
+  (currentItem.people_occupancy_peak || 0) > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
+);
+const previousMaxVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+  (currentItem.vechicle_enter_peak || 0) > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
+);
 
-  const previousPeopleOccupancy = previousPeoplePeakOccupancy?.people_occupancy_peak;
-  const previousPeoplePeakOccupancyTime = previousPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[1];
-  const previousPeoplePeakOccupancyDate = previousPeoplePeakOccupancy?.people_occupancy_peaktime?.split(" ")[0];
+const previousMaxMoreDaysVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+  (currentItem.vechicle_enter || 0) > (maxItem?.vechicle_enter || 0) ? currentItem : maxItem, null
+);
+const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
+  (currentItem.vechicle_occupancy_peak || 0) > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+);
 
-  const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const previousPeakvehicleEnter = previousMaxVehiclePeakItem?.vechicle_enter_peak;
-  const previousVehiclePeakTime = previousMaxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[1];
-  const previousVehiclePeakDate = previousMaxVehiclePeakItem?.vechicle_enter_peaktime?.split(" ")[0];
+// previous calculations
+const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + (item.people_enter || 0), 0) || 0;
+const previousMoreDaysPeoplePeakEnter = previousMaxMoreDaysPeoplePeakItem?.people_enter || 0;
+const previousMoreDaysPeoplePeakTime = previousMaxMoreDaysPeoplePeakItem?.date_time || ""
 
-  const previousVehicleOccupancy = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak;
-  const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
-  const previousVehiclePeakOccupancyDate = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
+const previousPeoplePeakEnter = previousMaxPeoplePeakItem?.people_enter_peak || 0;
+const previousPeoplePeakTime = previousMaxPeoplePeakItem?.people_enter_peaktime
+  ? previousMaxPeoplePeakItem.people_enter_peaktime.split(" ").reverse().join(" ")
+  : "";
 
+const previousPeopleOccupancy = previousPeoplePeakOccupancy?.people_occupancy_peak || 0;
+const previousPeoplePeakOccupancyTime = previousPeoplePeakOccupancy?.people_occupancy_peaktime
+  ? previousPeoplePeakOccupancy.people_occupancy_peaktime.split(" ").reverse().join(" ")
+  : "";
+
+const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + (item.vechicle_enter || 0), 0) || 0;
+const previousPeakvehicleEnter = previousMaxVehiclePeakItem?.vechicle_enter_peak || 0;
+
+const previousMoreDaysPeakvehicleEnter = previousMaxMoreDaysVehiclePeakItem?.vechicle_enter || 0;
+const previousMoreDaysVehiclePeakTime = previousMaxMoreDaysVehiclePeakItem?.date_time || ""
+
+const previousVehiclePeakTime = previousMaxVehiclePeakItem?.vechicle_enter_peaktime
+  ? previousMaxVehiclePeakItem.vechicle_enter_peaktime.split(" ").reverse().join(" ")
+  : "";
+
+const previousVehicleOccupancy = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak || 0;
+const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
+  ? previousMaxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+  : "";
 
   const previousPeopleEnterFormatted = formatNumber(previousPeopleEnter);
+  const previousPeopleMoreDaysPeakEnterFormatted = formatNumber(previousMoreDaysPeoplePeakEnter);
+
   const previousPeoplePeakEnterFormatted = formatNumber(previousPeoplePeakEnter);
   const previousPeopleOccupancyFormatted = formatNumber(previousPeopleOccupancy);
   const previousVehicleEnterFormatted = formatNumber(previousVehicleEnter);
+  const previousMoreDaysPeakvehicleEnterFormatted = formatNumber(previousMoreDaysPeakvehicleEnter)
   const previousPeakvehicleEnterFormatted = formatNumber(previousPeakvehicleEnter);
   const previousVehicleOccupancyFormatted = formatNumber(previousVehicleOccupancy);
 
@@ -135,6 +175,9 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
             ? "Last Year"
             : "week";
 
+            console.log("multiple days",dateRange, selectedRange, isCustomRangeSelected);
+            
+
   const cardData = [
     {
       background: "#1b3664",
@@ -149,15 +192,34 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       background: "#01669a",
       icon: PublicUrl + "/assets/icons/peak_entries.svg",
       title: "Peak Entries",
-      mainValue: latestPeoplePeakEnterFormatted,
-      subValue: previousPeoplePeakEnterFormatted,
-      peakTime: latestPeoplePeakTime,
-      peakDate:latestPeoplePeakDate,
-      previousPeakTime:previousPeoplePeakTime,
-      previousPeakDate:previousPeoplePeakDate,
+      mainValue:
+        (selectedRange === "D" &&
+         dateRange.latestStartDate == dateRange.latestEndDate)
+          ? latestPeoplePeakEnterFormatted
+          :  latestMoreDaysPeoplePeakEnterFormatted,
+    
+      subValue:
+        (selectedRange === "D" &&
+         dateRange.previousStartDate == dateRange.previousEndDate)
+          ? previousPeoplePeakEnterFormatted
+          :  previousPeopleMoreDaysPeakEnterFormatted,
+    
+      peakTime: 
+      (selectedRange === "D" &&
+        dateRange.previousStartDate == dateRange.previousEndDate)
+         ? latestPeoplePeakTime
+         :  latestMoreDaysPeoplePeakTime,
+
+      previousPeakTime:
+      (selectedRange === "D" &&
+        dateRange.previousStartDate == dateRange.previousEndDate)
+         ? previousPeoplePeakTime
+         :  previousMoreDaysPeoplePeakTime,
+
       percentage: percentagePeoplePeakEnter,
       daysago: daysago
     },
+    
     {
       background: "#52a1cc",
       icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
@@ -165,10 +227,7 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       mainValue: latestPeopleOccupancyFormatted,
       subValue: previousPeopleOccupancyFormatted,
       peakTime: latestPeoplePeakTimeOccupancy,
-      peakDate: latestPeoplePeakTimeDate,
-
       previousPeakTime:previousPeoplePeakOccupancyTime,
-      previousPeakDate:previousPeoplePeakOccupancyDate,
 
       percentage: percentagePeopleOccupancy,
       daysago: daysago
@@ -186,13 +245,29 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       background: "#52a1cc",
       icon: PublicUrl + "/assets/icons/VehiclePeakEntries.svg",
       title: "Peak Entries",
-      mainValue: latestVehiclePeakEnterFormatted,
-      subValue: previousPeakvehicleEnterFormatted,
-      peakTime: latestVehiclePeakTime,
-      peakDate: latestVehiclePeakDate,
+      mainValue:
+      (selectedRange === "D" &&
+        dateRange.latestStartDate == dateRange.latestEndDate)
+         ? latestVehiclePeakEnterFormatted
+         :  latestMoreDaysVehiclePeakEnterFormatted,
 
-      previousPeakTime:previousVehiclePeakTime,
-      previousPeakDate:previousVehiclePeakDate,
+      subValue:
+      (selectedRange === "D" &&
+        dateRange.previousStartDate == dateRange.previousEndDate)
+         ? previousPeakvehicleEnterFormatted
+         :  previousMoreDaysPeakvehicleEnterFormatted,
+
+      peakTime: 
+      (selectedRange === "D" &&
+        dateRange.previousStartDate == dateRange.previousEndDate)
+         ? latestVehiclePeakTime
+         :  latestMoreDaysVehiclePeakTime,
+
+      previousPeakTime:
+      (selectedRange === "D" &&
+        dateRange.previousStartDate == dateRange.previousEndDate)
+         ? previousVehiclePeakTime
+         :  previousMoreDaysVehiclePeakTime,
 
       percentage: percentagePeakVehicleEnter,
       daysago: daysago
@@ -204,10 +279,8 @@ const TrafficCards = ({ dateRange, selectedRange, isCustomRangeSelected }) => {
       mainValue: latestVehicleOccupancyFormatted,
       subValue: previousVehicleOccupancyFormatted,
       peakTime: latestVehiclePeakOccupancyTime,
-      peakDate: latestVehiclePeakOccupancyDate,
 
       previousPeakTime:previousVehiclePeakOccupancyTime,
-      previousPeakDate:previousVehiclePeakOccupancyDate,
       percentage: percentageVehicleOccupancy,
       daysago: daysago
     },

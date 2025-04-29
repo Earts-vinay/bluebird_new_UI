@@ -73,9 +73,9 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const diffDays = dayjs(dateRange.latestEndDate).diff(dayjs(dateRange.latestStartDate), "days");
 
   const alerttype = isCustomRangeSelected
-    ? diffDays === 0 // If only one day is selected, pass "hour"
+    ? diffDays === 0
       ? "hour"
-      : diffDays >= 1 && diffDays < 30 // If more than 1 day but less than 30 days, pass "date"
+      : diffDays >= 1 && diffDays < 30
         ? "date"
         : "month" // If 30 or more days are selected, pass "month"
     : selectedRange === "D"
@@ -115,18 +115,18 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
           : selectedRange === "Y"
             ? "Last Year"
             : "week";
-              // Define the `daysago` message
+  // Define the `daysago` message
   const latestDays = isCustomRangeSelected
-  ? "Current Period"
-  : selectedRange === "D"
-    ? "Today"
-    : selectedRange === "W"
-      ? "This Week"
-      : selectedRange === "M"
-        ? "This Month"
-        : selectedRange === "Y"
-          ? "This Year"
-          : "week";
+    ? "Current Period"
+    : selectedRange === "D"
+      ? "Today"
+      : selectedRange === "W"
+        ? "This Week"
+        : selectedRange === "M"
+          ? "This Month"
+          : selectedRange === "Y"
+            ? "This Year"
+            : "week";
 
 
   //counting Api
@@ -203,56 +203,62 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const onlinePercentage = ((onlineSeries / totalseries) * 100).toFixed(2);
   const offlinePercentage = ((offlineSeries / totalseries) * 100).toFixed(2);
 
-   //latest max people & Vehicle calculations
-   const maxPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+  //latest max people & Vehicle calculations
+  const maxPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
     currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
   );
-  const maxPeoplePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
-    currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
+  const maxMoreDaysPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    (currentItem.people_enter || 0) > (maxItem?.people_enter || 0) ? currentItem : maxItem, null
   );
-  const maxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
-    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
-  );
+
   const maxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
     currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
   );
 
   // card vaules at upper part latest dates
   const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
+  const latestMoreDaysPeoplePeakEnter = maxMoreDaysPeoplePeakItem?.people_enter || 0;
+  const latestMoreDaysPeoplePeakTime = maxMoreDaysPeoplePeakItem?.date_time || "";
+
   const latestPeoplePeakEnter = Math.max(...(dataYearList?.map(item => item.people_enter_peak) || []));
-  const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
-  const latestPeoplePeakDate = maxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
+  const latestPeoplePeakTime = maxPeoplePeakItem?.people_enter_peaktime
+  ? maxPeoplePeakItem.people_enter_peaktime.split(" ").reverse().join(" ")
+  : "";
+ 
 
   const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const latestVehicleOccupancy = Math.max(...(dataYearList?.map(item => item.vechicle_occupancy_peak) || []));
-  const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
-  const latestVehiclePeakOccupancyDate = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
+  const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
+  ? maxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+  : "";
 
 
-    //previous max people & Vehicle calculations
-    const previousMaxPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
-      currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
-    );
-    const previousPeoplePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
-      currentItem.people_occupancy_peak > (maxItem?.people_occupancy_peak || 0) ? currentItem : maxItem, null
-    );
-    const previousMaxVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
-      currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
-    );
-    const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
-      currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
-    );
+  //previous max people & Vehicle calculations
+  const previousMaxPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+    currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
+  );
+  const previousMaxMoreDaysPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+    (currentItem.people_enter || 0) > (maxItem?.people_enter || 0) ? currentItem : maxItem, null
+  );
+  const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  );
 
   // card vaules at lower part previous dates
   const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
+  const previousMoreDaysPeoplePeakEnter = previousMaxMoreDaysPeoplePeakItem?.people_enter || 0;
+  const previousMoreDaysPeoplePeakTime = previousMaxMoreDaysPeoplePeakItem?.date_time || ""
   const previousPeoplePeakEnter = Math.max(...(previousDataList?.map(item => item.people_enter_peak) || []))
-  const previousPeoplePeakTime = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[1];
-  const previousPeoplePeakDate = previousMaxPeoplePeakItem?.people_enter_peaktime?.split(" ")[0];
+  const previousPeoplePeakTime = previousMaxPeoplePeakItem?.people_enter_peaktime
+  ? previousMaxPeoplePeakItem.people_enter_peaktime.split(" ").reverse().join(" ")
+  : "";
+ 
 
   const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
   const previousVehicleOccupancy = Math.max(...(previousDataList?.map(item => item.vechicle_occupancy_peak) || []));
-  const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[1];
-  const previousVehiclePeakOccupancyDate = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time?.split(" ")[0];
+  const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
+  ? previousMaxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+  : "";
 
   //total alerts card latest and previous
   const todayVehiclealerts = latestTotalALert[0]?.list?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
@@ -286,11 +292,13 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   // Applying formatting to your totals
   const latestPeopleEnterFormatted = formatNumber(latestPeopleEnter);
   const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
+  const latestMoreDaysPeoplePeakEnterFormatted = formatNumber(latestMoreDaysPeoplePeakEnter);
   const latestVehicleEnterFormatted = formatNumber(latestVehicleEnter);
   const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
 
   const previousPeopleEnterFormatted = formatNumber(previousPeopleEnter);
   const previousPeoplePeakEnterFormatted = formatNumber(previousPeoplePeakEnter);
+  const previousPeopleMoreDaysPeakEnterFormatted = formatNumber(previousMoreDaysPeoplePeakEnter);
   const previousVehicleEnterFormatted = formatNumber(previousVehicleEnter);
   const vehicleOccupancyFormatted = formatNumber(previousVehicleOccupancy);
 
@@ -377,13 +385,29 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       background: 'linear-gradient(120deg, #01669a 3%, #52a1cc)',
       icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
       title: "Peak Entries",
-      mainValue: latestPeoplePeakEnterFormatted,
-      subValue: previousPeoplePeakEnterFormatted,
+      mainValue:
+        (selectedRange === "D" &&
+          dateRange.latestStartDate == dateRange.latestEndDate)
+          ? latestPeoplePeakEnterFormatted
+          : latestMoreDaysPeoplePeakEnterFormatted,
+      subValue:
+        (selectedRange === "D" &&
+          dateRange.previousStartDate == dateRange.previousEndDate)
+          ? previousPeoplePeakEnterFormatted
+          : previousPeopleMoreDaysPeakEnterFormatted,
+
       percentage: percentagePeoplePeakEnter,
-      peakTime: latestPeoplePeakTime,
-      peakDate:latestPeoplePeakDate,
-      previousPeakTime:previousPeoplePeakTime,
-      previousPeakDate:previousPeoplePeakDate,
+      peakTime:
+        (selectedRange === "D" &&
+          dateRange.previousStartDate == dateRange.previousEndDate)
+          ? latestPeoplePeakTime
+          : latestMoreDaysPeoplePeakTime,
+
+      previousPeakTime:
+        (selectedRange === "D" &&
+          dateRange.previousStartDate == dateRange.previousEndDate)
+          ? previousPeoplePeakTime
+          : previousMoreDaysPeoplePeakTime,
       daysago: daysago
     },
     {
@@ -403,10 +427,7 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
       subValue: vehicleOccupancyFormatted,
       percentage: percentageVehicleOccupancy,
       peakTime: latestVehiclePeakOccupancyTime,
-      peakDate: latestVehiclePeakOccupancyDate,
-
-      previousPeakTime:previousVehiclePeakOccupancyTime,
-      previousPeakDate:previousVehiclePeakOccupancyDate,
+      previousPeakTime: previousVehiclePeakOccupancyTime,
       daysago: daysago
     },
     {
@@ -442,14 +463,16 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
           <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }} my={2.5} gap={2}>
             <Grid container spacing={2.5}>
               <Grid item xs={12} md={8}>
-                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays}/>
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays} />
               </Grid>
               <Grid item xs={12} md={4}>
                 <RadialBarChart
-                  series={[onlineSeries, offlineSeries]}
+                  series={[onlinePercentage, offlinePercentage]}
                   labels={['Online', 'Offline']}
                   title="Device Status"
                   colors={['#1BBAFD', '#FF5733']}
+                  onlineSeries={onlineSeries}
+                  offlineSeries={offlineSeries}
                 />
               </Grid>
               <Grid item xs={12} md={7}>

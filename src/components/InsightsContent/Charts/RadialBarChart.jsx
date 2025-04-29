@@ -2,7 +2,7 @@ import React from 'react';
 import ApexCharts from 'react-apexcharts';
 import { Box } from '@mui/material';
 
-const RadialBarChart = ({ series, labels, title, colors }) => {
+const RadialBarChart = ({ series, labels, title, colors, onlineSeries, offlineSeries }) => {
   const chartOptions = {
     series: series,
     chart: {
@@ -18,9 +18,9 @@ const RadialBarChart = ({ series, labels, title, colors }) => {
           zoomout: false,
           pan: false,
           reset: false,
-          customIcons: []
+          customIcons: [],
         },
-        autoSelected: 'zoom'
+        autoSelected: 'zoom',
       },
       animations: {
         enabled: true,
@@ -28,43 +28,45 @@ const RadialBarChart = ({ series, labels, title, colors }) => {
         speed: 800,
         animateGradually: {
           enabled: true,
-          delay: 150
+          delay: 150,
         },
         dynamicAnimation: {
           enabled: true,
-          speed: 350
-        }
-      }
+          speed: 350,
+        },
+      },
     },
     plotOptions: {
       radialBar: {
         hollow: {
           margin: 15,
-          size: "65%"
+          size: '65%',
         },
         track: {
           background: '#f2f2f2',
-          strokeWidth: '50%'
+          strokeWidth: '50%',
         },
         dataLabels: {
           name: {
             show: true,
             fontSize: '22px',
             fontWeight: 600,
-            offsetY: -10
+            offsetY: -10,
           },
           value: {
             show: true,
-            formatter: function(val) {
-              return parseInt(val);
+            formatter: function (val, opts) {
+              // Use series index to determine which raw value to display
+              const rawValue = opts.seriesIndex === 0 ? onlineSeries : offlineSeries;
+              return rawValue; // Display raw onlineSeries or offlineSeries value
             },
             fontSize: '16px',
             fontWeight: 400,
             offsetY: 16,
             color: '#666',
-          }
-        }
-      }
+          },
+        },
+      },
     },
     colors: colors,
     labels: labels,
@@ -73,7 +75,7 @@ const RadialBarChart = ({ series, labels, title, colors }) => {
       style: {
         color: '#003A6F',
         fontWeight: 'normal',
-      }
+      },
     },
     legend: {
       show: true,
@@ -82,13 +84,22 @@ const RadialBarChart = ({ series, labels, title, colors }) => {
       fontSize: '14px',
       markers: {
         size: 10,
-        strokeWidth: 0
-      }
-    }
+        strokeWidth: 0,
+      },
+    },
+    tooltip: {
+    },
   };
 
   return (
-    <Box style={{ backgroundColor: "white", borderRadius: "5px", padding: "15px", boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)" }}>
+    <Box
+      style={{
+        backgroundColor: 'white',
+        borderRadius: '5px',
+        padding: '15px',
+  boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.16)',
+      }}
+    >
       <ApexCharts options={chartOptions} series={series} type="radialBar" height={400} />
     </Box>
   );

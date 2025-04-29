@@ -43,7 +43,22 @@ const BarChart = ({ series, title, labels }) => {
     xaxis: {
       categories: labels,
     },
-    yaxis: {},
+    yaxis: {
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        style: { fontSize: "12px", colors: "#666" },
+        formatter: (value) => {
+          if (value >= 1000000) {
+            return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+          } else if (value >= 1000) {
+            return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+          } else {
+            return Math.round(value);
+          }
+        }
+      }
+    },
     fill: {
       opacity: 1
     },
