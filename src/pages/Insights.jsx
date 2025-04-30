@@ -164,7 +164,7 @@ const Insights = () => {
 
             <Box display="flex" alignItems="center" sx={{ paddingRight: "30px", gap: "10px" }}>
               <RangePicker
-                value={isCustomRangeSelected ? [dayjs(dateRange.latestStartDate), dayjs(dateRange.latestEndDate)] : null}
+                value={[dayjs(dateRange.latestStartDate), dayjs(dateRange.latestEndDate)] }
                 disabledDate={(current) => current && current > dayjs()}
                 onChange={(dates) => {
                   if (dates) {

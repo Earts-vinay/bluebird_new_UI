@@ -23,22 +23,39 @@ const LineChart = ({
 
   let dateRange = [];
 
+  // Helper function to calculate days difference
+  const daysDifference = moment(endTime).diff(moment(startTime), 'days');
+
   if (isCustomRangeSelected) {
     if (customDates === "month") {
+      // Monthly custom range
       dateRange = responseDates?.map(date => moment(date, "YYYY-MM").format("MMM - DD")) || [];
-    } else {
-      dateRange = responseDates?.map(date => moment(date, "YYYY-MM-DD").format("MMM - DD")) || [];
-    }
-  } else {
-    if (selectedRange === 'D' && diffDays === 0) {
+    } else if (daysDifference === 0) {
+      // Same day: show hours
       for (let hour = 0; hour < 24; hour++) {
         dateRange.push(moment({ hour }).format("HH:mm"));
       }
-    } else if ((selectedRange === 'D' && diffDays > 0) || selectedRange === 'W' || selectedRange === 'M') {
+    } else if (daysDifference <= 30) {
+      // Less than or equal to 1 month: show MMM-DD
+      dateRange = responseDates?.map(date => moment(date, "YYYY-MM-DD").format("MMM-DD")) || [];
+    } else {
+      // More than 1 month: show MMM
+      dateRange = responseDates?.map(date => moment(date, "YYYY-MM-DD").format("MMM")) || [];
+    }
+  } else {
+    // Non-custom range logic
+    if (selectedRange === 'D') {
+      // Daily: show hours
+      for (let hour = 0; hour < 24; hour++) {
+        dateRange.push(moment({ hour }).format("HH:mm"));
+      }
+    } else if (selectedRange === 'W' || selectedRange === 'M') {
+      // Weekly or Monthly: show MMM-DD
       for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'days')) {
         dateRange.push(date.format('MMM-DD'));
       }
     } else if (selectedRange === 'Y') {
+      // Yearly: show MMM
       for (let date = moment(startTime); date.isSameOrBefore(endTime); date.add(1, 'month')) {
         dateRange.push(date.format('MMM'));
       }
