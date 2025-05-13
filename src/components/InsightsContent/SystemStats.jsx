@@ -45,8 +45,8 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
     zone.list?.map((item) => item.date_time) || []
   );
 
-  console.log("data",apiData.data);
-  
+  console.log("data", apiData.data);
+
 
   const diffDays = dayjs(dateRange.latestEndDate).diff(dayjs(dateRange.latestStartDate), "days");
 
@@ -127,14 +127,14 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
             <Grid container spacing={2.5}>
 
               <Grid item xs={12} md={7}>
-              <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays} />
+                <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays} />
               </Grid>
               <Grid item xs={12} md={5}>
                 {StatData.data?.map?.((rowData, index) => (
                   <div key={index}>
                     <PieChart
                       series={[rowData?.offline_num ?? 0, rowData?.online_num ?? 0, rowData?.no_paired_num ?? 0]}
-                      labels={['No. Offline', 'No. Online', 'No. not paired']}
+                      labels={['Offline', ' Online', 'Not paired']}
                       title="Device Paired"
                       colors={['#01669a', '#abd9f4', '#ef7b73']}
                     />
@@ -187,17 +187,17 @@ const SystemStats = ({ dateRange, selectedRange, isCustomRangeSelected, customDa
                             <TableCell>{row.pole && row.pole.name}</TableCell>
                             <TableCell>{row.healthy_info && row.healthy_info.last_online}</TableCell>
                             <TableCell>
-  {row.healthy_info && row.healthy_info.offline_time && (() => {
-    const [hoursStr, minutesStr, secondsStr] = row.healthy_info.offline_time.split(':');
-    const hours = parseInt(hoursStr, 10);
-    const minutes = parseInt(minutesStr, 10);
-    const totalMinutes = (hours * 60) + minutes;
+                              {row.healthy_info && row.healthy_info.offline_time && (() => {
+                                const [hoursStr, minutesStr, secondsStr] = row.healthy_info.offline_time.split(':');
+                                const hours = parseInt(hoursStr, 10);
+                                const minutes = parseInt(minutesStr, 10);
+                                const totalMinutes = (hours * 60) + minutes;
 
-    if (totalMinutes < 30) return '0 H';
-    if (totalMinutes >= 30 && totalMinutes <= 60) return '1 H';
-    return `${hours} H`;
-  })()}
-</TableCell>
+                                if (totalMinutes < 30) return '0 H';
+                                if (totalMinutes >= 30 && totalMinutes <= 60) return '1 H';
+                                return `${hours} H`;
+                              })()}
+                            </TableCell>
 
                             <TableCell>{row.healthy_info && row.healthy_info.is_online ? 'Online' : 'Offline'}</TableCell>
                           </TableRow>

@@ -178,113 +178,206 @@ const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechic
             console.log("multiple days",dateRange, selectedRange, isCustomRangeSelected);
             
 
-  const cardData = [
-    {
-      background: "#1b3664",
-      icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
-      title: "Total Entries",
-      mainValue: latestPeopleEnterFormatted,
-      subValue: previousPeopleEnterFormatted,
-      percentage: percentagePeopleEnter,
-      daysago: daysago
-    },
-    {
-      background: "#01669a",
-      icon: PublicUrl + "/assets/icons/peak_entries.svg",
-      title: "Peak Entries",
-      mainValue:
-        (selectedRange === "D" &&
-         dateRange.latestStartDate == dateRange.latestEndDate)
-          ? latestPeoplePeakEnterFormatted
-          :  latestMoreDaysPeoplePeakEnterFormatted,
+  // const cardData = [
+  //   {
+  //     background: "#1b3664",
+  //     icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
+  //     title: "Total Entries",
+  //     mainValue: latestPeopleEnterFormatted,
+  //     subValue: previousPeopleEnterFormatted,
+  //     percentage: percentagePeopleEnter,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: "#01669a",
+  //     icon: PublicUrl + "/assets/icons/peak_entries.svg",
+  //     title: "Peak Entries",
+  //     mainValue:
+  //       (selectedRange === "D" &&
+  //        dateRange.latestStartDate == dateRange.latestEndDate)
+  //         ? latestPeoplePeakEnterFormatted
+  //         :  latestMoreDaysPeoplePeakEnterFormatted,
     
-      subValue:
-        (selectedRange === "D" &&
-         dateRange.previousStartDate == dateRange.previousEndDate)
-          ? previousPeoplePeakEnterFormatted
-          :  previousPeopleMoreDaysPeakEnterFormatted,
+  //     subValue:
+  //       (selectedRange === "D" &&
+  //        dateRange.previousStartDate == dateRange.previousEndDate)
+  //         ? previousPeoplePeakEnterFormatted
+  //         :  previousPeopleMoreDaysPeakEnterFormatted,
     
-      peakTime: 
-      (selectedRange === "D" &&
-        dateRange.previousStartDate == dateRange.previousEndDate)
-         ? latestPeoplePeakTime
-         :  latestMoreDaysPeoplePeakTime,
+  //     peakTime: 
+  //     (selectedRange === "D" &&
+  //       dateRange.previousStartDate == dateRange.previousEndDate)
+  //        ? latestPeoplePeakTime
+  //        :  latestMoreDaysPeoplePeakTime,
 
-      previousPeakTime:
-      (selectedRange === "D" &&
-        dateRange.previousStartDate == dateRange.previousEndDate)
-         ? previousPeoplePeakTime
-         :  previousMoreDaysPeoplePeakTime,
+  //     previousPeakTime:
+  //     (selectedRange === "D" &&
+  //       dateRange.previousStartDate == dateRange.previousEndDate)
+  //        ? previousPeoplePeakTime
+  //        :  previousMoreDaysPeoplePeakTime,
 
-      percentage: percentagePeoplePeakEnter,
-      daysago: daysago
-    },
+  //     percentage: percentagePeoplePeakEnter,
+  //     daysago: daysago
+  //   },
     
-    {
-      background: "#52a1cc",
-      icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
-      title: "Peak Occupancy",
-      mainValue: latestPeopleOccupancyFormatted,
-      subValue: previousPeopleOccupancyFormatted,
-      peakTime: latestPeoplePeakTimeOccupancy,
-      previousPeakTime:previousPeoplePeakOccupancyTime,
+  //   {
+  //     background: "#52a1cc",
+  //     icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
+  //     title: "Peak Occupancy",
+  //     mainValue: latestPeopleOccupancyFormatted,
+  //     subValue: previousPeopleOccupancyFormatted,
+  //     peakTime: latestPeoplePeakTimeOccupancy,
+  //     previousPeakTime:previousPeoplePeakOccupancyTime,
 
-      percentage: percentagePeopleOccupancy,
-      daysago: daysago
-    },
-    {
-      background: "#46c8f5",
-      icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
-      title: "Total Entries",
-      mainValue: latestVehicleEnterFormatted,
-      subValue: previousVehicleEnterFormatted,
-      percentage: percentageVehicleEnter,
-      daysago: daysago
-    },
-    {
-      background: "#52a1cc",
-      icon: PublicUrl + "/assets/icons/VehiclePeakEntries.svg",
-      title: "Peak Entries",
-      mainValue:
-      (selectedRange === "D" &&
-        dateRange.latestStartDate == dateRange.latestEndDate)
-         ? latestVehiclePeakEnterFormatted
-         :  latestMoreDaysVehiclePeakEnterFormatted,
+  //     percentage: percentagePeopleOccupancy,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: "#46c8f5",
+  //     icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
+  //     title: "Total Entries",
+  //     mainValue: latestVehicleEnterFormatted,
+  //     subValue: previousVehicleEnterFormatted,
+  //     percentage: percentageVehicleEnter,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: "#52a1cc",
+  //     icon: PublicUrl + "/assets/icons/VehiclePeakEntries.svg",
+  //     title: "Peak Entries",
+  //     mainValue:
+  //     (selectedRange === "D" &&
+  //       dateRange.latestStartDate == dateRange.latestEndDate)
+  //        ? latestVehiclePeakEnterFormatted
+  //        :  latestMoreDaysVehiclePeakEnterFormatted,
 
-      subValue:
-      (selectedRange === "D" &&
-        dateRange.previousStartDate == dateRange.previousEndDate)
-         ? previousPeakvehicleEnterFormatted
-         :  previousMoreDaysPeakvehicleEnterFormatted,
+  //     subValue:
+  //     (selectedRange === "D" &&
+  //       dateRange.previousStartDate == dateRange.previousEndDate)
+  //        ? previousPeakvehicleEnterFormatted
+  //        :  previousMoreDaysPeakvehicleEnterFormatted,
 
-      peakTime: 
-      (selectedRange === "D" &&
-        dateRange.previousStartDate == dateRange.previousEndDate)
-         ? latestVehiclePeakTime
-         :  latestMoreDaysVehiclePeakTime,
+  //     peakTime: 
+  //     (selectedRange === "D" &&
+  //       dateRange.previousStartDate == dateRange.previousEndDate)
+  //        ? latestVehiclePeakTime
+  //        :  latestMoreDaysVehiclePeakTime,
 
-      previousPeakTime:
-      (selectedRange === "D" &&
-        dateRange.previousStartDate == dateRange.previousEndDate)
-         ? previousVehiclePeakTime
-         :  previousMoreDaysVehiclePeakTime,
+  //     previousPeakTime:
+  //     (selectedRange === "D" &&
+  //       dateRange.previousStartDate == dateRange.previousEndDate)
+  //        ? previousVehiclePeakTime
+  //        :  previousMoreDaysVehiclePeakTime,
 
-      percentage: percentagePeakVehicleEnter,
-      daysago: daysago
-    },
-    {
-      background: "#abd9f4",
-      icon: PublicUrl + "/assets/icons/VehiclePeakOccupancy.svg",
-      title: "Peak Occupancy",
-      mainValue: latestVehicleOccupancyFormatted,
-      subValue: previousVehicleOccupancyFormatted,
-      peakTime: latestVehiclePeakOccupancyTime,
+  //     percentage: percentagePeakVehicleEnter,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: "#abd9f4",
+  //     icon: PublicUrl + "/assets/icons/VehiclePeakOccupancy.svg",
+  //     title: "Peak Occupancy",
+  //     mainValue: latestVehicleOccupancyFormatted,
+  //     subValue: previousVehicleOccupancyFormatted,
+  //     peakTime: latestVehiclePeakOccupancyTime,
 
-      previousPeakTime:previousVehiclePeakOccupancyTime,
-      percentage: percentageVehicleOccupancy,
-      daysago: daysago
-    },
-  ];
+  //     previousPeakTime:previousVehiclePeakOccupancyTime,
+  //     percentage: percentageVehicleOccupancy,
+  //     daysago: daysago
+  //   },
+  // ];
+
+  const isSingleDaySelection =
+  dateRange.latestStartDate === dateRange.latestEndDate &&
+  dateRange.previousStartDate === dateRange.previousEndDate;
+
+const cardData = [
+  {
+    background: "#1b3664",
+    icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
+    title: "Total Entries",
+    mainValue: latestPeopleEnterFormatted,
+    subValue: previousPeopleEnterFormatted,
+    percentage: percentagePeopleEnter,
+    daysago: daysago
+  },
+  {
+    background: "#01669a",
+    icon: PublicUrl + "/assets/icons/peak_entries.svg",
+    title: "Peak Entries",
+    mainValue: isSingleDaySelection
+      ? latestPeoplePeakEnterFormatted
+      : latestMoreDaysPeoplePeakEnterFormatted,
+
+    subValue: isSingleDaySelection
+      ? previousPeoplePeakEnterFormatted
+      : previousPeopleMoreDaysPeakEnterFormatted,
+
+    peakTime: isSingleDaySelection
+      ? latestPeoplePeakTime
+      : latestMoreDaysPeoplePeakTime,
+
+    previousPeakTime: isSingleDaySelection
+      ? previousPeoplePeakTime
+      : previousMoreDaysPeoplePeakTime,
+
+    percentage: percentagePeoplePeakEnter,
+    daysago: daysago
+  },
+  {
+    background: "#52a1cc",
+    icon: PublicUrl + "/assets/icons/PersonPeakOccupancy.svg",
+    title: "Peak Occupancy",
+    mainValue: latestPeopleOccupancyFormatted,
+    subValue: previousPeopleOccupancyFormatted,
+    peakTime: latestPeoplePeakTimeOccupancy,
+    previousPeakTime: previousPeoplePeakOccupancyTime,
+    percentage: percentagePeopleOccupancy,
+    daysago: daysago
+  },
+  {
+    background: "#46c8f5",
+    icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
+    title: "Total Entries",
+    mainValue: latestVehicleEnterFormatted,
+    subValue: previousVehicleEnterFormatted,
+    percentage: percentageVehicleEnter,
+    daysago: daysago
+  },
+  {
+    background: "#52a1cc",
+    icon: PublicUrl + "/assets/icons/VehiclePeakEntries.svg",
+    title: "Peak Entries",
+    mainValue: isSingleDaySelection
+      ? latestVehiclePeakEnterFormatted
+      : latestMoreDaysVehiclePeakEnterFormatted,
+
+    subValue: isSingleDaySelection
+      ? previousPeakvehicleEnterFormatted
+      : previousMoreDaysPeakvehicleEnterFormatted,
+
+    peakTime: isSingleDaySelection
+      ? latestVehiclePeakTime
+      : latestMoreDaysVehiclePeakTime,
+
+    previousPeakTime: isSingleDaySelection
+      ? previousVehiclePeakTime
+      : previousMoreDaysVehiclePeakTime,
+
+    percentage: percentagePeakVehicleEnter,
+    daysago: daysago
+  },
+  {
+    background: "#abd9f4",
+    icon: PublicUrl + "/assets/icons/VehiclePeakOccupancy.svg",
+    title: "Peak Occupancy",
+    mainValue: latestVehicleOccupancyFormatted,
+    subValue: previousVehicleOccupancyFormatted,
+    peakTime: latestVehiclePeakOccupancyTime,
+    previousPeakTime: previousVehiclePeakOccupancyTime,
+    percentage: percentageVehicleOccupancy,
+    daysago: daysago
+  }
+];
 
   return (
     <>

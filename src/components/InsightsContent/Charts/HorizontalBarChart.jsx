@@ -23,6 +23,7 @@ const HorizontalBarChart = ({seriesData,title,categories}) => {
       style: {
         colors: ["#555"],
       },
+      offsetX: -10
     },
     xaxis: {
       categories: categories,

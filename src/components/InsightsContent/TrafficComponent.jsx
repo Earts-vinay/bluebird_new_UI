@@ -38,7 +38,7 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
   const latestEndDate = dateRange.latestEndDate
   const vehicleStartDate = vehicletoday;
   const vehicleEndDate = vehicletoday;
-  const { dataList, dataYearList,previousDataList, countListHour, loading, last7Count } = useSelector((state) => state.counting);
+  const { dataList, dataYearList, previousDataList, countListHour, loading, last7Count } = useSelector((state) => state.counting);
   const zoneAlert = useSelector((state) => state.Alert.zoneAlert);
   const { zonecount, previousZoneCount } = useSelector((state) => state.Insight);
 
@@ -89,34 +89,36 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
           : selectedRange === "Y"
             ? "Last Year"
             : "week";
-            const latestDays = isCustomRangeSelected
-            ? "Current Period"
-            : selectedRange === "D"
-              ? "Today"
-              : selectedRange === "W"
-                ? "This Week"
-                : selectedRange === "M"
-                  ? "This Month"
-                  : selectedRange === "Y"
-                    ? "This Year"
-                    : "week";
+  const latestDays = isCustomRangeSelected
+    ? "Current Period"
+    : selectedRange === "D"
+      ? "Today"
+      : selectedRange === "W"
+        ? "This Week"
+        : selectedRange === "M"
+          ? "This Month"
+          : selectedRange === "Y"
+            ? "This Year"
+            : "week";
 
   //counting Api
   useEffect(() => {
     if (propertyId && token) {
-      dispatch(fetchDataList({ propertyId,  startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : latestStartDate,
-        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : latestEndDate, token, timeType: alerttype }));
+      dispatch(fetchDataList({
+        propertyId, startDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleStartDate : latestStartDate,
+        endDate: selectedRange === "D" && !isCustomRangeSelected ? vehicleEndDate : latestEndDate, token, timeType: alerttype
+      }));
 
       dispatch(fetchDataYearList({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token, timeType: type }));
       dispatch(countingPreviousList({ propertyId, startDate: previousStartDate, endDate: previousEndDate, token, timeType: type }));
 
       dispatch(fetchCountListHour({ propertyId, startonlytime, endonlytime, token }));
       dispatch(fetchLast7Count({ propertyId, start7thTime, end7thTime, token }));
-      dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
+      // dispatch(fetchZoneAlert({ propertyId, zoneId, startDate, endDate }));
 
       dispatch(fetchCountingByZone({ propertyId, startDate: latestStartDate, endDate: latestEndDate, token }));
       dispatch(PreviousCountingByZone({ propertyId, startDate: previousStartDate, endDate: previousEndDate, token }));
-      
+
     }
   }, [propertyId, token]);
 
@@ -181,6 +183,7 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
     name: "People Enter",
     data: dataList?.map(item => item.people_enter)
   }];
+  console.log("logic", peopleEnterSeries);
 
   // People Occupancy line chart
   const peopleOccupancySeries = [
@@ -195,7 +198,7 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
       name: "Vehicle Entry",
       data: dataList?.map(item => item.vechicle_enter)
     }];
-
+  console.log("logic222", vehicleEnterSeries);
   // Vehicle Occupancy Line Chart
   const vehicleOccupancySeries = [
     {
@@ -292,7 +295,7 @@ const TrafficComponent = ({ dateRange, selectedRange, isCustomRangeSelected, cus
                 <LineChart series={peopleOccupancySeries} title="Pedestrain Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>
               </Grid> */}
               <Grid item xs={12} md={6}>
-                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays}/>
+                <LineChart series={vehicleEnterSeries} title="Vehicle Entry" linechartcolors={['#ef7b73']} markercolors={['#ef7b73']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays} />
               </Grid>
               {/* <Grid item xs={12} md={6}>
                 <LineChart series={vehicleOccupancySeries} title="Vehicle Peak Occupancy" linechartcolors={['#46c8f5']} markercolors={['#46c8f5']} startDate={startDate} endDate={endDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected}/>

@@ -371,75 +371,139 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   ];
 
   //card data
-  const cardData = [
-    {
-      background: 'linear-gradient(302deg, #01669a 100%, #1b3664 2%)',
-      icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
-      title: ' Enter Count',
-      mainValue: latestPeopleEnterFormatted,
-      subValue: previousPeopleEnterFormatted,
-      percentage: percentagePeopleEnter,
-      daysago: daysago
-    },
-    {
-      background: 'linear-gradient(120deg, #01669a 3%, #52a1cc)',
-      icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
-      title: "Peak Entries",
-      mainValue:
-        (selectedRange === "D" &&
-          dateRange.latestStartDate == dateRange.latestEndDate)
-          ? latestPeoplePeakEnterFormatted
-          : latestMoreDaysPeoplePeakEnterFormatted,
-      subValue:
-        (selectedRange === "D" &&
-          dateRange.previousStartDate == dateRange.previousEndDate)
-          ? previousPeoplePeakEnterFormatted
-          : previousPeopleMoreDaysPeakEnterFormatted,
+  // const cardData = [
+  //   {
+  //     background: 'linear-gradient(302deg, #01669a 100%, #1b3664 2%)',
+  //     icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
+  //     title: ' Enter Count',
+  //     mainValue: latestPeopleEnterFormatted,
+  //     subValue: previousPeopleEnterFormatted,
+  //     percentage: percentagePeopleEnter,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: 'linear-gradient(120deg, #01669a 3%, #52a1cc)',
+  //     icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
+  //     title: "Peak Entries",
+  //     mainValue:
+  //       (selectedRange === "D" && !selectedRange === "W" && !selectedRange === "M" && !selectedRange === "Y" &&
+  //         dateRange.latestStartDate == dateRange.latestEndDate)
+  //         ? latestPeoplePeakEnterFormatted
+  //         : latestMoreDaysPeoplePeakEnterFormatted,
+  //     subValue:
+  //       (selectedRange === "D" && !selectedRange === "W" && !selectedRange === "M" && !selectedRange === "Y" &&
+  //         dateRange.previousStartDate == dateRange.previousEndDate)
+  //         ? previousPeoplePeakEnterFormatted
+  //         : previousPeopleMoreDaysPeakEnterFormatted,
 
-      percentage: percentagePeoplePeakEnter,
-      peakTime:
-        (selectedRange === "D" &&
-          dateRange.previousStartDate == dateRange.previousEndDate)
-          ? latestPeoplePeakTime
-          : latestMoreDaysPeoplePeakTime,
+  //     percentage: percentagePeoplePeakEnter,
+  //     peakTime:
+  //       (selectedRange === "D" && !selectedRange === "W" && !selectedRange === "M" && !selectedRange === "Y" &&
+  //         dateRange.previousStartDate == dateRange.previousEndDate)
+  //         ? latestPeoplePeakTime
+  //         : latestMoreDaysPeoplePeakTime,
 
-      previousPeakTime:
-        (selectedRange === "D" &&
-          dateRange.previousStartDate == dateRange.previousEndDate)
-          ? previousPeoplePeakTime
-          : previousMoreDaysPeoplePeakTime,
-      daysago: daysago
-    },
-    {
-      background: " linear-gradient(120deg, #52a1cc 3%, #abd9f4)",
-      icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
-      title: "Enter Count",
-      mainValue: latestVehicleEnterFormatted,
-      subValue: previousVehicleEnterFormatted,
-      percentage: percentageVehicleEnter,
-      daysago: daysago
-    },
-    {
-      background: "linear-gradient(120deg, #46c8f5 40%, #abd9f4)",
-      icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
-      title: "Peak Occupancy",
-      mainValue: latestVehicleOccupancyFormatted,
-      subValue: vehicleOccupancyFormatted,
-      percentage: percentageVehicleOccupancy,
-      peakTime: latestVehiclePeakOccupancyTime,
-      previousPeakTime: previousVehiclePeakOccupancyTime,
-      daysago: daysago
-    },
-    {
-      background: "linear-gradient(121deg, #ee7570, #f2a884)",
-      icon: PublicUrl + "/assets/icons/alert.svg",
-      title: " Total Alerts",
-      mainValue: todayVehiclealerts,
-      subValue: totalVehiclealerts,
-      percentage: percentageVehicleAlerts,
-      daysago: daysago
-    },
-  ];
+  //     previousPeakTime:
+  //       (selectedRange === "D" && !selectedRange === "W" && !selectedRange === "M" && !selectedRange === "Y" &&
+  //         dateRange.previousStartDate == dateRange.previousEndDate)
+  //         ? previousPeoplePeakTime
+  //         : previousMoreDaysPeoplePeakTime,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: " linear-gradient(120deg, #52a1cc 3%, #abd9f4)",
+  //     icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
+  //     title: "Enter Count",
+  //     mainValue: latestVehicleEnterFormatted,
+  //     subValue: previousVehicleEnterFormatted,
+  //     percentage: percentageVehicleEnter,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: "linear-gradient(120deg, #46c8f5 40%, #abd9f4)",
+  //     icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
+  //     title: "Peak Occupancy",
+  //     mainValue: latestVehicleOccupancyFormatted,
+  //     subValue: vehicleOccupancyFormatted,
+  //     percentage: percentageVehicleOccupancy,
+  //     peakTime: latestVehiclePeakOccupancyTime,
+  //     previousPeakTime: previousVehiclePeakOccupancyTime,
+  //     daysago: daysago
+  //   },
+  //   {
+  //     background: "linear-gradient(121deg, #ee7570, #f2a884)",
+  //     icon: PublicUrl + "/assets/icons/alert.svg",
+  //     title: " Total Alerts",
+  //     mainValue: todayVehiclealerts,
+  //     subValue: totalVehiclealerts,
+  //     percentage: percentageVehicleAlerts,
+  //     daysago: daysago
+  //   },
+  // ];
+
+  const isSingleDaySelection = dateRange.latestStartDate === dateRange.latestEndDate &&
+                             dateRange.previousStartDate === dateRange.previousEndDate;
+
+const cardData = [
+  {
+    background: 'linear-gradient(302deg, #01669a 100%, #1b3664 2%)',
+    icon: `${PublicUrl}/assets/icons/PeopleTotalEntries.svg`,
+    title: 'Enter Count',
+    mainValue: latestPeopleEnterFormatted,
+    subValue: previousPeopleEnterFormatted,
+    percentage: percentagePeopleEnter,
+    daysago: daysago
+  },
+  {
+    background: 'linear-gradient(120deg, #01669a 3%, #52a1cc)',
+    icon: PublicUrl + "/assets/icons/PeopleTotalEntries.svg",
+    title: "Peak Entries",
+    mainValue: isSingleDaySelection
+      ? latestPeoplePeakEnterFormatted
+      : latestMoreDaysPeoplePeakEnterFormatted,
+    subValue: isSingleDaySelection
+      ? previousPeoplePeakEnterFormatted
+      : previousPeopleMoreDaysPeakEnterFormatted,
+    percentage: percentagePeoplePeakEnter,
+    peakTime: isSingleDaySelection
+      ? latestPeoplePeakTime
+      : latestMoreDaysPeoplePeakTime,
+    previousPeakTime: isSingleDaySelection
+      ? previousPeoplePeakTime
+      : previousMoreDaysPeoplePeakTime,
+    daysago: daysago
+  },
+  {
+    background: " linear-gradient(120deg, #52a1cc 3%, #abd9f4)",
+    icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
+    title: "Enter Count",
+    mainValue: latestVehicleEnterFormatted,
+    subValue: previousVehicleEnterFormatted,
+    percentage: percentageVehicleEnter,
+    daysago: daysago
+  },
+  {
+    background: "linear-gradient(120deg, #46c8f5 40%, #abd9f4)",
+    icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
+    title: "Peak Occupancy",
+    mainValue: latestVehicleOccupancyFormatted,
+    subValue: vehicleOccupancyFormatted,
+    percentage: percentageVehicleOccupancy,
+    peakTime: latestVehiclePeakOccupancyTime,
+    previousPeakTime: previousVehiclePeakOccupancyTime,
+    daysago: daysago
+  },
+  {
+    background: "linear-gradient(121deg, #ee7570, #f2a884)",
+    icon: PublicUrl + "/assets/icons/alert.svg",
+    title: "Total Alerts",
+    mainValue: todayVehiclealerts,
+    subValue: totalVehiclealerts,
+    percentage: percentageVehicleAlerts,
+    daysago: daysago
+  },
+];
+
 
   return (
     <>

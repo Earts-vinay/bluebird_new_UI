@@ -31,7 +31,7 @@ const HeatmapChart = ({ series }) => {
 
   return (
     <Box style={{ backgroundColor: "white", borderRadius: "5px", padding: "15px", boxShadow: "0 3px 6px 0 rgba(0, 0, 0, 0.16)" }}>
-      <ApexCharts options={chartOptions} series={chartOptions.series} type="heatmap" height={280} />
+      <ApexCharts options={chartOptions} series={chartOptions.series} type="heatmap" height={305} />
     </Box>
   );
 };
