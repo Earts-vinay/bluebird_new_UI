@@ -203,6 +203,9 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const onlinePercentage = ((onlineSeries / totalseries) * 100).toFixed(2);
   const offlinePercentage = ((offlineSeries / totalseries) * 100).toFixed(2);
 
+    const deviceStatusSeries = [onlineSeries, offlineSeries];
+
+
   //latest max people & Vehicle calculations
   const maxPeoplePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
     currentItem.people_enter_peak > (maxItem?.people_enter_peak || 0) ? currentItem : maxItem, null
@@ -211,9 +214,17 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
     (currentItem.people_enter || 0) > (maxItem?.people_enter || 0) ? currentItem : maxItem, null
   );
 
-  const maxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
-    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  //vehicle
+  const maxVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
   );
+  const maxMoreDaysVehiclePeakItem = dataYearList?.reduce((maxItem, currentItem) =>
+    (currentItem.vechicle_enter || 0) > (maxItem?.vechicle_enter || 0) ? currentItem : maxItem, null
+  );
+
+  // const maxVehiclePeakOccupancy = dataYearList?.reduce((maxItem, currentItem) =>
+  //   currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  // );
 
   // card vaules at upper part latest dates
   const latestPeopleEnter = dataYearList?.reduce((acc, item) => acc + item.people_enter, 0);
@@ -227,10 +238,18 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
  
 
   const latestVehicleEnter = dataYearList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const latestVehicleOccupancy = Math.max(...(dataYearList?.map(item => item.vechicle_occupancy_peak) || []));
-  const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
-  ? maxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+  const latestMoreDaysVehiclePeakEnter = maxMoreDaysVehiclePeakItem?.vechicle_enter || 0;
+  const latestMoreDaysVehiclePeakTime = maxMoreDaysVehiclePeakItem?.date_time || "";
+
+  const latestVehiclePeakEnter = Math.max(...(dataYearList?.map(item => item.vechicle_enter_peak) || []));
+  const latestVehiclePeakTime = maxVehiclePeakItem?.vechicle_enter_peaktime
+  ? maxVehiclePeakItem.vechicle_enter_peaktime.split(" ").reverse().join(" ")
   : "";
+
+  // const latestVehicleOccupancy = Math.max(...(dataYearList?.map(item => item.vechicle_occupancy_peak) || []));
+  // const latestVehiclePeakOccupancyTime = maxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
+  // ? maxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+  // : "";
 
 
   //previous max people & Vehicle calculations
@@ -240,9 +259,18 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const previousMaxMoreDaysPeoplePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
     (currentItem.people_enter || 0) > (maxItem?.people_enter || 0) ? currentItem : maxItem, null
   );
-  const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
-    currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  //vehicle
+    const previousMaxVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+    currentItem.vechicle_enter_peak > (maxItem?.vechicle_enter_peak || 0) ? currentItem : maxItem, null
   );
+  const previousMaxMoreDaysVehiclePeakItem = previousDataList?.reduce((maxItem, currentItem) =>
+    (currentItem.vechicle_enter || 0) > (maxItem?.vechicle_enter || 0) ? currentItem : maxItem, null
+  );
+
+
+  // const previousMaxVehiclePeakOccupancy = previousDataList?.reduce((maxItem, currentItem) =>
+  //   currentItem.vechicle_occupancy_peak > (maxItem?.vechicle_occupancy_peak || 0) ? currentItem : maxItem, null
+  // );
 
   // card vaules at lower part previous dates
   const previousPeopleEnter = previousDataList?.reduce((acc, item) => acc + item.people_enter, 0);
@@ -255,10 +283,18 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
  
 
   const previousVehicleEnter = previousDataList?.reduce((acc, item) => acc + item.vechicle_enter, 0);
-  const previousVehicleOccupancy = Math.max(...(previousDataList?.map(item => item.vechicle_occupancy_peak) || []));
-  const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
-  ? previousMaxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+
+    const previousMoreDaysVehiclePeakEnter = previousMaxMoreDaysVehiclePeakItem?.vechicle_enter || 0;
+  const previousMoreDaysVehiclePeakTime = previousMaxMoreDaysVehiclePeakItem?.date_time || ""
+  const previousVehiclePeakEnter = Math.max(...(previousDataList?.map(item => item.vechicle_enter_peak) || []))
+  const previousVehiclePeakTime = previousMaxVehiclePeakItem?.vechicle_enter_peaktime
+  ? previousMaxVehiclePeakItem.vechicle_enter_peaktime.split(" ").reverse().join(" ")
   : "";
+
+  // const previousVehicleOccupancy = Math.max(...(previousDataList?.map(item => item.vechicle_occupancy_peak) || []));
+  // const previousVehiclePeakOccupancyTime = previousMaxVehiclePeakOccupancy?.vechicle_occupancy_peak_time
+  // ? previousMaxVehiclePeakOccupancy.vechicle_occupancy_peak_time.split(" ").reverse().join(" ")
+  // : "";
 
   //total alerts card latest and previous
   const todayVehiclealerts = latestTotalALert[0]?.list?.reduce((acc, item) => acc + item.unresolved_alert_num + item.resolved_alert_num, 0);
@@ -272,7 +308,9 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const percentagePeopleEnter = handlePercentageError((((latestPeopleEnter - previousPeopleEnter) / previousPeopleEnter) * 100).toFixed(2));
   const percentagePeoplePeakEnter = handlePercentageError((((latestPeoplePeakEnter - previousPeoplePeakEnter) / previousPeoplePeakEnter) * 100).toFixed(2));
   const percentageVehicleEnter = handlePercentageError((((latestVehicleEnter - previousVehicleEnter) / previousVehicleEnter) * 100).toFixed(2));
-  const percentageVehicleOccupancy = handlePercentageError((((latestVehicleOccupancy - previousVehicleOccupancy) / previousVehicleOccupancy) * 100).toFixed(2));
+  const percentageVehiclePeakEnter = handlePercentageError((((latestVehiclePeakEnter - previousVehiclePeakEnter) / previousVehiclePeakEnter) * 100).toFixed(2));
+  // const percentageVehicleOccupancy = handlePercentageError((((latestVehicleOccupancy - previousVehicleOccupancy) / previousVehicleOccupancy) * 100).toFixed(2));
+
 
   // percentage for alerts card
   let percentageVehicleAlerts;
@@ -294,13 +332,17 @@ const Overview = ({ dateRange, isCustomRangeSelected, selectedRange, customDates
   const latestPeoplePeakEnterFormatted = formatNumber(latestPeoplePeakEnter);
   const latestMoreDaysPeoplePeakEnterFormatted = formatNumber(latestMoreDaysPeoplePeakEnter);
   const latestVehicleEnterFormatted = formatNumber(latestVehicleEnter);
-  const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
+  const latestVehiclePeakEnterFormatted = formatNumber(latestVehiclePeakEnter);
+  const latestMoreDaysVehiclePeakEnterFormatted = formatNumber(latestMoreDaysVehiclePeakEnter);
+  // const latestVehicleOccupancyFormatted = formatNumber(latestVehicleOccupancy);
 
   const previousPeopleEnterFormatted = formatNumber(previousPeopleEnter);
   const previousPeoplePeakEnterFormatted = formatNumber(previousPeoplePeakEnter);
   const previousPeopleMoreDaysPeakEnterFormatted = formatNumber(previousMoreDaysPeoplePeakEnter);
   const previousVehicleEnterFormatted = formatNumber(previousVehicleEnter);
-  const vehicleOccupancyFormatted = formatNumber(previousVehicleOccupancy);
+  const previousVehiclePeakEnterFormatted = formatNumber(previousVehiclePeakEnter);
+  const previousVehicleMoreDaysPeakEnterFormatted = formatNumber(previousMoreDaysVehiclePeakEnter);
+  // const vehicleOccupancyFormatted = formatNumber(previousVehicleOccupancy);
 
   const zoneNames = zonecount?.map((zone) => zone.name);
   //zones related data 
@@ -485,12 +527,20 @@ const cardData = [
   {
     background: "linear-gradient(120deg, #46c8f5 40%, #abd9f4)",
     icon: PublicUrl + "/assets/icons/VehicleTotalEntries.svg",
-    title: "Peak Occupancy",
-    mainValue: latestVehicleOccupancyFormatted,
-    subValue: vehicleOccupancyFormatted,
-    percentage: percentageVehicleOccupancy,
-    peakTime: latestVehiclePeakOccupancyTime,
-    previousPeakTime: previousVehiclePeakOccupancyTime,
+    title: "Peak Entries",
+    mainValue: isSingleDaySelection
+      ? latestVehiclePeakEnterFormatted
+      : latestMoreDaysVehiclePeakEnterFormatted,
+    subValue: isSingleDaySelection
+      ? previousVehiclePeakEnterFormatted
+      : previousVehicleMoreDaysPeakEnterFormatted,
+    percentage: percentageVehiclePeakEnter,
+   peakTime: isSingleDaySelection
+      ? latestVehiclePeakTime
+      : latestMoreDaysVehiclePeakTime,
+    previousPeakTime: isSingleDaySelection
+      ? previousVehiclePeakTime
+      : previousMoreDaysVehiclePeakTime,
     daysago: daysago
   },
   {
@@ -530,11 +580,11 @@ const cardData = [
                 <LineChart series={AlertsSeries} title="Alerts Raised" linechartcolors={['#ef7b73', '#46C8F5']} markercolors={['#ef7b73', '#46C8F5']} startDate={latestStartDate} endDate={latestEndDate} selectedRange={selectedRange} responseDates={responseDates} customDates={customDates} isCustomRangeSelected={isCustomRangeSelected} diffDays={diffDays} />
               </Grid>
               <Grid item xs={12} md={4}>
-                <RadialBarChart
-                  series={[onlinePercentage, offlinePercentage]}
+                <PieChart
+                  series={deviceStatusSeries}
                   labels={['Online', 'Offline']}
                   title="Device Status"
-                  colors={['#1BBAFD', '#FF5733']}
+                  colors={['#1BBAFD', '#ee7570']}
                   onlineSeries={onlineSeries}
                   offlineSeries={offlineSeries}
                 />
